@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "title": "SidequestLab - Side Project Laboratory",
+    "description": "A laboratory that creates value through various side projects"
+  },
+  "nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "blog": "Blog",
+    "about": "About"
+  },
+  "home": {
+    "hero": {
+      "title": "SidequestLab",
+      "subtitle": "A laboratory that creates value through various side projects",
+      "description": "A space where ideas become reality. Starting from small projects, we deliver real value to users."
+    },
+    "featured": {
+      "title": "Featured Projects",
+      "viewAll": "View All Projects"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Discover the services we've built",
+    "visitSite": "Visit Site",
+    "techStack": "Tech Stack"
+  },
+  "about": {
+    "title": "About Us",
+    "vision": {
+      "title": "Vision",
+      "content": "To become a laboratory that creates big value from small ideas."
+    },
+    "mission": {
+      "title": "Mission",
+      "content": "We build services that solve everyday inconveniences. We experiment quickly, embrace feedback, and continuously improve."
+    },
+    "values": {
+      "title": "Core Values",
+      "simplicity": {
+        "title": "Simplicity",
+        "description": "Making complex things simple is true innovation."
+      },
+      "speed": {
+        "title": "Speed",
+        "description": "Fast execution and fast learning lead to better results."
+      },
+      "value": {
+        "title": "Value",
+        "description": "Providing real value to users is our reason for existence."
+      }
+    },
+    "contact": {
+      "title": "Contact",
+      "email": "Email"
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Development stories and project updates",
+    "readMore": "Read More",
+    "backToList": "Back to List",
+    "noPosts": "No posts yet."
+  },
+  "footer": {
+    "copyright": "SidequestLab. All rights reserved.",
+    "description": "A laboratory that creates value through various side projects"
+  }
+}

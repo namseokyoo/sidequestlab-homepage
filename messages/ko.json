@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "title": "SidequestLab - 사이드 프로젝트 실험실",
+    "description": "다양한 사이드 프로젝트를 통해 가치를 창출하는 실험실"
+  },
+  "nav": {
+    "home": "홈",
+    "projects": "프로젝트",
+    "blog": "블로그",
+    "about": "소개"
+  },
+  "home": {
+    "hero": {
+      "title": "SidequestLab",
+      "subtitle": "다양한 사이드 프로젝트를 통해 가치를 창출하는 실험실",
+      "description": "아이디어를 현실로 만드는 공간입니다. 작은 프로젝트부터 시작해 사용자에게 실질적인 가치를 전달합니다."
+    },
+    "featured": {
+      "title": "주요 프로젝트",
+      "viewAll": "모든 프로젝트 보기"
+    }
+  },
+  "projects": {
+    "title": "프로젝트",
+    "subtitle": "우리가 만든 서비스들을 소개합니다",
+    "visitSite": "사이트 방문",
+    "techStack": "기술 스택"
+  },
+  "about": {
+    "title": "회사 소개",
+    "vision": {
+      "title": "비전",
+      "content": "작은 아이디어로 큰 가치를 만드는 실험실이 되겠습니다."
+    },
+    "mission": {
+      "title": "미션",
+      "content": "사용자의 일상에서 발견한 불편함을 해결하는 서비스를 만듭니다. 빠르게 실험하고, 피드백을 수용하며, 지속적으로 개선합니다."
+    },
+    "values": {
+      "title": "핵심 가치",
+      "simplicity": {
+        "title": "단순함",
+        "description": "복잡한 것을 단순하게 만드는 것이 진정한 혁신입니다."
+      },
+      "speed": {
+        "title": "속도",
+        "description": "빠른 실행과 빠른 학습을 통해 더 나은 결과를 만들어 냅니다."
+      },
+      "value": {
+        "title": "가치",
+        "description": "사용자에게 실질적인 가치를 제공하는 것이 우리의 존재 이유입니다."
+      }
+    },
+    "contact": {
+      "title": "연락처",
+      "email": "이메일"
+    }
+  },
+  "blog": {
+    "title": "블로그",
+    "subtitle": "개발 이야기와 프로젝트 소식을 공유합니다",
+    "readMore": "자세히 보기",
+    "backToList": "목록으로",
+    "noPosts": "아직 작성된 글이 없습니다."
+  },
+  "footer": {
+    "copyright": "SidequestLab. All rights reserved.",
+    "description": "다양한 사이드 프로젝트를 통해 가치를 창출하는 실험실"
+  }
+}
