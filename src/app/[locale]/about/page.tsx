@@ -173,10 +173,10 @@ export default function AboutPage() {
               {t('contact.email')}:
             </span>
             <a
-              href="mailto:contact@sidequestlab.com"
+              href="mailto:namseok.yoo@gmail.com"
               className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
-              contact@sidequestlab.com
+              namseok.yoo@gmail.com
             </a>
           </div>
         </div>
