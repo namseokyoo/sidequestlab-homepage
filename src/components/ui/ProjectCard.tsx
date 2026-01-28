@@ -1,6 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import type { Project } from '@/lib/projects';
 
 interface ProjectCardProps {
@@ -11,8 +12,28 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const locale = useLocale() as 'ko' | 'en';
   const t = useTranslations('projects');
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+      case 'in-progress':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+      case 'planned':
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
+    }
+  };
+
   return (
     <div className="group flex flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+      {/* Status Badge */}
+      <div className="mb-3">
+        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${getStatusColor(project.status)}`}>
+          {t(`status.${project.status}`)}
+        </span>
+      </div>
+
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
           {project.name[locale]}
@@ -39,29 +60,39 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
       </div>
 
-      {project.url !== '#' && (
-        <a
-          href={project.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-        >
-          {t('visitSite')}
-          <svg
-            className="ml-2 h-4 w-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      <div className="flex gap-2">
+        {project.longDescription && (
+          <Link
+            href={`/projects/${project.id}`}
+            className="inline-flex items-center justify-center rounded-lg border border-blue-600 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-900/20"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-            />
-          </svg>
-        </a>
-      )}
+            {t('viewDetails')}
+          </Link>
+        )}
+        {project.url !== '#' && (
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+          >
+            {t('visitSite')}
+            <svg
+              className="ml-2 h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
+            </svg>
+          </a>
+        )}
+      </div>
     </div>
   );
 }

@@ -24,7 +24,27 @@
     "title": "Projects",
     "subtitle": "Discover the services we've built",
     "visitSite": "Visit Site",
-    "techStack": "Tech Stack"
+    "viewDetails": "View Details",
+    "techStack": "Tech Stack",
+    "features": "Key Features",
+    "backToProjects": "Back to Projects",
+    "tryNow": "Try Now",
+    "viewOnGitHub": "View on GitHub",
+    "status": {
+      "completed": "Completed",
+      "in-progress": "In Progress",
+      "planned": "Planned"
+    },
+    "category": {
+      "product": "Product",
+      "internal": "Internal Tool",
+      "homepage": "Homepage"
+    },
+    "filter": {
+      "all": "All",
+      "product": "Products",
+      "internal": "Internal Tools"
+    }
   },
   "about": {
     "title": "About Us",
@@ -49,6 +69,91 @@
       "value": {
         "title": "Value",
         "description": "Providing real value to users is our reason for existence."
+      }
+    },
+    "organization": {
+      "title": "Organization Structure",
+      "subtitle": "Efficient project execution through systematic workflow processes",
+      "owner": "Chairman",
+      "ownerRole": "Owner",
+      "ceo": "CEO Agent",
+      "ceoRole": "Orchestrator",
+      "teams": {
+        "advisor": {
+          "name": "Board Advisor",
+          "role": "Advisory/Review"
+        },
+        "dev": {
+          "name": "Dev Team",
+          "role": "Development",
+          "members": ["Fullstack Developer", "QA Engineer"]
+        },
+        "devops": {
+          "name": "DevOps Team",
+          "role": "Infrastructure"
+        },
+        "content": {
+          "name": "Content Team",
+          "role": "Content"
+        },
+        "growth": {
+          "name": "Growth Team",
+          "role": "Marketing"
+        },
+        "historian": {
+          "name": "Historian",
+          "role": "Records/Retrospective"
+        }
+      }
+    },
+    "team": {
+      "title": "Team Members",
+      "roles": {
+        "ceo": { "name": "CEO Agent", "task": "Planning, Task delegation, Progress management" },
+        "advisor": { "name": "Board Advisor", "task": "PRD review, Technical advisory, Risk analysis" },
+        "historian": { "name": "Company Historian", "task": "Documentation, Meeting notes, Retrospectives" },
+        "fullstack": { "name": "Fullstack Developer", "task": "Web/App development, Git management" },
+        "qa": { "name": "QA Engineer", "task": "Testing, Quality verification" },
+        "devops": { "name": "DevOps Engineer", "task": "Deployment, CI/CD, Monitoring" },
+        "content": { "name": "Content Writer", "task": "Blog, SEO, Documentation" },
+        "growth": { "name": "Growth Marketer", "task": "User analytics, Marketing strategy" }
+      }
+    },
+    "workflow": {
+      "title": "Workflow Protocol",
+      "subtitle": "Creating quality outcomes through systematic processes",
+      "steps": {
+        "planning": {
+          "title": "1. Planning",
+          "items": ["PRD creation", "Knowledge review", "Advisor review", "Chairman approval"]
+        },
+        "init": {
+          "title": "2. Project Init",
+          "items": ["Folder creation", "Structure setup"]
+        },
+        "execute": {
+          "title": "3. Execution",
+          "items": ["Task delegation", "Parallel execution", "Progress monitoring"]
+        },
+        "verify": {
+          "title": "4. Verification",
+          "items": ["QA verification", "Quality check", "Deployment check"]
+        },
+        "complete": {
+          "title": "5. Completion",
+          "items": ["Retrospective", "Lessons learned", "Final report"]
+        }
+      }
+    },
+    "documents": {
+      "title": "Document System",
+      "subtitle": "Systematically managing all decisions and knowledge",
+      "items": {
+        "decisions": { "name": "DECISIONS.md", "desc": "Decision log" },
+        "history": { "name": "HISTORY.md", "desc": "Company history" },
+        "projects": { "name": "PROJECTS.md", "desc": "Project status" },
+        "lessons": { "name": "LESSONS.md", "desc": "Lessons/Patterns" },
+        "organization": { "name": "ORGANIZATION.md", "desc": "Organization structure" }
       }
     },
     "contact": {

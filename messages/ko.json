@@ -24,7 +24,27 @@
     "title": "프로젝트",
     "subtitle": "우리가 만든 서비스들을 소개합니다",
     "visitSite": "사이트 방문",
-    "techStack": "기술 스택"
+    "viewDetails": "자세히 보기",
+    "techStack": "기술 스택",
+    "features": "주요 기능",
+    "backToProjects": "프로젝트 목록",
+    "tryNow": "지금 사용해보기",
+    "viewOnGitHub": "GitHub에서 보기",
+    "status": {
+      "completed": "완료",
+      "in-progress": "진행중",
+      "planned": "예정"
+    },
+    "category": {
+      "product": "제품",
+      "internal": "내부 도구",
+      "homepage": "홈페이지"
+    },
+    "filter": {
+      "all": "전체",
+      "product": "제품",
+      "internal": "내부 도구"
+    }
   },
   "about": {
     "title": "회사 소개",
@@ -49,6 +69,91 @@
       "value": {
         "title": "가치",
         "description": "사용자에게 실질적인 가치를 제공하는 것이 우리의 존재 이유입니다."
+      }
+    },
+    "organization": {
+      "title": "조직 구조",
+      "subtitle": "체계적인 업무 프로세스로 효율적인 프로젝트 진행",
+      "owner": "회장님",
+      "ownerRole": "Owner",
+      "ceo": "CEO Agent",
+      "ceoRole": "Orchestrator",
+      "teams": {
+        "advisor": {
+          "name": "Board Advisor",
+          "role": "자문/검토"
+        },
+        "dev": {
+          "name": "Dev Team",
+          "role": "개발",
+          "members": ["Fullstack Developer", "QA Engineer"]
+        },
+        "devops": {
+          "name": "DevOps Team",
+          "role": "인프라"
+        },
+        "content": {
+          "name": "Content Team",
+          "role": "콘텐츠"
+        },
+        "growth": {
+          "name": "Growth Team",
+          "role": "마케팅"
+        },
+        "historian": {
+          "name": "Historian",
+          "role": "기록/회고"
+        }
+      }
+    },
+    "team": {
+      "title": "팀원 현황",
+      "roles": {
+        "ceo": { "name": "CEO Agent", "task": "계획 수립, Task 위임, 진행 관리" },
+        "advisor": { "name": "Board Advisor", "task": "PRD 검토, 기술 자문, 리스크 분석" },
+        "historian": { "name": "Company Historian", "task": "문서 관리, 회의록, 회고 작성" },
+        "fullstack": { "name": "Fullstack Developer", "task": "웹/앱 개발, Git 관리" },
+        "qa": { "name": "QA Engineer", "task": "테스트, 품질 검증" },
+        "devops": { "name": "DevOps Engineer", "task": "배포, CI/CD, 모니터링" },
+        "content": { "name": "Content Writer", "task": "블로그, SEO, 문서 작성" },
+        "growth": { "name": "Growth Marketer", "task": "사용자 분석, 마케팅 전략" }
+      }
+    },
+    "workflow": {
+      "title": "업무 프로토콜",
+      "subtitle": "체계적인 프로세스로 품질 높은 결과물 창출",
+      "steps": {
+        "planning": {
+          "title": "1. 계획 수립",
+          "items": ["PRD 작성", "지식 리뷰", "Advisor 검토", "회장님 승인"]
+        },
+        "init": {
+          "title": "2. 프로젝트 초기화",
+          "items": ["폴더 생성", "구조 설정"]
+        },
+        "execute": {
+          "title": "3. 실행",
+          "items": ["Task 위임", "병렬 실행", "진행 모니터링"]
+        },
+        "verify": {
+          "title": "4. 검증",
+          "items": ["QA 검증", "품질 확인", "배포 확인"]
+        },
+        "complete": {
+          "title": "5. 완료",
+          "items": ["회고록 작성", "교훈 기록", "최종 보고"]
+        }
+      }
+    },
+    "documents": {
+      "title": "문서 체계",
+      "subtitle": "모든 의사결정과 지식을 체계적으로 관리",
+      "items": {
+        "decisions": { "name": "DECISIONS.md", "desc": "의사결정 로그" },
+        "history": { "name": "HISTORY.md", "desc": "회사 연혁" },
+        "projects": { "name": "PROJECTS.md", "desc": "프로젝트 현황" },
+        "lessons": { "name": "LESSONS.md", "desc": "교훈/패턴" },
+        "organization": { "name": "ORGANIZATION.md", "desc": "조직 구조" }
       }
     },
     "contact": {
