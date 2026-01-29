@@ -132,6 +132,43 @@ export const projects: Project[] = [
     category: 'internal'
   },
   {
+    id: 'spectrum-visualizer',
+    name: {
+      ko: 'Spectrum Visualizer',
+      en: 'Spectrum Visualizer'
+    },
+    description: {
+      ko: 'OLED/디스플레이 연구자를 위한 스펙트럼-색좌표 시각화 도구입니다.',
+      en: 'A spectrum-to-color coordinate visualization tool for OLED/display researchers.'
+    },
+    longDescription: {
+      ko: 'Interactive Spectrum-to-Color Visualizer (ISCV)는 디스플레이 연구자들이 스펙트럼 데이터를 CIE 색좌표로 변환하고 시각화하는 도구입니다. Spectrum-on-Locus 기능으로 스펙트럼을 색공간 외곽선 위에 산맥 형태로 표시하고, 드래그로 파장 이동 효과를 직관적으로 확인할 수 있습니다.',
+      en: 'Interactive Spectrum-to-Color Visualizer (ISCV) is a tool for display researchers to convert and visualize spectrum data as CIE color coordinates. The Spectrum-on-Locus feature displays spectra as mountain ridges on the color space boundary, allowing intuitive wavelength shift visualization through dragging.'
+    },
+    features: {
+      ko: [
+        'CIE 1931 xy / CIE 1976 u\'v\' 색좌표 다이어그램',
+        'Spectrum-on-Locus - 스펙트럼을 외곽선 위 산맥 형태로 시각화',
+        '파장 이동 - 슬라이더, 수치입력, 드래그로 조절',
+        '색역 토글 - sRGB, DCI-P3, BT.2020, Adobe RGB',
+        '스냅샷 - 여러 스펙트럼 비교 저장'
+      ],
+      en: [
+        'CIE 1931 xy / CIE 1976 u\'v\' chromaticity diagrams',
+        'Spectrum-on-Locus - Visualize spectra as ridges on the color boundary',
+        'Wavelength shift - Adjust via slider, input, or drag',
+        'Gamut toggle - sRGB, DCI-P3, BT.2020, Adobe RGB',
+        'Snapshots - Save and compare multiple spectra'
+      ]
+    },
+    url: 'https://spectrum-visualizer-seven.vercel.app',
+    github: 'https://github.com/namseokyoo/spectrum-visualizer',
+    techStack: ['React', 'Vite', 'TypeScript', 'D3.js', 'Tailwind CSS'],
+    featured: true,
+    status: 'completed',
+    category: 'product'
+  },
+  {
     id: 'sidequestlab-homepage',
     name: {
       ko: 'SidequestLab 홈페이지',
