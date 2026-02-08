@@ -1,0 +1,248 @@
+---
+title: "Free CIE 1931 Chromaticity Diagram Tool for OLED Research"
+description: "Web-based spectrum-to-color visualizer with CIE 1931 xy and 1976 u'v' diagrams. Free tool for OLED researchers and display engineers to analyze spectral data and calculate color coordinates."
+date: "2026-02-09"
+---
+
+# Free CIE 1931 Chromaticity Diagram Tool for OLED Research
+
+If you're working with emission spectra in OLED research or display engineering, you know the challenge: converting spectral data into CIE color coordinates isn't straightforward. Commercial tools are expensive, and generic online calculators often lack the precision or features you need. What if you could visualize spectrum data on a CIE chromaticity diagram in real-time, completely free, right in your browser?
+
+Meet **Spectrum Visualizer (ISCV)** — a web-based tool built specifically for researchers and engineers who need accurate, fast spectrum-to-color visualization.
+
+## What is Spectrum Visualizer?
+
+Spectrum Visualizer is an interactive, browser-based tool that converts emission spectrum data into CIE color coordinates and visualizes them on chromaticity diagrams. It's designed for OLED researchers, display engineers, and color science students who need to:
+
+- Quickly convert spectral data to color coordinates
+- Compare experimental results against standard color gamuts
+- Analyze spectrum characteristics (peak wavelength, FWHM, FWQM)
+- Share visual results with colleagues
+
+**Try it now**: [https://spectrum-visualizer-seven.vercel.app](https://spectrum-visualizer-seven.vercel.app)
+
+**Open Source**: [GitHub Repository](https://github.com/namseokyoo/spectrum-visualizer)
+
+## Core Features
+
+### 1. Dual CIE Diagram Support
+
+Visualize your spectral data on both industry-standard color spaces:
+
+- **CIE 1931 xy**: The foundational chromaticity diagram used in display standards (sRGB, DCI-P3, BT.2020)
+- **CIE 1976 u'v'**: Perceptually uniform color space for more accurate color difference calculations
+
+Switch between diagrams with a single click. All coordinates update in real-time.
+
+### 2. Flexible Spectrum Input
+
+Three ways to load your data:
+
+**Built-in Presets**: Quick-start with typical OLED emission profiles (Blue, Green, Red, White phosphorescent emitters)
+
+**CSV Upload**: Drag-and-drop your spectral data files. Supports comma, tab, and space-delimited formats.
+
+**Clipboard Paste**: Copy wavelength-intensity pairs directly from Excel, MATLAB, or any analysis tool and paste into the visualizer.
+
+### 3. Spectrum-on-Locus Visualization
+
+Our unique "ridge" feature overlays your spectrum directly on the spectral locus, showing how your emission profile maps to the horseshoe curve. This helps you:
+
+- Identify dominant wavelength at a glance
+- Assess spectral purity visually
+- Compare emission profiles side-by-side
+
+### 4. Interactive Wavelength Shifting
+
+Simulate material tuning or measurement drift by shifting wavelength in real-time:
+
+- Drag the color point on the diagram
+- Use the slider (-100nm to +100nm range)
+- Type exact shift values (0.1nm precision)
+- Keyboard shortcuts: ±1nm or ±5nm steps
+
+Watch coordinates and color values update instantly as you shift.
+
+### 5. Color Gamut Comparison
+
+Toggle standard display gamuts directly on the diagram:
+
+- **sRGB**: Standard RGB color space (web, consumer displays)
+- **DCI-P3**: Digital cinema and high-end monitors
+- **BT.2020**: Ultra HD (4K/8K) broadcast standard
+- **Adobe RGB**: Photography and professional print
+
+Immediately see if your emitter falls within commercial display gamuts.
+
+### 6. Snapshot Comparison
+
+Save up to 5 color points as snapshots to compare:
+
+- Different materials at fixed wavelength
+- Same material at different shifts
+- Experimental vs. target coordinates
+
+Snapshots persist across sessions, so you can return to your analysis later.
+
+### 7. Spectrum Analysis Metrics
+
+Automatic calculation of key spectrum characteristics:
+
+- **Peak Wavelength**: Maximum emission wavelength (with shift applied)
+- **FWHM (Full Width at Half Maximum)**: Spectral bandwidth at 50% intensity
+- **FWQM (Full Width at Quarter Maximum)**: Spectral bandwidth at 25% intensity
+
+All metrics update in real-time as you adjust the spectrum.
+
+## Technical Accuracy
+
+Spectrum Visualizer is built on scientifically rigorous color science:
+
+### CIE Standard Observer Data
+Uses CIE 1931 2-degree Standard Observer color matching functions (x̄(λ), ȳ(λ), z̄(λ)) from **CIE 15:2004** standard. This ensures compatibility with academic literature and industry standards.
+
+### Spectral Integration
+Converts spectrum S(λ) to XYZ tristimulus values via trapezoidal integration:
+
+```
+X = k · ∫ S(λ) · x̄(λ) dλ
+Y = k · ∫ S(λ) · ȳ(λ) dλ
+Z = k · ∫ S(λ) · z̄(λ) dλ
+```
+
+Normalized so that Y = 100 for consistent luminance scaling.
+
+### Cubic Spline Interpolation
+Spectral locus and ridge curves use **cubic spline interpolation** with C² continuity. This produces smooth, mathematically accurate curves without artifacts — especially critical around the 520nm region where simple linear interpolation fails.
+
+### Color Gamut Standards
+Gamut triangles use official ITU-R specifications:
+- **sRGB**: ITU-R BT.709 primaries
+- **DCI-P3**: Digital Cinema Initiative P3-D65
+- **BT.2020**: ITU-R BT.2020 (Rec. 2020)
+- **Adobe RGB**: Adobe RGB (1998)
+
+## Use Cases
+
+### 1. OLED Material Characterization
+You've synthesized a new phosphorescent green emitter. Load the photoluminescence spectrum into Spectrum Visualizer to instantly see:
+- CIE 1931 xy coordinates for your material
+- Whether it covers the DCI-P3 green primary
+- FWHM for spectral purity assessment
+
+**Result**: Quick go/no-go decision on material viability without waiting for device fabrication.
+
+### 2. Display Quality Control
+Manufacturing engineers need to verify display color accuracy. Upload measured spectra from display pixels and:
+- Check if RGB primaries fall within target gamut (±0.005 tolerance)
+- Compare against reference samples (use snapshots)
+- Generate visual QC reports (screenshot feature)
+
+**Result**: Faster QC cycles with visual confirmation of pass/fail criteria.
+
+### 3. Teaching Color Science
+Instructors teaching CIE colorimetry can use Spectrum Visualizer for live demonstrations:
+- Show how changing peak wavelength shifts coordinates on the diagram
+- Illustrate the difference between CIE 1931 and 1976 spaces
+- Demonstrate gamut coverage for different display technologies
+
+**Result**: Students grasp abstract color theory through interactive visualization.
+
+### 4. Research Publication Figures
+Preparing figures for journal submission? Spectrum Visualizer lets you:
+- Generate clean CIE diagrams with your experimental data points
+- Export snapshots for multi-sample comparison
+- Save diagram states for reproducible figures
+
+**Result**: Publication-quality visuals without expensive commercial software.
+
+## Why Free and Open Source?
+
+We built Spectrum Visualizer because we've been there — juggling expensive MATLAB licenses or hacking together Python scripts just to plot a few color points. Core color science tools shouldn't be locked behind paywalls.
+
+**Open Source**: Full source code available on GitHub under MIT license. If you need custom features (batch processing, API integration, proprietary gamuts), fork it and extend it.
+
+**Zero Setup**: Runs entirely in your browser. No installation, no account, no data upload to servers. Your spectral data never leaves your device.
+
+**Cross-Platform**: Works on Windows, macOS, Linux — even tablets with keyboard support for wavelength adjustment.
+
+## Technical Stack
+
+For those interested in the implementation:
+
+- **React 19** + **TypeScript**: Type-safe component architecture
+- **D3.js**: Scientific data visualization with zoom/pan support
+- **Vite**: Fast development and build tooling
+- **Tailwind CSS**: Responsive, mobile-friendly UI
+
+The core calculation libraries (`spectrum-to-xyz.ts`, `chromaticity.ts`) are modular and can be extracted for use in other projects.
+
+## Get Started
+
+**1. Visit the tool**: [https://spectrum-visualizer-seven.vercel.app](https://spectrum-visualizer-seven.vercel.app)
+
+**2. Load a preset**: Start with the "Green" preset to see a typical OLED emission profile.
+
+**3. Explore**: Toggle to CIE 1976 u'v' mode, shift the wavelength, and watch the coordinates change.
+
+**4. Upload your data**: Prepare your spectrum as wavelength-intensity pairs (CSV format) and drag it into the tool.
+
+**5. Compare gamuts**: Enable sRGB and DCI-P3 overlays to assess commercial display coverage.
+
+## Data Format
+
+Spectrum Visualizer accepts simple two-column data:
+
+```
+wavelength_nm,intensity
+380,0.001
+385,0.002
+390,0.005
+...
+520,0.989
+525,1.000
+530,0.995
+...
+780,0.001
+```
+
+- **Wavelength range**: Typically 380-780nm (visible spectrum)
+- **Delimiters**: Comma, tab, or space
+- **Headers**: Optional (auto-detected)
+- **Resolution**: Any spacing (1nm, 5nm, or irregular) — interpolation handles all cases
+
+## Community and Feedback
+
+This tool was built in response to real-world research needs. If you have feature requests or find bugs:
+
+- **GitHub Issues**: [Report issues or suggest features](https://github.com/namseokyoo/spectrum-visualizer/issues)
+- **Pull Requests**: Contributions welcome (add new gamuts, improve algorithms, etc.)
+- **Email**: Reach out via the SidequestLab website
+
+We're particularly interested in hearing from:
+- Display manufacturers needing batch processing
+- Educators wanting specific demonstration modes
+- Researchers requiring additional color spaces (Lab, Luv, etc.)
+
+## Roadmap
+
+Upcoming features we're considering:
+
+- **Batch Mode**: Process multiple spectra and export results as JSON/CSV
+- **Color Temperature**: Calculate CCT and Duv for white emitters
+- **Gamut Volume**: 3D visualization in XYZ or Lab space
+- **API Access**: Programmatic access for automated workflows
+
+Vote on features or suggest new ones via GitHub issues.
+
+## Conclusion
+
+Spectrum Visualizer brings professional-grade CIE chromaticity analysis to anyone with a web browser. Whether you're characterizing a novel OLED material, teaching color science, or validating display quality, this free tool eliminates the barrier between spectral data and actionable color insights.
+
+**Try it today**: [https://spectrum-visualizer-seven.vercel.app](https://spectrum-visualizer-seven.vercel.app)
+
+**Source code**: [https://github.com/namseokyoo/spectrum-visualizer](https://github.com/namseokyoo/spectrum-visualizer)
+
+---
+
+*Built by SidequestLab — Experimental tools for real-world problems.*
