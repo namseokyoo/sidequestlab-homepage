@@ -1,0 +1,286 @@
+---
+title: "Understanding CIE Chromaticity Coordinates: A Practical Guide for OLED Researchers"
+description: "Learn how CIE 1931 xy and CIE 1976 u'v' chromaticity coordinates work, why they matter for OLED research, and how to use spectrum visualization tools for accurate color analysis in display engineering."
+date: "2026-02-12"
+---
+
+# Understanding CIE Chromaticity Coordinates: A Practical Guide for OLED Researchers
+
+Color is not just what we see — it is what we measure, specify, and engineer. For anyone working in OLED development, display engineering, or color science research, CIE chromaticity coordinates are the universal language of color specification. Yet despite their fundamental importance, many researchers encounter these coordinate systems without a clear understanding of their origins, differences, and practical implications.
+
+This guide walks through the essentials of CIE chromaticity — from the 1931 xy system to the 1976 u'v' uniform color space — and shows how modern tools like [Spectrum Visualizer (ISCV)](https://spectrum-visualizer-seven.vercel.app) make it straightforward to apply these concepts to real spectral data.
+
+## Why CIE Chromaticity Coordinates Matter in OLED Research
+
+Every OLED material emits light across a range of wavelengths. To evaluate whether a given emitter meets the color requirements of a display standard (sRGB, DCI-P3, or BT.2020), researchers must convert that spectral power distribution into a standardized set of color coordinates.
+
+Without CIE chromaticity coordinates, there is no objective way to:
+
+- **Specify color targets** for OLED material development
+- **Compare emitters** across different laboratories and instruments
+- **Verify compliance** with display gamut standards (sRGB, DCI-P3, BT.2020)
+- **Communicate color performance** in publications and patents
+- **Track color stability** across device operating conditions (voltage, temperature, aging)
+
+The CIE (Commission Internationale de l'Eclairage) established the mathematical framework that makes all of this possible. Two coordinate systems dominate the field: CIE 1931 xy and CIE 1976 u'v'.
+
+## CIE 1931 xy Chromaticity: The Foundation
+
+### How It Works
+
+The CIE 1931 color space begins with the concept of the **Standard Observer** — a mathematical model of human color perception based on color matching experiments conducted in the late 1920s. The 2-degree Standard Observer defines three color matching functions: x-bar(lambda), y-bar(lambda), and z-bar(lambda). These functions describe how a typical human eye responds to different wavelengths of light.
+
+Given a spectral power distribution S(lambda), the tristimulus values X, Y, and Z are computed by integrating the product of the spectrum with each color matching function:
+
+```
+X = k * integral[ S(lambda) * x_bar(lambda) ] d(lambda)
+Y = k * integral[ S(lambda) * y_bar(lambda) ] d(lambda)
+Z = k * integral[ S(lambda) * z_bar(lambda) ] d(lambda)
+```
+
+The normalization constant k is typically chosen so that Y = 100 for a reference white. The chromaticity coordinates x and y are then derived by normalizing:
+
+```
+x = X / (X + Y + Z)
+y = Y / (X + Y + Z)
+```
+
+This projection removes luminance information and maps all colors onto a 2D plane — the familiar horseshoe-shaped chromaticity diagram.
+
+### The Chromaticity Diagram
+
+The boundary of the horseshoe is the **spectral locus**, representing monochromatic light at each visible wavelength (approximately 380 nm to 780 nm). The straight line connecting the two ends is the **purple line**, representing colors that require mixing short-wavelength (violet) and long-wavelength (red) light.
+
+Key properties of the CIE 1931 xy diagram:
+
+- **Additive mixing** of two colors falls on the straight line connecting them
+- **Dominant wavelength** is found by extending a line from the white point through the sample point to the spectral locus
+- **Color gamuts** (sRGB, DCI-P3, BT.2020) are defined as triangles with vertices at their RGB primary coordinates
+- **White points** (D65, D50, illuminant A) have defined xy coordinates
+
+### Applications in OLED Research
+
+The CIE 1931 xy diagram is used extensively in OLED research for:
+
+**Material screening**: When evaluating a new blue, green, or red emitter, the xy coordinates immediately indicate whether the material falls near a desired primary color. For example, the BT.2020 green primary is at (0.170, 0.797) — a highly saturated, narrow-band green that remains one of the most challenging targets in OLED development.
+
+**Gamut coverage analysis**: By plotting the xy coordinates of RGB sub-pixels from an OLED display, engineers can calculate the percentage of a target gamut (e.g., DCI-P3) that the display covers. This is a standard metric reported in display specifications.
+
+**White point optimization**: For white OLED devices, achieving a precise white point (typically D65 at x = 0.3127, y = 0.3290) requires balancing the contributions of multiple emission layers. The xy diagram provides a clear visual guide for this optimization.
+
+**Aging and stability studies**: Tracking the shift of xy coordinates over operating time reveals how emitter degradation affects color performance — critical data for lifetime specification.
+
+### Limitations of CIE 1931 xy
+
+Despite its widespread use, the CIE 1931 xy diagram has a well-known limitation: **it is not perceptually uniform**. Equal distances on the diagram do not correspond to equal perceived color differences.
+
+Consider this: a shift of delta-x = delta-y = 0.01 in the green region of the diagram is barely noticeable to the human eye, while the same numerical shift in the blue region is quite obvious. This non-uniformity was documented by MacAdam in 1942 through his famous ellipse experiments, which showed that just-noticeable color differences vary dramatically across the diagram.
+
+For OLED researchers, this means:
+
+- Color tolerances expressed as "plus or minus 0.005 in xy" are not equally strict across the gamut
+- Comparing color shifts between different emitters requires caution
+- Statistical analysis of color uniformity data can be misleading in xy coordinates
+
+This limitation motivated the development of more perceptually uniform color spaces.
+
+## CIE 1976 u'v': Why Uniformity Matters
+
+### The Problem with Non-Uniformity
+
+In practical display development, perceptual uniformity is not just an academic concern — it directly affects quality control decisions, material selection, and specification setting.
+
+Imagine you are developing a blue OLED emitter and need to define an acceptable color tolerance window. In CIE 1931 xy coordinates, a circular tolerance of radius 0.005 around the target corresponds to very different perceptual differences depending on where in the blue region you are. An emitter that falls "within spec" by xy metrics might look noticeably different from the target, while another that is "out of spec" might be perceptually identical.
+
+### The u'v' Transformation
+
+The CIE 1976 UCS (Uniform Chromaticity Scale) diagram addresses this by applying a projective transformation to the xy coordinates:
+
+```
+u' = 4X / (X + 15Y + 3Z) = 4x / (-2x + 12y + 3)
+v' = 9Y / (X + 15Y + 3Z) = 9y / (-2x + 12y + 3)
+```
+
+This transformation stretches the blue-green region of the diagram and compresses the green region, resulting in a diagram where equal distances more closely correspond to equal perceived color differences. The improvement is approximately 4:1 compared to the CIE 1931 xy diagram — meaning the ratio between the largest and smallest MacAdam ellipses is reduced from roughly 20:1 in xy to about 4:1 in u'v'.
+
+### When to Use u'v' Instead of xy
+
+Both coordinate systems describe the same physical reality — the same spectrum maps to unique coordinates in both spaces. The choice depends on what you need to do with the coordinates:
+
+| Application | Recommended Space | Reason |
+|---|---|---|
+| Display gamut specification | CIE 1931 xy | Industry standard (ITU-R, VESA) |
+| Color difference calculation | CIE 1976 u'v' | Better perceptual uniformity |
+| Publication figures | Both (report both) | Completeness for peer review |
+| Quality control tolerancing | CIE 1976 u'v' | More meaningful tolerance windows |
+| Material comparison | CIE 1976 u'v' | Fair comparison across gamut regions |
+| Color shift quantification | CIE 1976 u'v' | delta-u'v' is more perceptually meaningful |
+| Correlated Color Temperature | CIE 1976 u'v' | CCT is defined using u'v' (or u,v) coordinates |
+
+In practice, OLED researchers should report both sets of coordinates in publications. The CIE 1931 xy values are needed for gamut comparisons against display standards, while the CIE 1976 u'v' values enable meaningful color difference calculations.
+
+### Color Difference in u'v' Space
+
+The Euclidean distance in u'v' space provides a straightforward measure of color difference:
+
+```
+delta_u'v' = sqrt( (u'_1 - u'_2)^2 + (v'_1 - v'_2)^2 )
+```
+
+This metric is widely used in display industry specifications. For reference:
+
+- **delta-u'v' less than 0.002**: Imperceptible difference (within a single MacAdam ellipse step)
+- **delta-u'v' of 0.002 to 0.005**: Noticeable only under side-by-side comparison
+- **delta-u'v' of 0.005 to 0.010**: Clearly visible difference
+- **delta-u'v' greater than 0.010**: Obvious color mismatch
+
+These thresholds are used in display manufacturing to set pass/fail criteria for color uniformity across panels.
+
+## From Spectrum to Coordinates: The Calculation Pipeline
+
+Understanding the full calculation pipeline helps researchers interpret their results and diagnose potential errors.
+
+### Step 1: Acquire Spectral Data
+
+Spectral data is typically measured using a spectroradiometer or spectrophotometer. The output is a set of wavelength-intensity pairs — the spectral power distribution S(lambda) — usually sampled at 1 nm or 5 nm intervals across the visible range (380-780 nm).
+
+Key considerations:
+- **Wavelength accuracy**: Even 1 nm calibration error can shift xy coordinates significantly for narrow-band emitters
+- **Stray light**: Spectroradiometer stray light can distort the measured spectrum, particularly for deep blue and deep red emitters
+- **Integration time**: Ensure sufficient signal-to-noise ratio, especially at the tails of the emission spectrum
+
+### Step 2: Interpolate to Standard Wavelengths
+
+The CIE color matching functions are tabulated at specific wavelength intervals (typically 1 nm or 5 nm). If your measured spectrum has different sampling, interpolation is needed to align the data. Linear interpolation is adequate for smoothly varying spectra; cubic spline interpolation provides better accuracy for spectra with sharp features.
+
+### Step 3: Compute Tristimulus Values
+
+Multiply the interpolated spectrum by each color matching function and integrate using the trapezoidal rule or Simpson's rule:
+
+```
+X = sum[ S(lambda_i) * x_bar(lambda_i) * delta_lambda ]
+Y = sum[ S(lambda_i) * y_bar(lambda_i) * delta_lambda ]
+Z = sum[ S(lambda_i) * z_bar(lambda_i) * delta_lambda ]
+```
+
+### Step 4: Calculate Chromaticity Coordinates
+
+Apply the normalization formulas for xy and the transformation formulas for u'v' as described above.
+
+### Step 5: Validate
+
+Cross-check your results against known references. For example, a monochromatic source at 520 nm should yield approximately x = 0.0743, y = 0.8338 in CIE 1931. Deviations suggest errors in the color matching function data or the integration procedure.
+
+## Practical Application: Spectrum Visualization with ISCV
+
+Working through the calculation pipeline manually is educational, but for day-to-day research, an interactive tool dramatically improves workflow efficiency. [Spectrum Visualizer (ISCV)](https://spectrum-visualizer-seven.vercel.app) implements the entire pipeline described above with scientifically rigorous algorithms and an intuitive interface.
+
+### Loading Your Spectral Data
+
+ISCV accepts spectral data in three formats:
+
+1. **Built-in presets**: Typical OLED emission profiles (blue, green, red, white phosphorescent emitters) for quick exploration
+2. **CSV upload**: Drag and drop your measured spectral data files (comma, tab, or space-delimited)
+3. **Clipboard paste**: Copy wavelength-intensity pairs directly from Excel, MATLAB, Origin, or any analysis tool
+
+The tool auto-detects delimiters and headers, so no reformatting is needed.
+
+### Visualizing on Both CIE Diagrams
+
+Once your spectrum is loaded, ISCV simultaneously computes CIE 1931 xy and CIE 1976 u'v' coordinates. Toggle between diagrams with a single click to see your data point plotted on both. The spectral locus is rendered with cubic spline interpolation (C2 continuity) for mathematically smooth curves — particularly important around the 520 nm region where the locus curvature is highest.
+
+### Analyzing Spectral Characteristics
+
+Beyond color coordinates, ISCV automatically calculates:
+
+- **Peak wavelength**: The emission maximum, accounting for any applied wavelength shift
+- **FWHM (Full Width at Half Maximum)**: The spectral bandwidth at 50% peak intensity — a key metric for color purity assessment
+- **FWQM (Full Width at Quarter Maximum)**: Bandwidth at 25% intensity, providing additional spectral shape information
+
+### Wavelength Shift Simulation
+
+One of ISCV's most powerful features for OLED researchers is real-time wavelength shifting. This allows you to:
+
+- **Simulate cavity effects**: OLED microcavity structures shift the emission spectrum. See how a 5 nm or 10 nm shift changes your CIE coordinates before fabricating a device.
+- **Model material tuning**: Predict how modifying an emitter's molecular structure (which shifts peak wavelength) will affect color performance.
+- **Assess measurement uncertainty**: Determine how sensitive your CIE coordinates are to wavelength calibration errors.
+
+Shift the spectrum using the slider, direct numeric input (0.1 nm precision), or keyboard shortcuts (plus/minus 1 nm or 5 nm steps). All coordinates and metrics update in real-time.
+
+### Gamut Comparison
+
+Toggle standard display gamut overlays directly on the chromaticity diagram:
+
+- **sRGB** (ITU-R BT.709): Standard web and consumer display gamut
+- **DCI-P3**: Digital cinema and premium display gamut
+- **BT.2020** (Rec. 2020): Ultra HD broadcast standard — the most demanding gamut target
+- **Adobe RGB**: Photography and professional print workflow gamut
+
+This overlay immediately shows whether your emitter falls within, on the boundary of, or outside a target gamut — eliminating guesswork in material evaluation.
+
+### Snapshot Comparison for Multi-Sample Analysis
+
+Save up to 5 data points as persistent snapshots. This feature is invaluable for:
+
+- Comparing multiple emitter candidates at the same conditions
+- Tracking the same emitter before and after wavelength shift
+- Benchmarking experimental results against target coordinates
+
+Snapshots persist across browser sessions, so you can close the tool and return to your analysis later.
+
+## Common Pitfalls and Best Practices
+
+### Pitfall 1: Using 10-Degree Observer Data
+
+The CIE defines both a 2-degree and 10-degree Standard Observer. The 2-degree observer (CIE 1931) is the standard for display color specification. Using 10-degree data (CIE 1964) will produce different coordinates and lead to incorrect gamut analysis. Always verify which observer your calculation uses.
+
+### Pitfall 2: Ignoring Spectral Range
+
+Truncating your spectral data (e.g., measuring only 400-700 nm instead of 380-780 nm) can introduce systematic errors, particularly for broad-band emitters or white devices. Ensure your measurement covers the full visible range.
+
+### Pitfall 3: Reporting Only xy Coordinates
+
+For publications and technical reports, providing only CIE 1931 xy coordinates limits the utility of your data. Include CIE 1976 u'v' coordinates as well, enabling readers to calculate meaningful color differences. A complete color specification also includes the luminance (Y value or luminous intensity/efficacy).
+
+### Pitfall 4: Confusing u'v' with uv (No Primes)
+
+The CIE 1960 UCS uses coordinates u and v (without primes), while the CIE 1976 UCS uses u' and v'. The relationship is:
+
+```
+u' = u
+v' = (3/2) * v
+```
+
+These are different coordinate systems. The CIE 1976 u'v' is the current recommendation. Some older instruments and literature use the 1960 notation — verify which system is being referenced.
+
+### Best Practice: Always Report Both Coordinate Systems
+
+When publishing OLED color data, report: CIE 1931 (x, y) for gamut analysis and standard compliance, CIE 1976 (u', v') for color difference calculations, peak wavelength and FWHM for spectral characterization, and the measurement conditions (voltage, current density, temperature).
+
+## Getting Started with Spectrum Visualizer
+
+If you work with emission spectra and need accurate CIE chromaticity analysis, Spectrum Visualizer provides a free, zero-setup solution:
+
+1. **Open the tool**: [https://spectrum-visualizer-seven.vercel.app](https://spectrum-visualizer-seven.vercel.app)
+2. **Load a preset** to familiarize yourself with the interface
+3. **Toggle between CIE 1931 and CIE 1976** to see how coordinates differ
+4. **Upload your own spectral data** (CSV or clipboard paste)
+5. **Enable gamut overlays** to evaluate your emitter against display standards
+6. **Use wavelength shift** to simulate cavity effects or material tuning
+7. **Save snapshots** to compare multiple samples
+
+The tool runs entirely in your browser — no installation, no account, no data upload to external servers. Your spectral data stays on your device.
+
+**Source code**: The full implementation is open source on [GitHub](https://github.com/namseokyoo/spectrum-visualizer) under MIT license, so you can inspect the algorithms, suggest improvements, or adapt the code for your specific workflow.
+
+## Conclusion
+
+CIE chromaticity coordinates are the backbone of color specification in OLED research and display engineering. The CIE 1931 xy system provides the industry-standard framework for gamut definition and color target specification, while the CIE 1976 u'v' system offers the perceptual uniformity needed for meaningful color difference analysis and quality control.
+
+Understanding both systems — their mathematical foundations, practical applications, and limitations — enables researchers to make better material selection decisions, set appropriate manufacturing tolerances, and communicate color performance clearly in publications.
+
+Tools like [Spectrum Visualizer](https://spectrum-visualizer-seven.vercel.app) bridge the gap between theory and practice, making it straightforward to go from raw spectral data to actionable CIE color analysis without expensive commercial software. Whether you are screening new OLED emitters, validating display color accuracy, or teaching CIE colorimetry to students, having an interactive, accurate visualization tool at hand transforms the way you work with color data.
+
+---
+
+*Built by [SidequestLab](https://sidequestlab-homepage.vercel.app) — Experimental tools for real-world problems.*
