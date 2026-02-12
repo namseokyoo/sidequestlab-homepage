@@ -24,7 +24,9 @@ export default function BlogCard({ post }: BlogCardProps) {
       </div>
 
       <h3 className="mb-2 text-xl font-semibold text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
-        {post.title}
+        <Link href={`/blog/${post.slug}`}>
+          {post.title}
+        </Link>
       </h3>
 
       <p className="mb-4 flex-grow text-sm text-gray-600 dark:text-gray-400">
