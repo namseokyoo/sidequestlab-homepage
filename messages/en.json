@@ -18,6 +18,10 @@
     "featured": {
       "title": "Featured Projects",
       "viewAll": "View All Projects"
+    },
+    "recentPosts": {
+      "title": "Recent Posts",
+      "viewAll": "View All Posts"
     }
   },
   "projects": {

@@ -18,6 +18,10 @@
     "featured": {
       "title": "주요 프로젝트",
       "viewAll": "모든 프로젝트 보기"
+    },
+    "recentPosts": {
+      "title": "최근 블로그",
+      "viewAll": "모든 글 보기"
     }
   },
   "projects": {
