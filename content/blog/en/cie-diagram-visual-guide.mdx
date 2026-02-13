@@ -1,0 +1,230 @@
+---
+title: "CIE Chromaticity Diagram Explained: A Visual Guide to Reading Color Space Maps"
+description: "Learn how to read and interpret the CIE 1931 xy chromaticity diagram with this visual guide. Understand the spectral locus, color gamut triangles, white points, and how OLED emitters map onto the color space."
+date: "2026-02-13"
+tags: ["CIE 1931", "chromaticity diagram", "color science", "OLED", "display engineering", "color space"]
+---
+
+# CIE Chromaticity Diagram Explained: A Visual Guide to Reading Color Space Maps
+
+The CIE 1931 chromaticity diagram is one of the most widely used graphics in color science, yet it can be surprisingly difficult to interpret when you first encounter it. What does the horseshoe shape represent? Why are some regions larger than others? How do you locate your OLED emitter on this map?
+
+This visual guide breaks down every component of the CIE chromaticity diagram so you can read it with confidence -- whether you are evaluating OLED materials, specifying display gamuts, or simply trying to understand what your color coordinates actually mean.
+
+## The Horseshoe Shape: What You Are Looking At
+
+When you see a CIE 1931 xy chromaticity diagram, you are looking at a 2D projection of all perceivable colors. The diagram maps the relationship between the physical spectrum of light and human color perception, derived from the CIE 1931 Standard Observer color matching experiments.
+
+The key insight: **every point inside the horseshoe boundary represents a real, perceivable color.** Points outside the boundary do not correspond to any physical stimulus -- they are mathematically possible but perceptually impossible.
+
+### The Spectral Locus (The Horseshoe Curve)
+
+The outer boundary of the diagram is the **spectral locus**. Each point on this curve corresponds to a single wavelength of monochromatic light:
+
+| Wavelength Region | Approximate Position on Diagram | Perceived Color |
+|---|---|---|
+| 380-420 nm | Lower left | Violet |
+| 420-480 nm | Left side | Blue |
+| 480-500 nm | Upper left curve | Cyan |
+| 500-530 nm | Top | Green |
+| 530-570 nm | Upper right | Yellow-green |
+| 570-590 nm | Right side | Yellow |
+| 590-620 nm | Lower right | Orange |
+| 620-780 nm | Far right | Red |
+
+The wavelength labels along the spectral locus tell you exactly which monochromatic wavelength produces that color sensation. Notice how the curve moves rapidly through blues and greens but compresses in the red region -- this reflects how human color perception responds nonlinearly across the visible spectrum.
+
+### The Purple Line
+
+The straight line connecting the 380 nm (violet) and 780 nm (red) endpoints at the bottom is called the **purple line** (or line of purples). Colors on this line are mixtures of the shortest and longest visible wavelengths -- they are perceivable but do not correspond to any single wavelength. Magenta and purple hues live here.
+
+### Why the Shape Is Not Symmetric
+
+The horseshoe shape is not arbitrary. It directly reflects the sensitivity curves of the three types of cone photoreceptors in the human retina (L, M, and S cones). The large green region exists because the M-cone (medium wavelength) and L-cone (long wavelength) sensitivity curves overlap significantly in this region, making the human visual system particularly sensitive to green wavelengths. This is also why green emitters often appear brighter than blue or red emitters at equal spectral power.
+
+## Understanding the Coordinate Axes
+
+### What x and y Actually Represent
+
+The x-axis and y-axis of the chromaticity diagram do **not** represent physical wavelengths or perceptual dimensions like hue and saturation directly. Instead, they are normalized ratios of the CIE tristimulus values X, Y, and Z:
+
+```
+x = X / (X + Y + Z)
+y = Y / (X + Y + Z)
+```
+
+This normalization removes the luminance (brightness) information, leaving only the chromaticity -- the "quality" of color independent of intensity. Two light sources with the same spectral shape but different intensities will have identical x and y coordinates.
+
+### What Is Lost: The Third Dimension
+
+Because x + y + z = 1 (where z = Z/(X+Y+Z)), only two of the three coordinates are independent. The full color specification requires the luminance value Y in addition to (x, y). When you report CIE coordinates for an OLED emitter, you should include Y (or a luminance/efficacy measure) alongside the chromaticity coordinates for a complete description.
+
+## Key Landmarks on the Diagram
+
+### The White Point (D65, D50, and Others)
+
+Near the center of the diagram lies the **white point** -- the chromaticity of a reference white illuminant. Different standards define different white points:
+
+| White Point | CIE 1931 (x, y) | Application |
+|---|---|---|
+| D65 | (0.3127, 0.3290) | Standard for displays, HDTV (sRGB, DCI-P3) |
+| D50 | (0.3457, 0.3585) | Graphic arts, photography, printing |
+| Illuminant A | (0.4476, 0.4074) | Incandescent lamp simulation |
+| Illuminant E | (0.3333, 0.3333) | Equal-energy reference |
+
+For OLED display work, D65 is the primary reference white point. When you are optimizing a white OLED device, you are typically targeting x = 0.3127, y = 0.3290 with tight tolerances (often within delta-u'v' of 0.003 to 0.005).
+
+### The Planckian Locus (Blackbody Curve)
+
+A curved line running through the center of the diagram from reddish (low temperature) to bluish (high temperature) represents the chromaticity of an ideal blackbody radiator at different temperatures. This is the **Planckian locus**, and it is the basis for **Correlated Color Temperature (CCT)** -- the metric used to describe the "warmth" or "coolness" of white light sources.
+
+| CCT (K) | Approximate (x, y) | Description |
+|---|---|---|
+| 2700 K | (0.460, 0.411) | Warm white (incandescent) |
+| 4000 K | (0.380, 0.377) | Neutral white |
+| 5000 K | (0.346, 0.359) | Daylight-balanced |
+| 6500 K | (0.313, 0.329) | Cool daylight (D65) |
+| 9300 K | (0.283, 0.297) | Cool bluish white |
+
+For white OLED devices, CCT is a critical specification. The closer your white point is to the Planckian locus, the more "natural" the white appears. The distance from the Planckian locus, measured as Duv in CIE 1976 u'v' coordinates, quantifies how much the white deviates from a pure blackbody -- positive Duv indicates greenish tint, negative Duv indicates pinkish tint.
+
+## Color Gamut Triangles: What They Show
+
+### How Gamuts Are Defined
+
+A display color gamut is defined by three primary colors (red, green, blue) that form a triangle on the chromaticity diagram. Every color the display can produce through additive mixing of its primaries lies inside this triangle. The vertices of the triangle are the chromaticity coordinates of the individual RGB primaries.
+
+### Major Display Gamut Standards
+
+Here are the primary coordinates for the major display gamut standards, all specified in CIE 1931 xy:
+
+| Standard | Red (x, y) | Green (x, y) | Blue (x, y) | White Point |
+|---|---|---|---|---|
+| **sRGB** (BT.709) | (0.640, 0.330) | (0.300, 0.600) | (0.150, 0.060) | D65 |
+| **DCI-P3** (D65) | (0.680, 0.320) | (0.265, 0.690) | (0.150, 0.060) | D65 |
+| **BT.2020** | (0.708, 0.292) | (0.170, 0.797) | (0.131, 0.046) | D65 |
+| **Adobe RGB** | (0.640, 0.330) | (0.210, 0.710) | (0.150, 0.060) | D65 |
+
+### Reading Gamut Triangles on the Diagram
+
+When you see multiple gamut triangles overlaid on the chromaticity diagram, larger triangles encompass more colors. Here is what to look for:
+
+**sRGB** is the smallest of the four major gamuts. It covers the standard web and consumer display color space. Most content today is still mastered in sRGB.
+
+**DCI-P3** extends primarily in the red and green directions compared to sRGB. It covers approximately 25% more area on the xy diagram. This is the current premium display target -- flagship smartphones, tablets, and monitors increasingly support P3 coverage.
+
+**Adobe RGB** extends in the green direction compared to sRGB, with the same red and blue primaries. It was designed for professional photography and print workflows. Its green primary is more saturated than sRGB but less so than DCI-P3 or BT.2020.
+
+**BT.2020** is the largest standardized gamut, designed for next-generation ultra HD broadcasting. Its primaries are located on or very near the spectral locus, requiring monochromatic or near-monochromatic light sources. This is the "ultimate" target for display technology -- and the reason narrow-band OLED emitters are so actively researched.
+
+### Gamut Coverage Calculation
+
+Gamut coverage is typically expressed as the percentage of a target gamut area that a display's gamut encompasses. For example, "95% DCI-P3 coverage" means the display's RGB triangle covers 95% of the DCI-P3 triangle area on the CIE xy diagram.
+
+Two common metrics:
+- **Gamut coverage**: Percentage of target area overlapped (can never exceed 100%)
+- **Gamut area ratio**: Display gamut area divided by target gamut area (can exceed 100% if the display is wider in some regions)
+
+These are different numbers. A display might have 120% sRGB area ratio but only 85% DCI-P3 coverage.
+
+## How OLED Emitters Map onto the Diagram
+
+### Narrow-Band vs. Broad-Band Emission
+
+Where an OLED emitter falls on the chromaticity diagram depends on its spectral shape:
+
+**Narrow-band emitters** (FWHM less than 30 nm) produce color points close to the spectral locus. These are desirable for wide-gamut displays because they approach the theoretical limit of color saturation. Examples include quantum dot emitters and some organoboron thermally activated delayed fluorescence (TADF) emitters.
+
+**Broad-band emitters** (FWHM greater than 60 nm) produce color points pulled toward the interior of the diagram, away from the spectral locus. The broader the emission, the less saturated the perceived color. Traditional phosphorescent OLED emitters typically fall in this category, with FWHM of 40-70 nm.
+
+### The FWHM-Saturation Connection
+
+There is a direct relationship between spectral bandwidth and color saturation on the chromaticity diagram:
+
+- **FWHM 20 nm**: Color point very close to spectral locus (high saturation)
+- **FWHM 40 nm**: Color point pulled noticeably inward
+- **FWHM 60 nm**: Color point significantly inside the diagram
+- **FWHM 80+ nm**: Color point near the center (low saturation, whitish)
+
+This is why FWHM is one of the first metrics OLED material researchers check -- it directly predicts whether an emitter can reach the primaries of wide-gamut standards like BT.2020.
+
+### Visualizing This with ISCV
+
+You can observe this relationship directly using [Spectrum Visualizer (ISCV)](https://spectrum-visualizer-seven.vercel.app):
+
+1. Load the built-in "Green" preset and note where the color point falls on the CIE diagram
+2. Enable the BT.2020 gamut overlay
+3. Check the FWHM value displayed in the spectrum analysis panel
+4. Use the wavelength shift slider to move the peak wavelength and watch how the color point traces along the diagram
+
+This interactive exploration reveals patterns that static diagrams cannot convey -- such as how a 5 nm shift in peak wavelength affects the (x, y) coordinates differently depending on which part of the spectrum you are in.
+
+## The Perceptual Uniformity Problem
+
+### Why Equal Distances Do Not Mean Equal Differences
+
+One of the most important things to understand about the CIE 1931 xy diagram is that it is **not perceptually uniform**. The same numerical distance between two points represents vastly different perceived color differences depending on where on the diagram you are.
+
+This non-uniformity was quantified by David MacAdam in 1942 through careful psychophysical experiments. He measured the "just-noticeable difference" (JND) ellipses at 25 points across the diagram. The results showed:
+
+- JND ellipses in the **green region** are very large -- meaning you need a large shift in xy to perceive a color change
+- JND ellipses in the **blue region** are very small -- meaning even tiny shifts in xy are perceptible
+- The ratio between the largest and smallest ellipses is approximately **20:1**
+
+### Practical Consequence for OLED Research
+
+This non-uniformity has real consequences. Suppose you are comparing two blue OLED emitters with coordinates (0.14, 0.08) and (0.15, 0.09). The Euclidean distance in xy is 0.014. Now compare two green emitters at (0.30, 0.60) and (0.31, 0.61) -- the same distance of 0.014. In the blue region, this shift is clearly visible. In the green region, it might be imperceptible.
+
+This is why the CIE 1976 u'v' diagram was developed -- it reduces this 20:1 non-uniformity to approximately 4:1, making color differences more comparable across the diagram. For any quantitative color difference analysis, u'v' coordinates should be preferred.
+
+ISCV supports both CIE 1931 xy and CIE 1976 u'v' diagrams with one-click switching, so you can always verify your color analysis in the perceptually uniform space.
+
+## How to Use This Knowledge in Practice
+
+### Evaluating a New OLED Emitter
+
+When you synthesize a new emitter and measure its photoluminescence spectrum, here is how to use the chromaticity diagram effectively:
+
+1. **Plot the (x, y) coordinates** on the diagram to identify the general color region
+2. **Enable gamut overlays** (sRGB, DCI-P3, BT.2020) to assess which display standards the emitter can support
+3. **Check the distance to the spectral locus** -- closer means higher saturation and wider gamut potential
+4. **Check FWHM** -- narrower is better for wide-gamut applications
+5. **Switch to CIE 1976 u'v'** to calculate meaningful color differences against target primaries
+6. **Use wavelength shift simulation** to predict how microcavity tuning will move the color point
+
+### Setting Color Tolerances
+
+When defining acceptable color windows for manufacturing:
+
+- Use CIE 1976 u'v' coordinates, not CIE 1931 xy
+- Specify tolerances as delta-u'v' circles rather than xy rectangles
+- Reference the delta-u'v' perception thresholds: less than 0.002 (imperceptible), 0.002-0.005 (barely noticeable), 0.005-0.010 (visible), greater than 0.010 (obvious mismatch)
+
+### Preparing Publication Figures
+
+For journal submissions:
+
+- Report both CIE 1931 (x, y) and CIE 1976 (u', v') coordinates
+- Include gamut triangles for relevant standards
+- Label the spectral locus wavelengths for reference
+- Indicate the white point (typically D65) explicitly
+- Show error bars or tolerance windows if applicable
+
+## Interactive Exploration with Spectrum Visualizer
+
+The best way to build intuition for the CIE chromaticity diagram is to interact with it directly. [Spectrum Visualizer (ISCV)](https://spectrum-visualizer-seven.vercel.app) lets you:
+
+- **Load real or preset spectra** and see where they fall on the diagram
+- **Toggle between CIE 1931 xy and CIE 1976 u'v'** to compare the two representations
+- **Overlay sRGB, DCI-P3, BT.2020, and Adobe RGB** gamut triangles
+- **Shift wavelengths in real-time** and watch the color point move along the diagram
+- **Save snapshots** to compare multiple emitters or conditions side by side
+- **View FWHM and peak wavelength** alongside the chromaticity data
+
+No installation required. The tool runs entirely in your browser, and your spectral data never leaves your device.
+
+**Try it now**: [https://spectrum-visualizer-seven.vercel.app](https://spectrum-visualizer-seven.vercel.app)
+
+---
+
+*Built by [SidequestLab](https://sidequestlab-homepage.vercel.app) -- Experimental tools for real-world problems.*

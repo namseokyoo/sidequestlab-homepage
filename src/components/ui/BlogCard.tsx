@@ -3,12 +3,17 @@ import type { BlogPost } from '@/lib/blog';
 
 interface BlogCardProps {
   post: BlogPost;
+  locale?: string;
 }
 
-export default function BlogCard({ post }: BlogCardProps) {
+export default function BlogCard({ post, locale = 'ko' }: BlogCardProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
+    const localeMap: Record<string, string> = {
+      ko: 'ko-KR',
+      en: 'en-US',
+    };
+    return date.toLocaleDateString(localeMap[locale] || 'ko-KR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
