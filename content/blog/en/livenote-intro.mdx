@@ -1,0 +1,105 @@
+---
+title: "Introducing LiveNote - Real-Time Collaboration with Just a Note Code"
+description: "Share a 6-digit code and start collaborating instantly. LiveNote is a real-time collaborative note app with no sign-up required. Experience a new way to work together on documents."
+date: "2026-02-09"
+author: "SidequestLab"
+tags: ["Real-Time Collaboration", "Collaborative Editing", "Productivity Tool", "TipTap", "Supabase Realtime"]
+thumbnail: ""
+---
+
+## What If Collaboration Could Be Simpler?
+
+When a team needs to work on a document together, the process usually starts with creating accounts. Sign up, verify your email, invite members, set up permissions... You just wanted to write one document, but the setup alone takes over 10 minutes.
+
+"What if you could just share a code and start right away?"
+
+That's exactly the question that led to **LiveNote**.
+
+## What Is LiveNote?
+
+LiveNote is a real-time collaborative note app that starts with just a **6-digit code**. No account creation, no complex setup - share the note code and anyone can join instantly.
+
+Quick meeting notes, brainstorming sessions, project planning documents - whenever you need fast collaboration, LiveNote has you covered.
+
+## Key Features
+
+### Rich Text Editor (TipTap)
+
+LiveNote comes with a **TipTap**-powered WYSIWYG editor. It feels as intuitive as a regular text editor.
+
+- **Text Formatting**: Bold, Italic, Strikethrough
+- **Headings**: H1, H2, H3 styles
+- **Lists**: Bullet points and numbered lists
+
+It's not a heavyweight document editor - just the features you actually need, nothing more.
+
+### Host & Guest Role System
+
+LiveNote uses a **Host** and **Guest** role system.
+
+- **Host**: Creates the note, edits title and content, manages guest permissions, can delete the note
+- **Guest**: Joins the note, can edit content when the host grants permission
+
+The host can grant or revoke editing permission for guests in real time, giving you full control over who can make changes and when.
+
+### Password Protection
+
+When creating a note, you set a **host password** and a **guest password** separately. Even if someone knows the note code, they can't access it without the correct password.
+
+### Real-Time Sync (Supabase Realtime)
+
+When someone makes an edit, it appears on every participant's screen instantly. Powered by **Supabase Realtime**, LiveNote delivers a true real-time collaboration experience.
+
+A connection status indicator at the top of the screen shows your sync status, along with the auto-save state.
+
+### Live Participant List
+
+The sidebar shows everyone currently in the note in real time. You can see each person's nickname, role (Host or Guest), and online/offline status.
+
+Hosts can toggle editing permissions for each guest directly from the participant list.
+
+### Recent Notes & Search
+
+The home screen displays your recently accessed notes. You can search by note code or title to quickly find notes you've worked on before.
+
+## How to Use LiveNote
+
+### 1. Create a Note
+
+Click **"Create New Note"** on the home screen. Enter a note title, a 4-digit host password, and a 4-digit guest password. A 6-digit note code is automatically generated.
+
+### 2. Invite Your Team
+
+Share the **note code** and **guest password** with your teammates. Text message, email, Slack, Discord - any channel works.
+
+### 3. Start Collaborating in Real Time
+
+Once your teammates enter the note code and password, they're in. As the host, you can grant or revoke editing permissions for guests as needed.
+
+When a guest requests editing access, the host receives a notification and can approve or deny it.
+
+### 4. Auto-Save
+
+Everything is **saved automatically** as you type. You can check the save status and last saved time at the top of the screen.
+
+## Tech Stack
+
+LiveNote is built with modern web technologies:
+
+- **Frontend**: Next.js 16, React 19, TypeScript
+- **Styling**: Tailwind CSS 4
+- **Editor**: TipTap (WYSIWYG)
+- **Backend**: Supabase (Cloud)
+- **Real-Time Sync**: Supabase Realtime
+- **Deployment**: Vercel
+
+## What's Next
+
+LiveNote is an MVP focused on the core features needed for fast collaboration. We'll continue improving the experience based on your feedback.
+
+When you need a real-time collaborative note - skip the setup and start with just a code.
+
+---
+
+**Start using LiveNote**: [https://livenote.vercel.app](https://livenote.vercel.app)
+**GitHub Repository**: [https://github.com/namseokyoo/livenote](https://github.com/namseokyoo/livenote)
