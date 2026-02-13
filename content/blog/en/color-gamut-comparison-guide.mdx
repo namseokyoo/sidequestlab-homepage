@@ -1,0 +1,302 @@
+---
+title: "Color Gamut Comparison: sRGB vs DCI-P3 vs BT.2020 vs Adobe RGB Explained"
+description: "A comprehensive comparison of the four major display color gamut standards -- sRGB, DCI-P3, BT.2020, and Adobe RGB. Learn their origins, primary coordinates, coverage differences, and how to visualize them on the CIE chromaticity diagram."
+date: "2026-02-13"
+tags: ["color gamut comparison", "sRGB vs DCI-P3 vs BT.2020", "display standards", "color space", "OLED", "display engineering"]
+---
+
+# Color Gamut Comparison: sRGB vs DCI-P3 vs BT.2020 vs Adobe RGB Explained
+
+When evaluating a display, a camera, or an OLED emitter, one of the first questions is: which color gamut does it cover? The answer depends on which standard you are comparing against -- and the differences between sRGB, DCI-P3, BT.2020, and Adobe RGB are more than just "bigger triangle, more colors."
+
+Each standard was designed for a specific purpose, with specific primary colors chosen to serve specific industries. Understanding why these gamuts differ helps you make better decisions about material selection, display specification, and content mastering.
+
+This guide compares the four major display color gamut standards side by side, explains their origins and design rationale, and shows how to visualize and compare them using [Spectrum Visualizer (ISCV)](https://spectrum-visualizer-seven.vercel.app).
+
+## The Four Major Gamut Standards at a Glance
+
+Before diving into details, here is a summary of the four gamuts:
+
+| Standard | Year | Primary Use | Relative Size (vs sRGB) |
+|---|---|---|---|
+| **sRGB** (BT.709) | 1996 | Web, consumer displays, SDR content | 1.0x (baseline) |
+| **Adobe RGB** | 1998 | Professional photography, print | ~1.2x |
+| **DCI-P3** | 2005 | Digital cinema, premium displays | ~1.25x |
+| **BT.2020** | 2012 | Ultra HD broadcasting (4K/8K), HDR | ~1.75x |
+
+All four standards share the same white point: **D65** (x = 0.3127, y = 0.3290 in CIE 1931), which represents average daylight illumination. The differences lie entirely in the RGB primary color coordinates.
+
+## sRGB: The Universal Baseline
+
+### Origin and Purpose
+
+sRGB (standard Red Green Blue) was jointly developed by HP and Microsoft in 1996 as a standard color space for monitors, printers, and the internet. It is formally defined in **IEC 61966-2-1** and its primary coordinates are identical to the **ITU-R BT.709** high-definition television standard.
+
+The design goal was simple: create a single color space that would produce consistent color across consumer devices without requiring color management expertise. Every web browser, every operating system, and virtually every consumer display assumes sRGB by default.
+
+### Primary Coordinates (CIE 1931 xy)
+
+| Primary | x | y |
+|---|---|---|
+| Red | 0.640 | 0.330 |
+| Green | 0.300 | 0.600 |
+| Blue | 0.150 | 0.060 |
+
+### Characteristics
+
+- **Gamut size**: Covers approximately 35.9% of the CIE 1931 xy chromaticity diagram visible area
+- **Coverage of human vision**: Represents roughly 33% of perceivable colors
+- **Primaries location**: Positioned well inside the spectral locus, reflecting the phosphor technology of late-1990s CRT monitors
+- **Green primary**: At (0.300, 0.600), it is notably less saturated than what modern display technology can achieve
+
+### Where sRGB Falls Short
+
+sRGB was designed for CRT monitors with P22 phosphors. Modern display technologies (OLED, quantum dot, laser) can produce far more saturated primaries. As a result, sRGB cannot represent:
+
+- Highly saturated cyans and greens found in nature (ocean water, tropical foliage)
+- Deep reds and oranges (sunsets, autumn leaves, cosmetics)
+- Vivid blues and purples (certain flowers, gemstones)
+
+Despite these limitations, sRGB remains the dominant color space for web content, and any display evaluation starts with sRGB coverage as the baseline metric.
+
+## Adobe RGB: The Photography Standard
+
+### Origin and Purpose
+
+Adobe RGB (1998) was developed by Adobe Systems to address a specific gap: sRGB could not represent the full range of CMYK colors achievable in offset printing. Professional photographers needed a working color space that encompassed both the sRGB gamut and the printable color range.
+
+### Primary Coordinates (CIE 1931 xy)
+
+| Primary | x | y |
+|---|---|---|
+| Red | 0.640 | 0.330 |
+| Green | 0.210 | 0.710 |
+| Blue | 0.150 | 0.060 |
+
+### Characteristics
+
+- **Gamut size**: Approximately 1.2x the area of sRGB on the CIE xy diagram
+- **Red and Blue**: Identical to sRGB (same coordinates)
+- **Green**: Significantly more saturated than sRGB, shifted toward the spectral locus
+- **Design rationale**: The extended green was chosen specifically to encompass the CMYK print gamut
+
+### Adobe RGB vs sRGB: The Practical Difference
+
+The only difference between Adobe RGB and sRGB is the green primary. This means:
+
+- Colors in the red and blue regions are identical between the two spaces
+- Adobe RGB extends primarily into saturated cyan-green and yellow-green regions
+- The advantage is most visible in landscape photography (foliage, water) and product photography (cosmetics, textiles)
+
+For OLED display development, Adobe RGB is less commonly used as a target specification than DCI-P3, but it remains important in professional monitor specifications for photography workflows.
+
+## DCI-P3: The Premium Display Target
+
+### Origin and Purpose
+
+DCI-P3 was defined by the **Digital Cinema Initiative (DCI)** in 2005 as the color gamut for digital cinema projection. The original specification used a green-tinted white point (x = 0.314, y = 0.351), but when DCI-P3 was adopted for consumer displays, the white point was changed to D65 for consistency with existing display ecosystems. The consumer version is often called **Display P3** or **P3-D65**.
+
+### Primary Coordinates (CIE 1931 xy)
+
+| Primary | x | y |
+|---|---|---|
+| Red | 0.680 | 0.320 |
+| Green | 0.265 | 0.690 |
+| Blue | 0.150 | 0.060 |
+
+### Characteristics
+
+- **Gamut size**: Approximately 1.25x the area of sRGB on the CIE xy diagram
+- **Red**: More saturated than sRGB (x shifts from 0.640 to 0.680), providing deeper reds and oranges
+- **Green**: More saturated than sRGB (0.265, 0.690 vs 0.300, 0.600), enabling richer greens
+- **Blue**: Identical to sRGB
+- **Coverage**: Encompasses approximately 45.5% of the CIE 1931 xy visible area
+
+### Why DCI-P3 Is Today's Target
+
+DCI-P3 has become the de facto target for premium displays because:
+
+1. **Achievable with current technology**: OLED panels and quantum dot LED-backlit LCDs can reach or exceed P3 coverage
+2. **Content availability**: Major streaming services, HDR mastering standards (Dolby Vision, HDR10), and professional tools support P3
+3. **Perceptual benefit**: The extended red and green primaries provide clearly visible improvements over sRGB in everyday content (skin tones, nature, food)
+4. **Market differentiation**: "100% DCI-P3" has become a key marketing specification for flagship smartphones, tablets, and monitors
+
+For OLED emitter development, DCI-P3 primary coordinates are the near-term engineering targets. The red primary at (0.680, 0.320) is achievable with conventional deep-red phosphorescent emitters, and the green primary at (0.265, 0.690) is within reach for emitters with FWHM around 40 nm.
+
+## BT.2020: The Ultimate Target
+
+### Origin and Purpose
+
+**ITU-R BT.2020** (Recommendation BT.2020) was published in 2012 as the color space specification for Ultra HD television -- both 4K (3840 x 2160) and 8K (7680 x 4320) broadcasting. It defines the widest standardized color gamut currently in use.
+
+### Primary Coordinates (CIE 1931 xy)
+
+| Primary | x | y |
+|---|---|---|
+| Red | 0.708 | 0.292 |
+| Green | 0.170 | 0.797 |
+| Blue | 0.131 | 0.046 |
+
+### Characteristics
+
+- **Gamut size**: Approximately 1.75x the area of sRGB, covering roughly 75.8% of the CIE 1931 visible area
+- **Primaries**: Located on or very near the spectral locus (monochromatic wavelengths: Red ~630 nm, Green ~532 nm, Blue ~467 nm)
+- **Design rationale**: Chosen to encompass as much of human color perception as practically possible using three primaries
+
+### The BT.2020 Challenge for OLED
+
+BT.2020 primaries are exceptionally demanding because they require near-monochromatic emission:
+
+**Red primary (0.708, 0.292)**: Requires a narrow-band red emitter with peak around 630 nm and FWHM below 20 nm. This is achievable with quantum dot emitters and some narrow-band phosphorescent or TADF materials.
+
+**Green primary (0.170, 0.797)**: Requires a narrow-band green emitter with peak around 532 nm and FWHM below 20 nm. This is the single most challenging primary in OLED development. Conventional green phosphorescent emitters have FWHM of 50-70 nm, falling far short of BT.2020 requirements.
+
+**Blue primary (0.131, 0.046)**: Requires a deep blue emitter with peak around 467 nm and very narrow bandwidth. This is achievable with some blue TADF and hyperfluorescent emitters, though blue lifetime remains a challenge.
+
+The gap between current OLED technology and BT.2020 requirements is why narrow-band emitter research -- including quantum dot OLED (QD-OLED), perovskite emitters, and narrow-band TADF -- is one of the most active areas in display materials science.
+
+## Side-by-Side Comparison
+
+### Primary Coordinate Comparison
+
+| Primary | sRGB | Adobe RGB | DCI-P3 | BT.2020 |
+|---|---|---|---|---|
+| **Red (x)** | 0.640 | 0.640 | 0.680 | 0.708 |
+| **Red (y)** | 0.330 | 0.330 | 0.320 | 0.292 |
+| **Green (x)** | 0.300 | 0.210 | 0.265 | 0.170 |
+| **Green (y)** | 0.600 | 0.710 | 0.690 | 0.797 |
+| **Blue (x)** | 0.150 | 0.150 | 0.150 | 0.131 |
+| **Blue (y)** | 0.060 | 0.060 | 0.060 | 0.046 |
+
+Key observations:
+
+- **Blue primary**: Nearly identical across sRGB, Adobe RGB, and DCI-P3. Only BT.2020 pushes it further toward the spectral locus.
+- **Red primary**: Progressive improvement from sRGB to BT.2020, requiring increasingly saturated red emitters.
+- **Green primary**: The biggest differentiator. Each standard demands a more saturated green, with BT.2020 approaching the spectral locus limit.
+
+### Gamut Area Comparison
+
+| Standard | Area on CIE xy (approx.) | Ratio vs sRGB | Coverage of Visible Gamut |
+|---|---|---|---|
+| sRGB | 0.0465 | 1.00x | ~33% |
+| Adobe RGB | 0.0555 | 1.19x | ~39% |
+| DCI-P3 | 0.0587 | 1.26x | ~42% |
+| BT.2020 | 0.0982 | 2.11x | ~76% |
+
+### FWHM Requirements for OLED Primaries
+
+| Standard | Red FWHM Target | Green FWHM Target | Blue FWHM Target |
+|---|---|---|---|
+| sRGB | < 70 nm | < 70 nm | < 50 nm |
+| DCI-P3 | < 40 nm | < 45 nm | < 40 nm |
+| BT.2020 | < 20 nm | < 20 nm | < 20 nm |
+
+These FWHM targets are approximate and depend on peak wavelength, spectral shape, and the specific coverage percentage required. ISCV lets you verify these relationships by loading emitter spectra and checking their position against each gamut overlay.
+
+## Gamut Coverage vs Gamut Area Ratio
+
+When display specifications state "95% DCI-P3," it is important to know which metric is being reported:
+
+### Gamut Coverage
+
+The percentage of the target gamut area that overlaps with the display's gamut. This metric can never exceed 100% because it measures only the intersection.
+
+```
+Gamut Coverage = (Area of Overlap) / (Area of Target Gamut) x 100%
+```
+
+A display with 95% DCI-P3 coverage reproduces 95% of the colors within the DCI-P3 triangle. The remaining 5% are colors that the display cannot produce.
+
+### Gamut Area Ratio (Volume Ratio)
+
+The display's gamut area divided by the target gamut area. This can exceed 100% if the display's primaries extend beyond the target in some directions, even if coverage is not complete.
+
+```
+Gamut Area Ratio = (Area of Display Gamut) / (Area of Target Gamut) x 100%
+```
+
+A display with 120% sRGB area ratio has a gamut 20% larger than sRGB, but it might still have gaps in certain color regions -- meaning some sRGB colors may not be reproducible.
+
+### Which Metric Matters More?
+
+**Gamut coverage** is the more meaningful metric for content reproduction. A display with 100% sRGB coverage guarantees that all sRGB content will be displayed correctly. A display with 130% sRGB area ratio but only 90% sRGB coverage means some sRGB colors will be clipped.
+
+For OLED emitter development, gamut coverage of the target standard (DCI-P3 or BT.2020) is the primary engineering metric.
+
+## Visualizing Gamut Differences with ISCV
+
+The best way to understand these gamut differences is to see them on the CIE chromaticity diagram. [Spectrum Visualizer (ISCV)](https://spectrum-visualizer-seven.vercel.app) makes this straightforward with its gamut overlay feature.
+
+### How to Compare Gamuts in ISCV
+
+1. **Open** [Spectrum Visualizer](https://spectrum-visualizer-seven.vercel.app)
+2. **Load a spectrum** -- use a built-in preset or upload your own emitter data
+3. **Toggle gamut overlays**: Enable sRGB, DCI-P3, BT.2020, and Adobe RGB one at a time or simultaneously
+4. **Observe**: See how the gamut triangles nest inside each other, with BT.2020 as the outermost
+5. **Locate your emitter**: See which gamut triangles your color point falls within
+
+### What to Look For
+
+**Overlap regions**: Where all four gamuts agree, any emitter is sufficient. This is mainly the low-saturation region near the white point.
+
+**Extended regions**: Where larger gamuts extend beyond smaller ones. For example, the DCI-P3 triangle extends beyond sRGB primarily in the red and green directions. An emitter that falls in this extended region can serve as a DCI-P3 primary but not an sRGB primary (because sRGB does not need that level of saturation).
+
+**BT.2020 exclusion zone**: The large area between DCI-P3 and BT.2020 represents colors that only BT.2020 can address. Reaching this zone requires narrow-band emitters with FWHM below 20-30 nm.
+
+### Practical Exercise
+
+Load the Green preset in ISCV and enable all four gamut overlays:
+
+1. Note that the green preset falls **inside** the DCI-P3 triangle but **outside** the BT.2020 green primary target
+2. Use the wavelength shift to move the peak toward 530 nm and observe how the color point approaches the spectral locus
+3. Consider: even at the optimal wavelength, a broad-band emitter (FWHM > 50 nm) cannot reach the BT.2020 green primary. This is the fundamental challenge.
+
+## Choosing the Right Target for Your Application
+
+### Consumer Displays (2026 and Beyond)
+
+**sRGB** remains the baseline. Any display should cover 100% sRGB.
+
+**DCI-P3** is the practical target for premium products. Flagship smartphones, tablets, laptops, and monitors are expected to deliver 95%+ DCI-P3 coverage.
+
+**BT.2020** is the aspirational target. Full BT.2020 coverage remains beyond current mass-production OLED technology, but partial coverage (typically 70-85% of BT.2020 in xy area) is achievable and marketed as a differentiator.
+
+### Professional Workflows
+
+**Adobe RGB** for photography and print professionals. Monitor specifications for photo editing typically target 99%+ Adobe RGB coverage.
+
+**DCI-P3** for video post-production and cinema mastering. Reference monitors for film and TV production target 100% DCI-P3 coverage with tight uniformity specifications.
+
+### OLED Material Development
+
+If you are developing OLED emitter materials, your target gamut determines the required spectral properties:
+
+| Target | Required Peak Wavelength Range | Required FWHM |
+|---|---|---|
+| sRGB primaries | Broad tolerance | < 70 nm |
+| DCI-P3 primaries | Moderate tolerance | < 40-45 nm |
+| BT.2020 primaries | Tight tolerance (monochromatic) | < 20 nm |
+
+Use ISCV to check your emitter against these targets in real-time: load the spectrum, enable the relevant gamut overlay, and immediately see whether your material meets the requirement.
+
+## Further Reading
+
+For deeper understanding of the concepts covered in this guide:
+
+- **[CIE chromaticity coordinate guide](/blog/en/cie-chromaticity-guide)**: How CIE 1931 xy and CIE 1976 u'v' coordinate systems work
+- **[CIE diagram visual guide](/blog/en/cie-diagram-visual-guide)**: How to read every element of the chromaticity diagram
+- **[OLED emitter spectrum tutorial](/blog/en/oled-emitter-spectrum-tutorial)**: Step-by-step guide to analyzing emitter spectra with ISCV
+
+## Try It Yourself
+
+Open [Spectrum Visualizer (ISCV)](https://spectrum-visualizer-seven.vercel.app) and explore the gamut overlays with your own spectral data. Toggle between sRGB, DCI-P3, BT.2020, and Adobe RGB to see exactly where your emitters stand relative to each standard.
+
+No installation required. Free and open source.
+
+**Spectrum Visualizer**: [https://spectrum-visualizer-seven.vercel.app](https://spectrum-visualizer-seven.vercel.app)
+
+**Source code (MIT license)**: [https://github.com/namseokyoo/spectrum-visualizer](https://github.com/namseokyoo/spectrum-visualizer)
+
+---
+
+*Built by [SidequestLab](https://sidequestlab-homepage.vercel.app) -- Experimental tools for real-world problems.*

@@ -1,0 +1,282 @@
+---
+title: "OLED Emitter Spectrum Analysis Tutorial: From Raw Data to CIE Coordinates"
+description: "Step-by-step tutorial on analyzing OLED emitter spectra using Spectrum Visualizer (ISCV). Learn to load spectral data, calculate CIE chromaticity coordinates, compare against display gamut standards, and evaluate emitter performance."
+date: "2026-02-13"
+tags: ["OLED spectrum analysis", "OLED emitter chromaticity", "CIE coordinates", "spectrum visualization", "display engineering"]
+---
+
+# OLED Emitter Spectrum Analysis Tutorial: From Raw Data to CIE Coordinates
+
+You have a new OLED emitter on your bench. The spectroradiometer has captured its emission spectrum -- a column of wavelength-intensity pairs sitting in a CSV file. Now what?
+
+The path from raw spectral data to actionable color analysis involves several steps: loading the data, computing CIE chromaticity coordinates, evaluating spectral metrics, and comparing against display gamut standards. This tutorial walks through each step using [Spectrum Visualizer (ISCV)](https://spectrum-visualizer-seven.vercel.app), showing how to turn measurement data into the numbers and visuals you need for material evaluation, publication, and device design.
+
+## What You Will Learn
+
+By the end of this tutorial, you will be able to:
+
+- Load OLED emission spectra into ISCV using presets, CSV upload, or clipboard paste
+- Read CIE 1931 xy and CIE 1976 u'v' chromaticity coordinates from the visualization
+- Interpret peak wavelength, FWHM, and FWQM metrics for emitter evaluation
+- Use wavelength shift simulation to predict microcavity tuning effects
+- Compare emitter color coordinates against sRGB, DCI-P3, BT.2020, and Adobe RGB gamut standards
+- Save and compare multiple emitters using the snapshot feature
+
+## Prerequisites
+
+No software installation is required. ISCV runs entirely in your web browser at [https://spectrum-visualizer-seven.vercel.app](https://spectrum-visualizer-seven.vercel.app). Your spectral data never leaves your device.
+
+You should have a basic understanding of:
+
+- What an emission spectrum is (wavelength vs. intensity)
+- Why CIE chromaticity coordinates matter for OLED evaluation (see our [CIE chromaticity guide](/blog/en/cie-chromaticity-guide) for background)
+
+## Step 1: Load Your Spectral Data
+
+ISCV offers three ways to get your spectral data into the tool. Let us start with the simplest method and work up to real measurement data.
+
+### Option A: Built-in Presets (Quick Start)
+
+The fastest way to explore ISCV is through the built-in OLED emission presets. These represent typical phosphorescent OLED emission profiles:
+
+1. Open [Spectrum Visualizer](https://spectrum-visualizer-seven.vercel.app)
+2. Look for the preset selection area
+3. Select a preset -- for example, **Green** for a typical green phosphorescent emitter
+
+The spectrum immediately appears in the spectrum plot, and the CIE coordinates are calculated and displayed on the chromaticity diagram. This is your starting point for learning the interface.
+
+**Available presets:**
+- **Blue**: Typical blue phosphorescent emitter (~470 nm peak)
+- **Green**: Typical green phosphorescent emitter (~520 nm peak)
+- **Red**: Typical red phosphorescent emitter (~620 nm peak)
+- **White**: Broadband white emission profile
+
+### Option B: CSV File Upload
+
+For your own measured data, prepare a CSV file with two columns: wavelength (in nanometers) and intensity (arbitrary units or absolute):
+
+```
+wavelength,intensity
+380,0.001
+385,0.002
+390,0.005
+...
+520,0.989
+525,1.000
+530,0.995
+...
+780,0.001
+```
+
+Drag and drop the file into ISCV, or use the file upload button. The tool auto-detects:
+
+- **Delimiters**: Comma, tab, or space
+- **Headers**: Optional (automatically recognized)
+- **Wavelength range**: Any coverage within the visible spectrum
+- **Sampling interval**: Regular (1 nm, 5 nm) or irregular
+
+### Option C: Clipboard Paste
+
+Working in Excel, MATLAB, Origin, or Python? Copy your wavelength-intensity columns directly and paste into ISCV. This is often the fastest method when your data is already open in another application.
+
+The tool handles the same format variations as CSV upload -- just make sure you have two columns of numerical data.
+
+## Step 2: Read the CIE Chromaticity Coordinates
+
+Once your spectrum is loaded, ISCV automatically computes and displays the chromaticity coordinates.
+
+### CIE 1931 xy Coordinates
+
+The default view shows your data point plotted on the CIE 1931 xy chromaticity diagram. The exact coordinates are displayed numerically alongside the diagram. For a typical green phosphorescent emitter, you might see values like:
+
+```
+x = 0.310, y = 0.630
+```
+
+These coordinates tell you where your emitter sits in the standard color space used by display industry specifications.
+
+### CIE 1976 u'v' Coordinates
+
+Toggle to the CIE 1976 u'v' view to see the same data point in the perceptually uniform color space. The u'v' coordinates are computed using the standard transformation:
+
+```
+u' = 4x / (-2x + 12y + 3)
+v' = 9y / (-2x + 12y + 3)
+```
+
+The u'v' coordinates are essential for calculating meaningful color differences between emitters. A delta-u'v' value directly corresponds to a perceived color difference, unlike delta-xy which varies across the diagram.
+
+### What the Coordinates Tell You
+
+- **Position relative to the spectral locus**: How saturated (pure) is your emission color? Closer to the locus means higher saturation.
+- **Position relative to gamut primaries**: Is your emitter suitable as a display primary for sRGB, DCI-P3, or BT.2020?
+- **Distance from the white point**: How far from neutral white is your emitter? Relevant for white OLED optimization.
+
+## Step 3: Analyze Spectral Metrics
+
+Beyond color coordinates, ISCV automatically computes key spectral characteristics that are critical for OLED material evaluation.
+
+### Peak Wavelength
+
+The wavelength at which emission intensity is maximum. This is the most basic spectral identifier for an OLED emitter:
+
+- **Blue emitters**: Typically 440-480 nm
+- **Green emitters**: Typically 510-540 nm
+- **Red emitters**: Typically 600-640 nm
+
+The peak wavelength reported by ISCV accounts for any applied wavelength shift, so you always see the effective peak.
+
+### FWHM (Full Width at Half Maximum)
+
+The spectral bandwidth measured at 50% of peak intensity. FWHM is one of the most important metrics for evaluating OLED emitters:
+
+- **FWHM < 30 nm**: Narrow-band emission, suitable for wide-gamut displays (BT.2020 targets)
+- **FWHM 30-50 nm**: Moderate bandwidth, suitable for DCI-P3 coverage
+- **FWHM 50-70 nm**: Broad emission, typical of conventional phosphorescent emitters, adequate for sRGB
+- **FWHM > 70 nm**: Very broad, limited color saturation, typically not suitable as a display primary
+
+Why does FWHM matter so much? Because it directly determines where your emitter falls on the chromaticity diagram relative to the spectral locus. Narrow FWHM produces color points near the locus (high saturation), while broad FWHM pulls the color point toward the diagram center (low saturation).
+
+### FWQM (Full Width at Quarter Maximum)
+
+The bandwidth at 25% of peak intensity. FWQM captures information about the spectral tails that FWHM misses. Two emitters with identical FWHM can have very different FWQM values if their spectral shapes differ -- one might have sharp cutoffs while the other has long tails.
+
+For color purity assessment, FWQM provides a more complete picture of spectral shape than FWHM alone.
+
+## Step 4: Simulate Wavelength Shift
+
+One of ISCV's most valuable features for OLED researchers is real-time wavelength shifting. This simulates how the emission spectrum changes position without altering its shape.
+
+### Why Wavelength Shift Matters
+
+In real OLED devices, the emission spectrum shifts due to several mechanisms:
+
+**Microcavity effects**: The optical cavity formed by the OLED layer stack (reflective cathode, semi-transparent anode, organic layers) acts as a Fabry-Perot resonator. Depending on the cavity length, the emission peak can shift by 5-20 nm compared to the free-space photoluminescence spectrum.
+
+**Molecular engineering**: Modifying the chemical structure of an emitter (substituent groups, conjugation length) tunes the emission wavelength. ISCV lets you predict how a 5 nm or 10 nm shift in peak wavelength will affect color coordinates before you synthesize the next molecule.
+
+**Measurement uncertainty**: Spectroradiometer wavelength calibration has finite accuracy (typically plus or minus 0.5-1.0 nm). Shifting the spectrum lets you assess how sensitive your CIE coordinates are to calibration error.
+
+### How to Use Wavelength Shift in ISCV
+
+Three input methods are available:
+
+1. **Slider**: Drag the wavelength shift slider for quick exploration (-100 nm to +100 nm range)
+2. **Direct input**: Type an exact shift value for precise analysis (0.1 nm resolution)
+3. **Keyboard shortcuts**: Press arrow keys for 1 nm steps, or hold Shift for 5 nm steps
+
+As you adjust the shift, watch:
+
+- The spectrum plot updates to show the shifted peak position
+- The color point moves along the chromaticity diagram
+- All numerical coordinates (xy, u'v') update in real-time
+- Peak wavelength and bandwidth metrics recalculate
+
+**Practical exercise**: Load the Green preset, then shift the wavelength from -20 nm to +20 nm. Notice how the color point traces a path on the chromaticity diagram. In the green region, even small wavelength changes produce significant coordinate shifts -- this is why green emitter engineering is particularly sensitive to cavity tuning.
+
+## Step 5: Compare Against Display Gamut Standards
+
+Now that you know your emitter's color coordinates, the next question is: which display standards can this emitter support?
+
+### Enabling Gamut Overlays
+
+ISCV allows you to overlay standard display gamut triangles directly on the chromaticity diagram:
+
+- **sRGB** (ITU-R BT.709): The baseline for consumer displays
+- **DCI-P3**: The current premium display target
+- **BT.2020** (Rec. 2020): The next-generation ultra HD standard
+- **Adobe RGB**: Professional photography and print
+
+Toggle each gamut on or off to see how your emitter compares. The critical question: **does your emitter's color point fall inside the gamut triangle, near a vertex (primary), or outside the triangle?**
+
+### Interpreting the Results
+
+**Inside the triangle**: Your emitter's color is reproducible by the display standard, but it is not saturated enough to serve as a primary color.
+
+**Near a vertex**: Ideal. Your emitter approaches the saturation of one of the display's RGB primaries. This is what you want for an emitter being developed as a display primary.
+
+**Outside the triangle**: Your emitter is more saturated than the standard requires. For a display primary, being slightly outside the target gamut is acceptable -- the display can always desaturate electronically. However, being too far outside means wasted spectral energy.
+
+### Real-World Example: Evaluating a Green Emitter
+
+Suppose your green emitter has CIE 1931 coordinates of (0.28, 0.65). Here is how to evaluate it:
+
+1. Enable **sRGB** overlay: The sRGB green primary is at (0.300, 0.600). Your emitter at (0.28, 0.65) is more saturated than sRGB requires -- good, it can cover sRGB green.
+2. Enable **DCI-P3** overlay: The DCI-P3 green primary is at (0.265, 0.690). Your emitter is close but slightly below the DCI-P3 target in the y direction -- marginal coverage.
+3. Enable **BT.2020** overlay: The BT.2020 green primary is at (0.170, 0.797). Your emitter is far from this target -- it cannot serve as a BT.2020 green primary. A narrower-band emitter is needed.
+
+This kind of rapid assessment would take significantly longer with spreadsheet calculations or commercial software setup.
+
+## Step 6: Compare Multiple Emitters with Snapshots
+
+Research rarely involves a single emitter. ISCV's snapshot feature lets you save and compare up to 5 data points simultaneously.
+
+### Saving a Snapshot
+
+After loading a spectrum and noting its color coordinates:
+
+1. Click the snapshot save button
+2. The current color point is stored with its coordinates, peak wavelength, and spectral metrics
+3. The snapshot appears as a persistent marker on the chromaticity diagram
+
+### Comparison Scenarios
+
+**Candidate screening**: Load spectra from three different green emitter candidates. Save each as a snapshot. All three points appear on the diagram simultaneously, making it immediately clear which candidate is closest to your target coordinates.
+
+**Shift analysis**: Load a single emitter, save the unshifted position as snapshot 1. Apply a +5 nm shift and save as snapshot 2. Apply +10 nm and save as snapshot 3. Now you can see the trajectory of color change with wavelength shift.
+
+**Batch vs. batch consistency**: Compare the same emitter measured from different synthesis batches. Save each measurement as a snapshot to visualize batch-to-batch variation on the chromaticity diagram.
+
+Snapshots persist across browser sessions, so you can close the tab and return to your comparison later.
+
+## Putting It All Together: Complete Workflow
+
+Here is the full emitter evaluation workflow using ISCV:
+
+1. **Prepare your data**: Export the emission spectrum from your spectroradiometer as a CSV file (wavelength in nm, intensity in arbitrary units)
+2. **Load into ISCV**: Drag-and-drop the CSV file or paste from clipboard
+3. **Record baseline coordinates**: Note the CIE 1931 (x, y) and CIE 1976 (u', v') values
+4. **Check spectral metrics**: Review peak wavelength, FWHM, and FWQM
+5. **Enable gamut overlays**: Turn on sRGB, DCI-P3, and BT.2020 to assess gamut suitability
+6. **Simulate cavity tuning**: Use the wavelength shift slider to predict how microcavity effects will move the color point
+7. **Save as snapshot**: Store this emitter for comparison with future candidates
+8. **Switch to u'v' view**: Calculate delta-u'v' to your target coordinates for quantitative evaluation
+
+For publication, report: CIE 1931 (x, y), CIE 1976 (u', v'), peak wavelength, FWHM, and measurement conditions. ISCV gives you all of these from a single spectrum upload.
+
+## Tips for Accurate Results
+
+### Data Quality
+
+- **Wavelength range**: Cover the full visible spectrum (380-780 nm) to avoid truncation errors
+- **Sampling interval**: 1 nm or 5 nm intervals are standard; coarser sampling may reduce accuracy for narrow-band emitters
+- **Signal-to-noise ratio**: Ensure clean data, especially in the spectral tails where noise can affect coordinate calculations
+- **Dark current subtraction**: Always subtract the dark spectrum from your measurement before analysis
+
+### Interpretation
+
+- **Peak wavelength is not dominant wavelength**: The peak of the emission spectrum is not the same as the dominant wavelength calculated from the chromaticity diagram. For broad emitters, these can differ by 10-20 nm.
+- **FWHM alone is not sufficient**: Two emitters with the same FWHM but different spectral shapes (symmetric vs. asymmetric) will have different CIE coordinates. Always check the actual coordinates.
+- **Both coordinate systems matter**: Report CIE 1931 xy for gamut analysis (industry standard) and CIE 1976 u'v' for color difference calculations (perceptually meaningful).
+
+## Next Steps
+
+Now that you know how to analyze individual OLED emitter spectra, you might want to explore:
+
+- **[CIE chromaticity coordinate guide](/blog/en/cie-chromaticity-guide)**: Deeper dive into the theory behind CIE 1931 xy and CIE 1976 u'v' coordinate systems
+- **[CIE diagram visual guide](/blog/en/cie-diagram-visual-guide)**: Learn to read every component of the chromaticity diagram
+- **[Color gamut comparison guide](/blog/en/color-gamut-comparison-guide)**: Detailed comparison of sRGB, DCI-P3, BT.2020, and Adobe RGB standards
+
+## Get Started
+
+Open [Spectrum Visualizer (ISCV)](https://spectrum-visualizer-seven.vercel.app) and try the workflow with one of the built-in presets. Once you are comfortable with the interface, load your own spectral data and see where your emitters fall on the color map.
+
+No installation. No account. No data uploaded to servers. Just accurate color science in your browser.
+
+**Spectrum Visualizer**: [https://spectrum-visualizer-seven.vercel.app](https://spectrum-visualizer-seven.vercel.app)
+
+**Source code (MIT license)**: [https://github.com/namseokyoo/spectrum-visualizer](https://github.com/namseokyoo/spectrum-visualizer)
+
+---
+
+*Built by [SidequestLab](https://sidequestlab-homepage.vercel.app) -- Experimental tools for real-world problems.*
