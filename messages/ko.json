@@ -18,9 +18,9 @@
     },
     "stats": {
       "projects": "프로젝트",
-      "projects_count": "13",
+      "projects_count": "12",
       "services": "서비스 운영",
-      "services_count": "8",
+      "services_count": "10",
       "techstack": "기술스택",
       "techstack_count": "10+"
     },
@@ -32,14 +32,6 @@
     "recent_blog": {
       "title": "최근 블로그",
       "view_all": "전체 글 보기"
-    },
-    "featured": {
-      "title": "주요 프로젝트",
-      "viewAll": "모든 프로젝트 보기"
-    },
-    "recentPosts": {
-      "title": "최근 블로그",
-      "viewAll": "모든 글 보기"
     }
   },
   "projects": {
@@ -73,34 +65,16 @@
     }
   },
   "about": {
-    "title": "회사 소개",
     "vision": {
       "title": "우리의 비전",
       "quote": "매력적인 아이디어로 사람을 모으고, 커뮤니티 안에서 지속 가능한 가치를 창출하는 실험실",
       "vision_title": "비전",
       "vision_desc": "다양한 사이드 프로젝트를 통해 기술적 가치와 사업적 가치를 동시에 창출하는 실험실이 됩니다.",
       "mission_title": "미션",
-      "mission_desc": "AI 에이전트 팀과 함께 아이디어를 빠르게 실현하고, 투명한 프로세스로 지속 성장합니다.",
-      "content": "작은 아이디어로 큰 가치를 만드는 실험실이 되겠습니다."
-    },
-    "mission": {
-      "title": "미션",
-      "content": "사용자의 일상에서 발견한 불편함을 해결하는 서비스를 만듭니다. 빠르게 실험하고, 피드백을 수용하며, 지속적으로 개선합니다."
+      "mission_desc": "AI 에이전트 팀과 함께 아이디어를 빠르게 실현하고, 투명한 프로세스로 지속 성장합니다."
     },
     "values": {
       "title": "핵심 가치",
-      "simplicity": {
-        "title": "단순함",
-        "description": "복잡한 것을 단순하게 만드는 것이 진정한 혁신입니다."
-      },
-      "speed": {
-        "title": "속도",
-        "description": "빠른 실행과 빠른 학습을 통해 더 나은 결과를 만들어 냅니다."
-      },
-      "value": {
-        "title": "가치",
-        "description": "사용자에게 실질적인 가치를 제공하는 것이 우리의 존재 이유입니다."
-      },
       "items_1_name": "빠른 실행",
       "items_1_desc": "완벽보다 실행을 우선합니다. MVP를 빠르게 만들고 시장에서 검증합니다.",
       "items_1_icon": "🚀",

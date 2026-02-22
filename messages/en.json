@@ -18,9 +18,9 @@
     },
     "stats": {
       "projects": "Projects",
-      "projects_count": "13",
+      "projects_count": "12",
       "services": "Live Services",
-      "services_count": "8",
+      "services_count": "10",
       "techstack": "Tech Stacks",
       "techstack_count": "10+"
     },
@@ -32,14 +32,6 @@
     "recent_blog": {
       "title": "Recent Blog Posts",
       "view_all": "View All Posts"
-    },
-    "featured": {
-      "title": "Featured Projects",
-      "viewAll": "View All Projects"
-    },
-    "recentPosts": {
-      "title": "Recent Posts",
-      "viewAll": "View All Posts"
     }
   },
   "projects": {
@@ -73,34 +65,16 @@
     }
   },
   "about": {
-    "title": "About Us",
     "vision": {
       "title": "Our Vision",
       "quote": "A lab that gathers people with compelling ideas and creates sustainable value within communities",
       "vision_title": "Vision",
       "vision_desc": "We become a lab that simultaneously creates technical and business value through diverse side projects.",
       "mission_title": "Mission",
-      "mission_desc": "We rapidly bring ideas to life with our AI agent team and grow sustainably through transparent processes.",
-      "content": "To become a laboratory that creates big value from small ideas."
-    },
-    "mission": {
-      "title": "Mission",
-      "content": "We build services that solve everyday inconveniences. We experiment quickly, embrace feedback, and continuously improve."
+      "mission_desc": "We rapidly bring ideas to life with our AI agent team and grow sustainably through transparent processes."
     },
     "values": {
       "title": "Core Values",
-      "simplicity": {
-        "title": "Simplicity",
-        "description": "Making complex things simple is true innovation."
-      },
-      "speed": {
-        "title": "Speed",
-        "description": "Fast execution and fast learning lead to better results."
-      },
-      "value": {
-        "title": "Value",
-        "description": "Providing real value to users is our reason for existence."
-      },
       "items_1_name": "Fast Execution",
       "items_1_desc": "We prioritize execution over perfection. Build MVPs fast and validate in the market.",
       "items_1_icon": "🚀",

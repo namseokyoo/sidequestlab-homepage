@@ -32,6 +32,7 @@ export async function generateMetadata({
   const metadata = messages.metadata as { title: string; description: string };
 
   return {
+    metadataBase: new URL('https://sidequestlab-homepage.vercel.app'),
     title: {
       default: metadata.title,
       template: `%s | SidequestLab`,
@@ -47,11 +48,20 @@ export async function generateMetadata({
       siteName: 'SidequestLab',
       locale: locale === 'ko' ? 'ko_KR' : 'en_US',
       type: 'website',
+      images: [
+        {
+          url: `https://sidequestlab-homepage.vercel.app/${locale}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: 'SidequestLab',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: metadata.title || 'SidequestLab',
       description: metadata.description || '',
+      images: [`https://sidequestlab-homepage.vercel.app/${locale}/opengraph-image`],
     },
     alternates: {
       canonical: `https://sidequestlab-homepage.vercel.app/${locale}`,
