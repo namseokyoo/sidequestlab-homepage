@@ -1,21 +1,28 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+
+function getInitialTheme(): boolean {
+  if (typeof window === 'undefined') return false;
+  const stored = localStorage.getItem('theme');
+  return stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+}
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(getInitialTheme);
+  const mounted = useRef(false);
 
   useEffect(() => {
-    // Check localStorage and system preference on mount
-    const stored = localStorage.getItem('theme');
-    if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setIsDark(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setIsDark(false);
-      document.documentElement.classList.remove('dark');
+    if (!mounted.current) {
+      // Sync DOM on first mount
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      mounted.current = true;
     }
-  }, []);
+  }, [isDark]);
 
   const toggle = () => {
     const newValue = !isDark;
