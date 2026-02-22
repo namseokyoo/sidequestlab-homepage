@@ -1,7 +1,10 @@
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { timelineEvents } from '@/lib/timeline';
+import Timeline from '@/components/ui/Timeline';
 
 export default function AboutPage() {
   const t = useTranslations('about');
+  const locale = useLocale() as 'ko' | 'en';
 
   const workflowSteps = ['planning', 'init', 'execute', 'verify', 'complete'];
   const documents = ['decisions', 'history', 'projects', 'lessons', 'organization'];
@@ -23,6 +26,9 @@ export default function AboutPage() {
     'bg-blue-500', 'bg-emerald-500', 'bg-violet-500', 'bg-amber-500',
     'bg-rose-500', 'bg-indigo-500', 'bg-cyan-500', 'bg-orange-500',
   ];
+
+  const shortTermItems = t.raw('roadmap.short_term.items') as string[];
+  const midTermItems = t.raw('roadmap.mid_term.items') as string[];
 
   return (
     <div>
@@ -226,6 +232,89 @@ export default function AboutPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Timeline Section */}
+      <section className="py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+              {t('timeline.title')}
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400">
+              {t('timeline.subtitle')}
+            </p>
+          </div>
+
+          <div className="mx-auto max-w-2xl">
+            <Timeline events={timelineEvents} locale={locale} />
+          </div>
+        </div>
+      </section>
+
+      {/* Roadmap Section */}
+      <section className="bg-gray-50 py-20 sm:py-24 dark:bg-gray-900">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+              {t('roadmap.title')}
+            </h2>
+          </div>
+
+          <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
+            {/* Short-term Goals */}
+            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                  <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {t('roadmap.short_term.title')}
+                </h3>
+              </div>
+              <ul className="space-y-3">
+                {shortTermItems.map((item: string, index: number) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <svg className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Mid-term Goals */}
+            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20">
+                  <svg className="h-5 w-5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {t('roadmap.mid_term.title')}
+                </h3>
+              </div>
+              <ul className="space-y-3">
+                {midTermItems.map((item: string, index: number) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <svg className="mt-0.5 h-4 w-4 flex-shrink-0 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>

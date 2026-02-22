@@ -1,0 +1,85 @@
+---
+title: Introducing Display Lab - Free Web-Based Tools for Display Professionals
+description: Meet Display Lab, a suite of professional-grade, free web tools designed for display engineers and researchers. Explore its features, technology, and vision.
+date: 2026-02-23
+---
+
+If you work in the display industry, you have likely encountered this frustration: analyzing color gamuts requires expensive software licenses, and even a simple color coordinate conversion demands a complex installation process on a specific operating system.
+
+**Display Lab** was born from this exact problem. We set out to build professional-grade analysis tools that display engineers and researchers can access instantly from any web browser, with zero installation and zero cost.
+
+## Why Display Lab?
+
+The display industry relies on well-established tools. Fluxim's Phelos and Portrait Displays' CalMAN are powerful solutions, but they share common barriers to entry.
+
+- **High licensing costs**: Annual fees running into thousands of dollars put them out of reach for individual researchers and small teams
+- **Installation friction**: Many require specific operating systems or complex configuration procedures
+- **Sharing limitations**: Collaborators need the same software installed to view your analysis results
+
+Display Lab addresses all three problems simultaneously. It is **free, runs directly in the browser, and lets you share results with a single URL**. And it does all this without compromising on analytical precision.
+
+## Core Features
+
+Display Lab offers eight essential analysis tools covering display evaluation and color science.
+
+### Color Gamut Analyzer
+
+Visualize panel color gamuts on CIE 1931 and CIE 1976 chromaticity diagrams. Quantitatively compare coverage against standard gamuts including sRGB, DCI-P3, and BT.2020. Overlay multiple panels simultaneously for intuitive side-by-side comparison.
+
+### Viewing Angle Analyzer
+
+Analyze viewing angle characteristics of displays. Track color shift and luminance variation as a function of angle, making it straightforward to objectively compare viewing angle performance between OLED and LCD panels.
+
+### HDR Analyzer
+
+Evaluate key performance metrics for HDR displays. Assess ST.2084 (PQ) curve-based EOTF characteristics, peak luminance, contrast ratio, and tone mapping accuracy in a comprehensive dashboard.
+
+### Spectrum Analyzer
+
+Input spectral data to visualize intensity distribution by wavelength, with automatic calculation of chromaticity coordinates and correlated color temperature. CSV file upload is supported for direct import from measurement instruments.
+
+### CRI/TLCI/TM-30 Calculator
+
+Calculate three major color rendering metrics in a single workflow. Beyond traditional CRI (Ra), Display Lab supports TLCI for broadcast lighting evaluation and IES TM-30, the latest color rendition assessment methodology.
+
+### Panel Comparator
+
+Place two or more display panels side by side and compare key specifications. Automatically generates comparison tables across color gamut, luminance, contrast ratio, response time, and other critical parameters.
+
+### Universal Converter
+
+Handle the unit conversions that color science professionals need daily. Convert between CIE XYZ, xyY, L\*a\*b\*, L\*u\*v\*, and RGB color spaces, plus calculate correlated color temperature (CCT) and Duv, all in one place.
+
+### Color Science Calculator
+
+A collection of essential color science computation tools. Calculate color differences (Delta E), chromaticity coordinates on the Planckian locus, metameric analysis, and other calculations that researchers and practitioners use regularly.
+
+## Technical Foundation
+
+Display Lab builds on a proven technical foundation from SidequestLab's earlier project, **ISCV (Interactive Spectrum & Color Visualizer)**. The spectrum visualization engine and chromaticity calculation algorithms validated in ISCV serve as the backbone for Display Lab's broader display analysis capabilities.
+
+Rather than simply copying code, we redesigned these components through modularization and abstraction into reusable, testable units. This is a prime example of SidequestLab's principle of recycling technical assets across projects.
+
+The current technology stack includes:
+
+- **React 19**: Leveraging concurrent features for responsive, fluid UI interactions
+- **Vite 7**: Fast development experience with optimized production builds
+- **TypeScript**: Type safety for color science calculations where precision matters
+- **D3.js**: Professional-grade visualizations for chromaticity diagrams and spectral charts
+- **Tailwind CSS**: Consistent design system across all tools
+
+## What Comes Next
+
+Display Lab has completed through Phase 2-B, and Phase 2-C will introduce capabilities that take the platform to the next level.
+
+- **Database integration**: Save and manage analysis history over time
+- **PDF report generation**: Export analysis results as professional reports
+- **API access**: RESTful API for integration with external systems and automation workflows
+
+We are eager to hear from professionals working in the display field. Tell us which features matter most to you and where we can improve.
+
+**[Try Display Lab now](https://displaylab.vercel.app)** and experience professional display analysis tools in your browser.
+
+---
+
+The SidequestLab Team

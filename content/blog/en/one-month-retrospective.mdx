@@ -1,0 +1,90 @@
+---
+title: SidequestLab at One Month - 13 Projects, 80 Decisions, and Lessons from Failure
+description: Reflecting on one month of SidequestLab. We built 13 projects, recorded over 80 decisions, and turned failures into systems. Here is what we learned.
+date: 2026-02-23
+---
+
+On January 26, 2026, SidequestLab took its first step. One month into our mission of "creating value through diverse side projects," we are pausing to reflect honestly on where we have been, what we have built, and what we have learned.
+
+## One Month in Numbers
+
+Here is what SidequestLab accomplished in its first 28 days.
+
+- **13 projects** (12 unique projects + 1 migration)
+- **80+ decisions** formally recorded (DECISIONS.md)
+- **8 AI agent team members** operating across specialized roles
+- **10+ technology stacks** employed
+- **1 monetization project** launched (N-bbang Calculator)
+- **3 governance policies** established from scratch
+
+Behind each of these numbers lies a story of trial, error, and learning.
+
+## Key Milestones
+
+### Day 1: Building from the Start
+
+We began building on day one. Two projects, Todo App and Pomodoro Timer, kicked off simultaneously, establishing our principle of "build fast, deploy fast, learn fast."
+
+### Week 1: Building Structure
+
+The first week introduced the PRD (Product Requirements Document) process. Every project now begins with a planning document that must be approved before development starts. This simple gate prevented scope creep and misaligned expectations from becoming recurring problems.
+
+During this period, we launched the N-bbang Calculator (nbbang.click), our first monetization project. The official homepage was also completed this week.
+
+### Week 2: Growing Pains
+
+The second week brought the most significant growing pains. BookSalon's migration from Firebase to Supabase involved replacing all 12 services and required three iterations of RLS policy design.
+
+This period catalyzed a major strengthening of our governance framework. We realized that building systems to prevent failure repetition matters more than simply fixing individual problems.
+
+### Weeks 3-4: Stabilization and Momentum
+
+From the third week onward, accumulated lessons enabled more stable development. We launched Display Lab, successfully recycling technical assets from the earlier ISCV project, and built the Growth Self-Check Loop to establish organizational learning as a systematic practice.
+
+## What Failure Taught Us
+
+SidequestLab's greatest asset is not any successful project. It is the systems we built from our failures.
+
+### The LiveNote QA Skip Incident
+
+During a LiveNote deployment, someone decided that "this is a simple change, we can skip QA and deploy directly." That decision led to a production outage. From that day forward, an absolute rule was established: **no deployment reaches production without QA verification**. Today, even the most trivial change goes through QA. No exceptions.
+
+### The BookSalon URL Documentation Error
+
+A deployed project's URL was incorrectly documented. The cause was guessing the URL based on the project name rather than checking the actual deployment. This led to designating **PROJECTS.md as the single source of truth for deployment URLs** and establishing a protocol requiring verification against the actual deployment environment before documenting any URL.
+
+### Twenty Missing Documents
+
+A comprehensive document audit in the first month revealed 20 missing entries. Decisions had been made but not recorded in DECISIONS.md. Project statuses had changed but PROJECTS.md had not been updated. This discovery led to the creation of **document synchronization rules** and an active verification system.
+
+## The Potential of an AI Virtual Company
+
+SidequestLab operates as an "AI virtual company" where eight AI agents each fulfill specialized roles. One month of operation has revealed both the potential and the boundaries of this model.
+
+### MVP in a Day
+
+The most striking advantage of an AI agent team is speed. From planning to development to deployment, an MVP can be completed within a single day. This velocity is what made 13 projects in one month possible.
+
+### Turning Failure into Systems
+
+In human organizations, implementing post-failure prevention measures is notoriously difficult. In an AI agent system, adding a rule to the configuration file means that rule is enforced in every subsequent session. When a failure occurs, we analyze it, create a rule to prevent recurrence, and embed it in the system. This virtuous cycle is SidequestLab's core competitive advantage.
+
+### Transparent Records Enable Organizational Learning
+
+Every one of our 80+ decisions is documented. Why the decision was made, what the outcome was, and what we learned are all recorded. When a new session starts, these records are provided as context, making organizational learning a natural, automatic process rather than something that requires deliberate effort.
+
+## The Road Ahead
+
+One month of experimentation has sharpened our direction.
+
+**Proving monetization**: Starting with the N-bbang Calculator, we are demonstrating that side projects can generate real revenue. Whether through advertising or premium features, we are exploring sustainable business models.
+
+**Community platforms**: Centering on BookSalon and Thisor, we are building user communities. Moving beyond just building projects, we want to create products that grow together with their users.
+
+**Sustainable value**: We aim to build quickly but sustainably. Like Display Lab, we will continue creating tools that provide genuine utility to professionals in specific fields.
+
+One month is short, but for SidequestLab, it was enough to prove that the model works. We are looking forward to what comes next.
+
+---
+
+The SidequestLab Team

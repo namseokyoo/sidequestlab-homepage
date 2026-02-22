@@ -65,6 +65,9 @@
     },
     "filter": {
       "all": "전체",
+      "in_progress": "운영중",
+      "completed": "완료",
+      "planned": "예정",
       "product": "제품",
       "internal": "내부 도구"
     }
@@ -207,6 +210,29 @@
         "projects": { "name": "PROJECTS.md", "desc": "프로젝트 현황" },
         "lessons": { "name": "LESSONS.md", "desc": "교훈/패턴" },
         "organization": { "name": "ORGANIZATION.md", "desc": "조직 구조" }
+      }
+    },
+    "timeline": {
+      "title": "회사 연혁",
+      "subtitle": "SidequestLab의 주요 마일스톤"
+    },
+    "roadmap": {
+      "title": "성장 로드맵",
+      "short_term": {
+        "title": "단기 목표 (Q1 2026)",
+        "items": [
+          "내장 광고 수익화로 경제적 지속 가능성 증명",
+          "Display Lab Phase 2-C 완성",
+          "기존 프로젝트 SEO + GA4 최적화"
+        ]
+      },
+      "mid_term": {
+        "title": "중기 목표 (2026)",
+        "items": [
+          "북살롱 커뮤니티 플랫폼 전환",
+          "프리미엄 기능 수익 모델 구축",
+          "10개+ 프로덕션 서비스 안정 운영"
+        ]
       }
     },
     "contact": {

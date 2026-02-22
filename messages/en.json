@@ -65,6 +65,9 @@
     },
     "filter": {
       "all": "All",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "planned": "Planned",
       "product": "Products",
       "internal": "Internal Tools"
     }
@@ -207,6 +210,29 @@
         "projects": { "name": "PROJECTS.md", "desc": "Project status" },
         "lessons": { "name": "LESSONS.md", "desc": "Lessons/Patterns" },
         "organization": { "name": "ORGANIZATION.md", "desc": "Organization structure" }
+      }
+    },
+    "timeline": {
+      "title": "Company History",
+      "subtitle": "Key milestones of SidequestLab"
+    },
+    "roadmap": {
+      "title": "Growth Roadmap",
+      "short_term": {
+        "title": "Short-term (Q1 2026)",
+        "items": [
+          "Prove economic sustainability with ad monetization",
+          "Complete Display Lab Phase 2-C",
+          "Optimize existing projects with SEO + GA4"
+        ]
+      },
+      "mid_term": {
+        "title": "Mid-term (2026)",
+        "items": [
+          "Transform BookSalon into community platform",
+          "Build premium feature revenue model",
+          "Stable operation of 10+ production services"
+        ]
       }
     },
     "contact": {

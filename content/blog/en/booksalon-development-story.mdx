@@ -1,0 +1,105 @@
+---
+title: Building BookSalon - From Firebase to Supabase and a 70% Bundle Reduction
+description: The story behind BookSalon's migration from Firebase to Supabase, the challenges of designing RLS policies through three iterations, and how we cut bundle size by 70%.
+date: 2026-02-23
+---
+
+BookSalon is the project that taught SidequestLab the most. Building a community platform for sharing knowledge and discussing books pushed us through infrastructure migration, security policy design, and frontend optimization. This is the honest story of that journey.
+
+## What Is BookSalon?
+
+BookSalon is a platform that transforms reading from a solitary activity into a shared experience. Users can write book reviews, engage in discussions with other readers, and manage their reading history. It is not just a reading tracker but a knowledge-sharing community built around books.
+
+Key features include:
+
+- Book search and detailed information lookup
+- Reviews with star ratings
+- User profiles and reading statistics
+- Book club management
+
+## Why We Started with Firebase
+
+Firebase was the natural choice for the initial build. The reasoning was straightforward.
+
+- **Rapid prototyping**: Firebase's real-time database and authentication were ideal for building an MVP quickly
+- **Serverless architecture**: Core features could be implemented without managing a separate backend server
+- **Team familiarity**: We had already used Firebase successfully in other SidequestLab projects
+
+We shipped the first version quickly and validated that the core functionality worked as intended.
+
+## Why We Moved to Supabase
+
+As features expanded, Firebase's limitations became increasingly apparent.
+
+**Cost structure**: Firebase's read/write pricing model works against community platforms. As users grow, costs scale in ways that are difficult to predict and budget for.
+
+**Row Level Security**: While Firebase Security Rules are capable, PostgreSQL-based RLS enforces access control at the database level, providing a more robust security guarantee that cannot be bypassed by client-side code.
+
+**Scalability**: A SQL-based relational database handles complex queries and data relationships far more flexibly. The relationships between reviews, users, and books could be expressed naturally through foreign keys and joins.
+
+## The Migration Challenge
+
+Moving to Supabase was not a simple data transfer. It was a full-scale replacement of 12 services.
+
+### Replacing All 12 Services
+
+Every service that depended on the Firebase SDK, including authentication, data queries, and file storage, was rewritten to use the Supabase client. We deliberately chose complete replacement over incremental addition. Adding a new system while keeping the old one running creates confusion and subtle bugs that are painful to diagnose.
+
+### RLS Policy Design - Three Iterations
+
+Designing RLS policies proved far more challenging than anticipated. It took three full iterations to get right.
+
+**First attempt**: We configured basic CRUD permissions but failed to account for real usage scenarios. Users could edit reviews that did not belong to them, a critical access control gap.
+
+**Second iteration**: We refined the permission structure but discovered a mismatch between `auth_id` and `users.id`. The `auth.uid()` provided by Supabase Auth differed from the application-level user ID, causing RLS policies to behave unexpectedly in certain scenarios.
+
+**Third iteration**: We redesigned all RLS policies around `auth_id` as the single source of truth, adding an `auth_id` column to the `users` table for explicit mapping. During this phase, we introduced E2E tests to automatically verify every permission scenario, ultimately achieving **100% E2E test pass rate**.
+
+### The auth_id vs users.id Problem
+
+This issue deserves special attention. In Supabase, the `auth.users` table ID and the application's `public.users` table ID are separate entities. Initially, we conflated these two IDs, leading to a perplexing situation where "login works but data is invisible."
+
+The solution was to add an `auth_id` field to the `public.users` table and use `auth.uid() = users.auth_id` as the condition in all RLS policies. It sounds simple in retrospect, but reaching this understanding required significant debugging time.
+
+## React Router v7 and Bundle Optimization
+
+Alongside the Supabase migration, we overhauled the frontend architecture.
+
+### From SPA to a True Web Application
+
+Adopting React Router v7 transformed BookSalon from a basic Single Page Application into a server-side rendering capable web application. This delivered improved SEO, faster initial load times, and a better overall user experience.
+
+### From 927KB to 278KB
+
+Through systematic bundle analysis, we identified and eliminated unnecessary dependencies and duplicate code. The result was a **reduction in initial bundle size from 927KB to 278KB, approximately 70%**.
+
+Key optimization measures included:
+
+- Complete removal of unused Firebase SDK modules
+- Route-based code splitting with lazy loading
+- Tree shaking optimization
+- Image and asset optimization
+
+## Lessons Learned
+
+The BookSalon project produced principles that now apply across all of SidequestLab.
+
+**Infrastructure first**: Set up infrastructure (database, environment variables, deployment environment) before writing application code. Writing code without infrastructure in place leads to far higher integration costs later.
+
+**QA is non-negotiable**: Code review alone is insufficient. Deploying without QA verification in a real environment invites unexpected failures. BookSalon's RLS issues drove this lesson home.
+
+**Replace, do not extend**: During migration, replace the old system entirely rather than adding the new system alongside it. Two systems coexisting is a reliable source of confusion and bugs.
+
+## What Comes Next
+
+BookSalon is currently at v0.4, progressing toward a v1.0 public launch.
+
+- **Enhanced community features**: Book club creation and management, discussion threads
+- **OAuth integration**: Google and Kakao social login support
+- **v1.0 public launch**: Full stability validation followed by open release
+
+We hope BookSalon becomes a meaningful space for people who love books.
+
+---
+
+The SidequestLab Team

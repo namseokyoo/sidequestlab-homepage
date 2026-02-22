@@ -78,6 +78,24 @@ export const projects: Project[] = [
       ko: '책 중심 지식 공유 및 토론 커뮤니티 플랫폼',
       en: 'Book-centered knowledge sharing and discussion community platform'
     },
+    longDescription: {
+      ko: '북살롱은 책을 중심으로 지식을 공유하고 토론하는 커뮤니티 플랫폼입니다. 독서 기록을 관리하고, 책에 대한 의견을 나누며, 같은 관심사를 가진 독서가들과 연결될 수 있습니다. Firebase에서 Supabase로 전면 마이그레이션하며 거버넌스 체계를 대폭 강화했습니다.',
+      en: 'BookSalon is a community platform for sharing knowledge and discussing ideas centered around books. You can manage reading logs, share opinions on books, and connect with readers who share your interests. A full migration from Firebase to Supabase significantly strengthened our governance system.',
+    },
+    features: {
+      ko: [
+        '독서 기록 - 읽은 책을 기록하고 별점과 메모 관리',
+        '토론 게시판 - 책별 의견 공유 및 토론',
+        '독서 배지 - 활동에 따른 성취 배지 시스템',
+        'Supabase RLS - Row Level Security로 안전한 데이터 관리',
+      ],
+      en: [
+        'Reading logs - Record books with ratings and notes',
+        'Discussion boards - Share opinions and discuss by book',
+        'Reading badges - Achievement badge system based on activity',
+        'Supabase RLS - Secure data management with Row Level Security',
+      ],
+    },
     url: 'https://booksalon-nine.vercel.app',
     github: 'https://github.com/namseokyoo/booksalon',
     techStack: ['React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Vite'],
@@ -97,6 +115,24 @@ export const projects: Project[] = [
     description: {
       ko: '디스플레이 엔지니어를 위한 전문 분석 플랫폼',
       en: 'Professional analysis platform for display engineers'
+    },
+    longDescription: {
+      ko: 'Display Lab은 디스플레이 엔지니어를 위한 전문 분석 플랫폼입니다. 색역 분석, 시야각 측정, HDR 성능 평가 등 8개 모듈을 제공하며, 다국어를 지원합니다. 연구 데이터를 시각적으로 분석하고 보고서를 생성할 수 있습니다.',
+      en: 'Display Lab is a professional analysis platform for display engineers. It provides 8 modules including color gamut analysis, viewing angle measurement, and HDR performance evaluation with multilingual support. You can visually analyze research data and generate reports.',
+    },
+    features: {
+      ko: [
+        '색역 분석 - sRGB, DCI-P3, BT.2020 색역 커버리지 측정',
+        '시야각 분석 - 각도별 색 변화 및 휘도 감소 분석',
+        'HDR 성능 - 명암비, 피크 휘도, 톤 매핑 평가',
+        '다국어 지원 - 한국어, 영어, 일본어 인터페이스',
+      ],
+      en: [
+        'Color gamut analysis - sRGB, DCI-P3, BT.2020 coverage measurement',
+        'Viewing angle analysis - Color shift and luminance decrease by angle',
+        'HDR performance - Contrast ratio, peak brightness, tone mapping evaluation',
+        'Multilingual support - Korean, English, Japanese interface',
+      ],
     },
     url: 'https://displaylab.vercel.app',
     github: 'https://github.com/namseokyoo/displaylab',
@@ -198,6 +234,22 @@ export const projects: Project[] = [
       ko: '가벼운 이것저것 투표 앱',
       en: 'Fun this-or-that voting app'
     },
+    longDescription: {
+      ko: 'Thisor(디스올)은 가벼운 이것저것 투표 앱입니다. 두 가지 선택지 중 하나를 고르는 간단한 투표를 만들고 공유할 수 있습니다. 1일 MVP로 개발되어 빠른 실행의 좋은 사례가 되었습니다.',
+      en: 'Thisor is a fun this-or-that voting app. Create and share simple polls where people choose between two options. Built as a 1-day MVP, it became a great example of fast execution.',
+    },
+    features: {
+      ko: [
+        '투표 생성 - 두 가지 선택지로 간단한 투표 만들기',
+        '실시간 결과 - 투표 현황 실시간 확인',
+        '공유 링크 - URL로 간편하게 투표 공유',
+      ],
+      en: [
+        'Create polls - Make simple polls with two options',
+        'Real-time results - See voting results in real-time',
+        'Share links - Easily share polls via URL',
+      ],
+    },
     url: 'https://thisor-theta.vercel.app',
     github: 'https://github.com/namseokyoo/thisor',
     techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase'],
@@ -217,6 +269,24 @@ export const projects: Project[] = [
     description: {
       ko: '실시간 협업 노트 앱',
       en: 'Real-time collaborative note-taking app'
+    },
+    longDescription: {
+      ko: 'LiveNote는 실시간으로 여러 사용자가 동시에 편집할 수 있는 협업 노트 앱입니다. TipTap 에디터 기반의 리치 텍스트 편집을 지원하며, Supabase 실시간 기능으로 변경사항이 즉시 동기화됩니다. QA 없이 배포하여 장애가 발생한 경험을 통해 프로덕션 배포 규칙이 수립된 프로젝트입니다.',
+      en: 'LiveNote is a collaborative note app where multiple users can edit simultaneously in real-time. It supports rich text editing based on the TipTap editor, with changes synced instantly through Supabase real-time features. Deploying without QA led to an incident that established our production deployment rules.',
+    },
+    features: {
+      ko: [
+        '실시간 동시 편집 - 여러 사용자가 동시에 문서 편집',
+        '리치 텍스트 - TipTap 기반 다양한 서식 지원',
+        '자동 저장 - 변경사항 자동 저장 및 동기화',
+        '노트 관리 - 폴더별 노트 정리 및 검색',
+      ],
+      en: [
+        'Real-time co-editing - Multiple users edit documents simultaneously',
+        'Rich text - Various formatting with TipTap editor',
+        'Auto-save - Automatic saving and syncing of changes',
+        'Note management - Organize and search notes by folder',
+      ],
     },
     url: 'https://livenote-nine.vercel.app',
     github: 'https://github.com/namseokyoo/livenote',
@@ -298,6 +368,22 @@ export const projects: Project[] = [
       ko: 'Telegram ↔ Claude Code 양방향 자동화 시스템',
       en: 'Telegram ↔ Claude Code bidirectional automation system'
     },
+    longDescription: {
+      ko: 'n8n 자동화 시스템은 Telegram과 Claude Code를 양방향으로 연결하는 워크플로우 자동화 플랫폼입니다. 음성 메시지를 Groq Whisper로 텍스트 변환하고, 자동으로 작업을 처리하여 결과를 보고합니다.',
+      en: 'The n8n automation system is a workflow automation platform that bidirectionally connects Telegram and Claude Code. It converts voice messages to text using Groq Whisper and automatically processes tasks to report results.',
+    },
+    features: {
+      ko: [
+        'Telegram 연동 - 메시지로 작업 지시 및 결과 수신',
+        '음성 인식 - Groq Whisper로 음성 메시지 텍스트 변환',
+        '자동 워크플로우 - n8n 기반 자동화 파이프라인',
+      ],
+      en: [
+        'Telegram integration - Send instructions and receive results via messages',
+        'Voice recognition - Convert voice messages to text with Groq Whisper',
+        'Auto workflows - n8n-based automation pipelines',
+      ],
+    },
     url: '#',
     github: 'https://github.com/namseokyoo/n8n-automation',
     techStack: ['n8n', 'Node.js', 'Telegram Bot API', 'Groq Whisper'],
@@ -317,6 +403,22 @@ export const projects: Project[] = [
     description: {
       ko: '프로덕션 서비스 모니터링 시스템',
       en: 'Production service monitoring system'
+    },
+    longDescription: {
+      ko: '프로덕션 서비스의 가용성과 성능을 모니터링하는 시스템입니다. UptimeRobot으로 서비스 상태를 실시간 감시하고, Sentry로 에러를 추적하여 장애를 빠르게 감지하고 대응합니다.',
+      en: 'A system for monitoring the availability and performance of production services. It monitors service status in real-time with UptimeRobot and tracks errors with Sentry for fast incident detection and response.',
+    },
+    features: {
+      ko: [
+        '업타임 모니터링 - 서비스 가용성 실시간 감시',
+        '에러 추적 - Sentry 기반 에러 수집 및 분석',
+        '장애 알림 - 서비스 다운 시 즉시 알림',
+      ],
+      en: [
+        'Uptime monitoring - Real-time service availability tracking',
+        'Error tracking - Sentry-based error collection and analysis',
+        'Incident alerts - Instant notifications on service downtime',
+      ],
     },
     url: '#',
     techStack: ['UptimeRobot', 'Sentry'],

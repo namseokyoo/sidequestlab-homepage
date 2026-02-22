@@ -40,6 +40,26 @@ export async function generateMetadata({
     icons: {
       icon: '/favicon.ico',
     },
+    openGraph: {
+      title: metadata.title || 'SidequestLab',
+      description: metadata.description || '',
+      url: 'https://sidequestlab-homepage.vercel.app',
+      siteName: 'SidequestLab',
+      locale: locale === 'ko' ? 'ko_KR' : 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: metadata.title || 'SidequestLab',
+      description: metadata.description || '',
+    },
+    alternates: {
+      canonical: `https://sidequestlab-homepage.vercel.app/${locale}`,
+      languages: {
+        'ko': 'https://sidequestlab-homepage.vercel.app/ko',
+        'en': 'https://sidequestlab-homepage.vercel.app/en',
+      },
+    },
   };
 }
 
@@ -59,7 +79,19 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              var theme = localStorage.getItem('theme');
+              if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+              }
+            })();
+          `
+        }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-white dark:bg-gray-950`}
       >

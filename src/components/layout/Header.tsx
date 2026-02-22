@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 import { useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
+import ThemeToggle from '../ui/ThemeToggle';
 
 export default function Header() {
   const t = useTranslations('nav');
@@ -51,11 +52,13 @@ export default function Header() {
               )}
             </Link>
           ))}
+          <ThemeToggle />
           <LanguageSwitcher />
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="flex items-center gap-4 md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <LanguageSwitcher />
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

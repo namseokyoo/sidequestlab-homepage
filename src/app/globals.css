@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #111827;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -10,13 +17,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -128,13 +128,19 @@ a, button {
   color: #6b7280;
 }
 
-@media (prefers-color-scheme: dark) {
-  .prose code {
-    background-color: #374151;
-  }
+.dark .prose code {
+  background-color: #374151;
+}
 
-  .prose blockquote {
-    border-left-color: #4b5563;
-    color: #9ca3af;
-  }
+.dark .prose blockquote {
+  border-left-color: #4b5563;
+  color: #9ca3af;
+}
+
+.dark .prose a {
+  color: #60a5fa;
+}
+
+.dark .prose a:hover {
+  color: #93bbfd;
 }
