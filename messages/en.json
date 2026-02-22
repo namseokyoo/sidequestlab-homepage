@@ -11,9 +11,27 @@
   },
   "home": {
     "hero": {
-      "title": "SidequestLab",
-      "subtitle": "A laboratory that creates value through various side projects",
-      "description": "A space where ideas become reality. Starting from small projects, we deliver real value to users."
+      "title": "A Lab That Creates Value\nThrough Side Projects",
+      "subtitle": "We gather people with compelling ideas and create sustainable value within communities",
+      "cta_projects": "View Projects",
+      "cta_about": "About Us"
+    },
+    "stats": {
+      "projects": "Projects",
+      "projects_count": "13",
+      "services": "Live Services",
+      "services_count": "8",
+      "techstack": "Tech Stacks",
+      "techstack_count": "10+"
+    },
+    "featured_projects": {
+      "title": "Featured Projects",
+      "subtitle": "Our key projects currently in operation",
+      "view_all": "View All Projects"
+    },
+    "recent_blog": {
+      "title": "Recent Blog Posts",
+      "view_all": "View All Posts"
     },
     "featured": {
       "title": "Featured Projects",
@@ -27,6 +45,7 @@
   "projects": {
     "title": "Projects",
     "subtitle": "Discover the services we've built",
+    "featured": "Featured",
     "visitSite": "Visit Site",
     "viewDetails": "View Details",
     "techStack": "Tech Stack",
@@ -53,7 +72,12 @@
   "about": {
     "title": "About Us",
     "vision": {
-      "title": "Vision",
+      "title": "Our Vision",
+      "quote": "A lab that gathers people with compelling ideas and creates sustainable value within communities",
+      "vision_title": "Vision",
+      "vision_desc": "We become a lab that simultaneously creates technical and business value through diverse side projects.",
+      "mission_title": "Mission",
+      "mission_desc": "We rapidly bring ideas to life with our AI agent team and grow sustainably through transparent processes.",
       "content": "To become a laboratory that creates big value from small ideas."
     },
     "mission": {
@@ -73,7 +97,22 @@
       "value": {
         "title": "Value",
         "description": "Providing real value to users is our reason for existence."
-      }
+      },
+      "items_1_name": "Fast Execution",
+      "items_1_desc": "We prioritize execution over perfection. Build MVPs fast and validate in the market.",
+      "items_1_icon": "🚀",
+      "items_2_name": "Continuous Learning",
+      "items_2_desc": "We extract lessons from every project and apply them to the next.",
+      "items_2_icon": "📚",
+      "items_3_name": "Transparent Records",
+      "items_3_desc": "We document all decisions and progress so anyone can track them.",
+      "items_3_icon": "📝",
+      "items_4_name": "Critical Review",
+      "items_4_desc": "We improve decision quality through multi-faceted reviews by our Board Advisor.",
+      "items_4_icon": "🔍",
+      "items_5_name": "Data-Driven",
+      "items_5_desc": "We continuously improve through data and retrospectives, not gut feelings.",
+      "items_5_icon": "📊"
     },
     "organization": {
       "title": "Organization Structure",
@@ -121,6 +160,16 @@
         "devops": { "name": "DevOps Engineer", "task": "Deployment, CI/CD, Monitoring" },
         "content": { "name": "Content Writer", "task": "Blog, SEO, Documentation" },
         "growth": { "name": "Growth Marketer", "task": "User analytics, Marketing strategy" }
+      },
+      "members": {
+        "neumann": { "name": "노이만", "role": "CEO Agent", "desc": "Strategy, coordination, delegation" },
+        "turing": { "name": "튜링", "role": "Fullstack Developer", "desc": "Web/App development" },
+        "hamilton": { "name": "해밀턴", "role": "QA Engineer", "desc": "Quality verification, test automation" },
+        "torvalds": { "name": "토발즈", "role": "DevOps Engineer", "desc": "Deployment, CI/CD" },
+        "oppenheimer": { "name": "오펜하이머", "role": "Board Advisor", "desc": "Decision review, risk assessment" },
+        "herodotus": { "name": "헤로도토스", "role": "Company Historian", "desc": "Records, retrospectives, documentation" },
+        "sagan": { "name": "세이건", "role": "Content Writer", "desc": "Blog, SEO" },
+        "fermi": { "name": "페르미", "role": "Growth Marketer", "desc": "Marketing, analytics" }
       }
     },
     "workflow": {
@@ -162,7 +211,7 @@
     },
     "contact": {
       "title": "Contact",
-      "email": "Email"
+      "email": "namseok.yoo@gmail.com"
     }
   },
   "blog": {

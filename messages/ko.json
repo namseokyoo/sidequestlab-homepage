@@ -11,9 +11,27 @@
   },
   "home": {
     "hero": {
-      "title": "SidequestLab",
-      "subtitle": "다양한 사이드 프로젝트를 통해 가치를 창출하는 실험실",
-      "description": "아이디어를 현실로 만드는 공간입니다. 작은 프로젝트부터 시작해 사용자에게 실질적인 가치를 전달합니다."
+      "title": "다양한 사이드 프로젝트로\n가치를 만드는 실험실",
+      "subtitle": "매력적인 아이디어로 사람을 모으고, 커뮤니티 안에서 지속 가능한 가치를 창출합니다",
+      "cta_projects": "프로젝트 보기",
+      "cta_about": "회사 소개"
+    },
+    "stats": {
+      "projects": "프로젝트",
+      "projects_count": "13",
+      "services": "서비스 운영",
+      "services_count": "8",
+      "techstack": "기술스택",
+      "techstack_count": "10+"
+    },
+    "featured_projects": {
+      "title": "주요 프로젝트",
+      "subtitle": "현재 운영 중인 핵심 프로젝트들",
+      "view_all": "전체 프로젝트 보기"
+    },
+    "recent_blog": {
+      "title": "최근 블로그",
+      "view_all": "전체 글 보기"
     },
     "featured": {
       "title": "주요 프로젝트",
@@ -27,6 +45,7 @@
   "projects": {
     "title": "프로젝트",
     "subtitle": "우리가 만든 서비스들을 소개합니다",
+    "featured": "추천",
     "visitSite": "사이트 방문",
     "viewDetails": "자세히 보기",
     "techStack": "기술 스택",
@@ -53,7 +72,12 @@
   "about": {
     "title": "회사 소개",
     "vision": {
-      "title": "비전",
+      "title": "우리의 비전",
+      "quote": "매력적인 아이디어로 사람을 모으고, 커뮤니티 안에서 지속 가능한 가치를 창출하는 실험실",
+      "vision_title": "비전",
+      "vision_desc": "다양한 사이드 프로젝트를 통해 기술적 가치와 사업적 가치를 동시에 창출하는 실험실이 됩니다.",
+      "mission_title": "미션",
+      "mission_desc": "AI 에이전트 팀과 함께 아이디어를 빠르게 실현하고, 투명한 프로세스로 지속 성장합니다.",
       "content": "작은 아이디어로 큰 가치를 만드는 실험실이 되겠습니다."
     },
     "mission": {
@@ -73,12 +97,27 @@
       "value": {
         "title": "가치",
         "description": "사용자에게 실질적인 가치를 제공하는 것이 우리의 존재 이유입니다."
-      }
+      },
+      "items_1_name": "빠른 실행",
+      "items_1_desc": "완벽보다 실행을 우선합니다. MVP를 빠르게 만들고 시장에서 검증합니다.",
+      "items_1_icon": "🚀",
+      "items_2_name": "지속적 학습",
+      "items_2_desc": "모든 프로젝트에서 교훈을 추출하고 다음에 반영합니다.",
+      "items_2_icon": "📚",
+      "items_3_name": "투명한 기록",
+      "items_3_desc": "모든 의사결정과 진행 상황을 문서화하여 누구나 추적할 수 있게 합니다.",
+      "items_3_icon": "📝",
+      "items_4_name": "비판적 검토",
+      "items_4_desc": "Board Advisor를 통한 다각적 검토로 의사결정의 품질을 높입니다.",
+      "items_4_icon": "🔍",
+      "items_5_name": "데이터 기반",
+      "items_5_desc": "감이 아닌 데이터와 회고를 통해 지속적으로 개선합니다.",
+      "items_5_icon": "📊"
     },
     "organization": {
       "title": "조직 구조",
       "subtitle": "체계적인 업무 프로세스로 효율적인 프로젝트 진행",
-      "owner": "회장님",
+      "owner": "회장",
       "ownerRole": "Owner",
       "ceo": "CEO Agent",
       "ceoRole": "Orchestrator",
@@ -111,7 +150,7 @@
       }
     },
     "team": {
-      "title": "팀원 현황",
+      "title": "팀 구성",
       "roles": {
         "ceo": { "name": "CEO Agent", "task": "계획 수립, Task 위임, 진행 관리" },
         "advisor": { "name": "Board Advisor", "task": "PRD 검토, 기술 자문, 리스크 분석" },
@@ -121,6 +160,16 @@
         "devops": { "name": "DevOps Engineer", "task": "배포, CI/CD, 모니터링" },
         "content": { "name": "Content Writer", "task": "블로그, SEO, 문서 작성" },
         "growth": { "name": "Growth Marketer", "task": "사용자 분석, 마케팅 전략" }
+      },
+      "members": {
+        "neumann": { "name": "노이만", "role": "CEO Agent", "desc": "전략, 조율, 위임" },
+        "turing": { "name": "튜링", "role": "Fullstack Developer", "desc": "웹/앱 개발" },
+        "hamilton": { "name": "해밀턴", "role": "QA Engineer", "desc": "품질 검증, 테스트 자동화" },
+        "torvalds": { "name": "토발즈", "role": "DevOps Engineer", "desc": "배포, CI/CD" },
+        "oppenheimer": { "name": "오펜하이머", "role": "Board Advisor", "desc": "의사결정 검토, 리스크 평가" },
+        "herodotus": { "name": "헤로도토스", "role": "Company Historian", "desc": "기록, 회고, 문서화" },
+        "sagan": { "name": "세이건", "role": "Content Writer", "desc": "블로그, SEO" },
+        "fermi": { "name": "페르미", "role": "Growth Marketer", "desc": "마케팅, 분석" }
       }
     },
     "workflow": {
@@ -150,7 +199,7 @@
       }
     },
     "documents": {
-      "title": "문서 체계",
+      "title": "문서 시스템",
       "subtitle": "모든 의사결정과 지식을 체계적으로 관리",
       "items": {
         "decisions": { "name": "DECISIONS.md", "desc": "의사결정 로그" },
@@ -162,7 +211,7 @@
     },
     "contact": {
       "title": "연락처",
-      "email": "이메일"
+      "email": "namseok.yoo@gmail.com"
     }
   },
   "blog": {
