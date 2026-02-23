@@ -218,26 +218,72 @@
   "workflow_page": {
     "title": "워크플로우",
     "subtitle": "SidequestLab의 핵심 업무 프로세스와 의사결정 흐름을 소개합니다",
+    "hero_stats": {
+      "decisions": "의사결정",
+      "decisions_count": "84",
+      "rules": "강제 규칙",
+      "rules_count": "15",
+      "quality_gates": "품질 게이트",
+      "quality_gates_count": "8단계",
+      "llm_models": "LLM 모델",
+      "llm_models_count": "4종"
+    },
+    "navigation": {
+      "project_lifecycle": "프로젝트 라이프사이클",
+      "decision_process": "의사결정 프로세스",
+      "quality_gate": "품질 게이트",
+      "tech_review": "신기술 검토"
+    },
+    "legend": {
+      "title": "역할 범례",
+      "roles": {
+        "chairman": "회장님",
+        "ceo": "CEO Agent",
+        "dev": "Fullstack Dev",
+        "qa": "QA Engineer",
+        "devops": "DevOps",
+        "advisor": "Board Advisor",
+        "historian": "Historian",
+        "content": "Content Writer",
+        "growth": "Growth Marketer"
+      }
+    },
+    "cta": {
+      "title": "이 모든 프로세스가 AI 에이전트로 운영됩니다",
+      "subtitle": "사람은 회장님 한 명, 나머지는 모두 AI 에이전트",
+      "button": "회사 소개 보기"
+    },
     "sections": {
       "project_lifecycle": {
-        "title": "프로젝트 개발 라이프사이클",
-        "description": "모든 프로젝트는 PRD 작성부터 회고까지 체계적인 프로세스를 따릅니다. QA 검증 없이는 배포할 수 없으며, 모든 과정이 문서화됩니다.",
-        "constraints": ["QA 검증 없이 프로덕션 배포 금지", "모든 프로젝트는 PRD 승인 후 시작", "배포 후 검증 필수"]
-      },
-      "tech_review": {
-        "title": "신기술 검토 프로토콜",
-        "description": "새로운 기술이나 도구 도입 시 반드시 회사 적합성을 먼저 평가합니다. Board Advisor의 크로스체크를 거쳐 객관적인 판단을 보장합니다.",
-        "constraints": ["회사 적합성 체크 없이 전략 수립 금지", "Board Advisor 크로스체크 필수", "모든 검토 결과 DECISIONS.md 기록"]
-      },
-      "org_structure": {
-        "title": "조직 구조도",
-        "description": "AI 에이전트 팀은 과학자 이름을 사용하며, CEO Agent가 전체 업무를 조율합니다. 모든 팀원은 회장님과 CEO에게 직접 의견을 개진할 수 있습니다."
+        "title": "프로젝트 라이프사이클",
+        "description": "PRD 작성부터 배포 후 검증까지, S/A/B/L 등급 분류와 3중 QA 검증을 거치는 체계적 프로세스",
+        "constraints": ["QA 검증 없이 프로덕션 배포 금지", "모든 프로젝트는 PRD 승인 후 시작", "배포 후 URL 검증 필수 (PROJECTS.md SSOT)"]
       },
       "decision_process": {
         "title": "의사결정 프로세스",
-        "description": "주요 의사결정은 CEO가 분석하고 Board Advisor의 크로스체크를 거칩니다. 모든 결정은 DECISIONS.md에 기록되어 투명하게 관리됩니다.",
-        "constraints": ["모든 의사결정 DECISIONS.md 기록 필수", "Board Advisor 검토 후 최종 결정", "HISTORY.md 연혁 동기화"]
+        "description": "이슈 발생부터 규칙 강화까지, CEO-Advisor 견제 체계와 사고→규칙화 폐쇄 루프",
+        "constraints": ["CEO는 Edit/Write 도구 사용 금지", "Board Advisor 크로스체크 필수", "모든 결정은 DEC 번호 부여 후 기록"]
+      },
+      "quality_gate": {
+        "title": "8단계 품질 게이트",
+        "description": "Syntax부터 Integration까지 8단계 자동 검증 파이프라인. Dev→QA→DevOps 3중 역할 분리",
+        "constraints": ["각 단계 실패 시 해당 단계로 롤백", "3중 검증: Dev(기능) → QA(품질) → DevOps(배포)", "커버리지 80% 이상 필수"]
+      },
+      "tech_review": {
+        "title": "신기술 검토 프로토콜",
+        "description": "회사 적합성 사전 체크를 가장 먼저, Board Advisor 크로스체크로 객관성 확보",
+        "constraints": ["회사 적합성 체크가 가장 먼저", "Board Advisor 크로스체크 필수", "검토 결과 DECISIONS.md 기록"]
       }
+    },
+    "detail_panel": {
+      "description": "설명",
+      "rules": "관련 규칙",
+      "examples": "실제 사례",
+      "close": "닫기"
+    },
+    "tooltip": {
+      "related_rules": "관련 규칙",
+      "more": "개 더..."
     }
   },
   "blog": {

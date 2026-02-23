@@ -218,26 +218,72 @@
   "workflow_page": {
     "title": "Workflow",
     "subtitle": "Explore the core processes and decision-making flows of SidequestLab",
+    "hero_stats": {
+      "decisions": "Decisions",
+      "decisions_count": "84",
+      "rules": "Enforced Rules",
+      "rules_count": "15",
+      "quality_gates": "Quality Gates",
+      "quality_gates_count": "8 Steps",
+      "llm_models": "LLM Models",
+      "llm_models_count": "4 Types"
+    },
+    "navigation": {
+      "project_lifecycle": "Project Lifecycle",
+      "decision_process": "Decision Process",
+      "quality_gate": "Quality Gate",
+      "tech_review": "Tech Review"
+    },
+    "legend": {
+      "title": "Role Legend",
+      "roles": {
+        "chairman": "Chairman",
+        "ceo": "CEO Agent",
+        "dev": "Fullstack Dev",
+        "qa": "QA Engineer",
+        "devops": "DevOps",
+        "advisor": "Board Advisor",
+        "historian": "Historian",
+        "content": "Content Writer",
+        "growth": "Growth Marketer"
+      }
+    },
+    "cta": {
+      "title": "All these processes are operated by AI agents",
+      "subtitle": "Only one human — the Chairman. Everyone else is an AI agent.",
+      "button": "About Us"
+    },
     "sections": {
       "project_lifecycle": {
-        "title": "Project Development Lifecycle",
-        "description": "Every project follows a systematic process from PRD creation to retrospective. No deployment without QA verification, and every step is documented.",
-        "constraints": ["No production deployment without QA verification", "All projects start after PRD approval", "Post-deployment verification required"]
-      },
-      "tech_review": {
-        "title": "New Technology Review Protocol",
-        "description": "When introducing new technologies or tools, company fit is always evaluated first. Board Advisor cross-check ensures objective judgment.",
-        "constraints": ["No strategy without company fit check", "Board Advisor cross-check mandatory", "All review results recorded in DECISIONS.md"]
-      },
-      "org_structure": {
-        "title": "Organization Chart",
-        "description": "The AI agent team uses scientist names, with the CEO Agent coordinating all operations. Every team member can directly share opinions with the Chairman and CEO."
+        "title": "Project Lifecycle",
+        "description": "From PRD creation to post-deploy verification, with S/A/B/L grade classification and 3-tier QA verification",
+        "constraints": ["No production deployment without QA verification", "All projects start after PRD approval", "Post-deploy URL verification required (PROJECTS.md SSOT)"]
       },
       "decision_process": {
         "title": "Decision-Making Process",
-        "description": "Major decisions are analyzed by the CEO and cross-checked by the Board Advisor. All decisions are recorded in DECISIONS.md for transparent management.",
-        "constraints": ["All decisions must be recorded in DECISIONS.md", "Final decision after Board Advisor review", "HISTORY.md synchronization"]
+        "description": "From issue occurrence to rule enforcement, with CEO-Advisor check system and incident-to-rule closure loop",
+        "constraints": ["CEO cannot use Edit/Write tools", "Board Advisor cross-check mandatory", "All decisions recorded with DEC number"]
+      },
+      "quality_gate": {
+        "title": "8-Step Quality Gate",
+        "description": "Automated 8-step verification pipeline from Syntax to Integration. Dev-QA-DevOps 3-tier role separation",
+        "constraints": ["Rollback to failed step on failure", "3-tier: Dev(functional) - QA(quality) - DevOps(deploy)", "80%+ coverage required"]
+      },
+      "tech_review": {
+        "title": "Tech Review Protocol",
+        "description": "Company fit pre-check comes first, objectivity ensured through Board Advisor cross-check",
+        "constraints": ["Company fit check comes first", "Board Advisor cross-check mandatory", "Review results recorded in DECISIONS.md"]
       }
+    },
+    "detail_panel": {
+      "description": "Description",
+      "rules": "Related Rules",
+      "examples": "Real Cases",
+      "close": "Close"
+    },
+    "tooltip": {
+      "related_rules": "Related Rules",
+      "more": " more..."
     }
   },
   "blog": {
