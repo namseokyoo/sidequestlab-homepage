@@ -6,7 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://sidequestlab-homepage.vercel.app';
   const locales = ['ko', 'en'];
 
-  const staticPages = ['', '/projects', '/about', '/blog'];
+  const staticPages = ['', '/projects', '/about', '/blog', '/workflow'];
 
   const entries: MetadataRoute.Sitemap = [];
 
