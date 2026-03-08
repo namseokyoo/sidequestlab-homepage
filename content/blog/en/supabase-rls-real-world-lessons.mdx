@@ -1,0 +1,285 @@
+---
+title: "Supabase RLS in the Real World — From 30% to 100% on 33 Test Scenarios"
+description: "A candid account of RLS struggles in BookSalon: auth.uid() vs users.id mismatches, .single() misuse, and social feed policy conflicts. How we survived 3 rounds of fixes to hit 100% E2E pass rate."
+date: 2026-03-10
+author: SidequestLab
+tags:
+  - supabase
+  - rls
+  - row-level-security
+  - postgresql
+  - booksalon
+  - tech-blog
+---
+
+Honestly, we underestimated RLS.
+
+"It's just DB-level security, right? Add a few policies and you're done." That assumption cost us dearly. We faced a 30.3% pass rate — only 10 out of 33 E2E scenarios passing — before three rounds of fixes finally brought us to 100%. Here's the full story.
+
+## Why Is RLS So Hard?
+
+RLS (Row Level Security) is a PostgreSQL feature that controls access at the row level. Supabase builds on this to let you define, at the database layer, exactly who can read or write each row.
+
+Firebase has Security Rules, which serve a similar purpose, but SQL-based RLS is considerably more expressive when dealing with complex relational data conditions.
+
+BookSalon is a reading community platform. We started with Firebase, migrated to Supabase, and decided upfront to implement RLS properly from day one — no "security later" shortcuts. What we didn't anticipate was how much "properly" would demand of us.
+
+## Round 1: Basic RLS Policy Design
+
+Our initial policy pattern was simple. One `FOR ALL` policy to cover most tables:
+
+```sql
+-- Initial approach (problematic)
+ALTER TABLE bookmarks ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage own bookmarks"
+ON bookmarks FOR ALL
+USING (user_id = get_current_user_id())
+WITH CHECK (user_id = get_current_user_id());
+```
+
+`get_current_user_id()` is a helper function that looks up the current user's `users.id` via `auth.uid()`:
+
+```sql
+CREATE OR REPLACE FUNCTION get_current_user_id()
+RETURNS UUID AS $$
+  SELECT id FROM users WHERE auth_id = auth.uid();
+$$ LANGUAGE sql SECURITY DEFINER;
+```
+
+In theory, this looked solid — it handles SELECT, INSERT, UPDATE, and DELETE in one go. Then we ran our E2E test suite.
+
+## 33 Scenarios, 30% Pass Rate
+
+We ran 33 test scenarios across 5 user personas (Alex, Jamie, Morgan, Sam, and Taylor). The result was brutal.
+
+**10 passed. 23 failed. Pass rate: 30.3%.**
+
+We dug in and identified three compounding root causes.
+
+### Failure 1: New User Sign-Up Breaks Immediately
+
+New users hitting the profile setup screen right after registration received a 403 error. Here's why.
+
+`get_current_user_id()` queries the `users` table to find the current user's `id`. But immediately after sign-up, the `users` table record doesn't exist yet. The function returns `NULL`. The `FOR ALL` policy's `WITH CHECK` condition evaluates `NULL = NULL` as `false`, blocking the INSERT.
+
+In other words: users couldn't set up their own profile the moment they created an account.
+
+### Failure 2: auth.uid() vs users.id Mismatch
+
+Code migrated from Firebase had `currentUser.uid` scattered throughout. In Firebase, that's the auth UID. In Supabase, this maps to `auth.uid()`.
+
+The problem: our RLS policies operated on `users.id` (the UUID primary key in our `public.users` table), but some frontend code was still passing the auth-based UID pattern into queries.
+
+```typescript
+// Problematic code (before)
+const { data } = await supabase
+  .from('bookmarks')
+  .select('*')
+  .eq('user_id', currentUser.uid);  // passing auth_id, not users.id
+
+// Correct code (after)
+const { data } = await supabase
+  .from('bookmarks')
+  .select('*')
+  .eq('user_id', userProfile.id);  // using the actual PK from public.users
+```
+
+`auth.uid()` and `users.id` are different values. `auth.uid()` is the Supabase Auth system identifier. `users.id` is the primary key in our application's `public.users` table. Assuming they're interchangeable — especially when migrating from Firebase — causes silent, wide-ranging RLS failures.
+
+### Failure 3: .single() Misuse
+
+Our "is this user following that user?" check looked like this:
+
+```typescript
+// Problematic code
+const { data, error } = await supabase
+  .from('follows')
+  .select('id')
+  .eq('follower_id', currentUserId)
+  .eq('following_id', targetUserId)
+  .single();  // throws PGRST116 (406) when result is empty
+
+const isFollowing = !error && !!data;
+```
+
+`.single()` expects exactly one row. Zero results? You get a PGRST116 error (406). Since checking "are these users not following each other?" would always throw an error, our `isFollowing` logic was producing incorrect states without obvious error messages.
+
+```typescript
+// Correct code
+const { data } = await supabase
+  .from('follows')
+  .select('id')
+  .eq('follower_id', currentUserId)
+  .eq('following_id', targetUserId)
+  .maybeSingle();  // returns null when empty, no error thrown
+
+const isFollowing = !!data;
+```
+
+### Failure 4: activities Table vs Social Feed
+
+The activities table had this SELECT policy:
+
+```sql
+-- Problematic policy
+CREATE POLICY "Users can view own activities"
+ON activities FOR SELECT
+USING (user_id = get_current_user_id());
+```
+
+"Only see your own activities" sounds reasonable. Except our social feed needs to display activity from users you follow. This single policy was completely blocking the core social feed feature.
+
+When designing RLS, you need to answer "who needs to see this data?" before writing any policies.
+
+## Three Rounds of Fixes
+
+### Fix 1: Split FOR ALL into Separate Policies (Pass Rate: 51.6%)
+
+The first thing we addressed was the `FOR ALL` pattern, splitting INSERT from the rest:
+
+```sql
+-- Before: one FOR ALL policy
+CREATE POLICY "Users can manage own bookmarks"
+ON bookmarks FOR ALL
+USING (user_id = get_current_user_id())
+WITH CHECK (user_id = get_current_user_id());
+
+-- After: INSERT separated
+CREATE POLICY "Users can insert own bookmarks"
+ON bookmarks FOR INSERT
+WITH CHECK (
+  EXISTS (SELECT 1 FROM users WHERE users.id = user_id AND users.auth_id = auth.uid())
+);
+
+CREATE POLICY "Users can update own bookmarks"
+ON bookmarks FOR UPDATE
+USING (user_id = get_current_user_id())
+WITH CHECK (user_id = get_current_user_id());
+
+CREATE POLICY "Users can delete own bookmarks"
+ON bookmarks FOR DELETE
+USING (user_id = get_current_user_id());
+```
+
+For INSERT, we bypass `get_current_user_id()` and use `auth.uid()` directly. This lets new users insert records even before their `users` row is fully established.
+
+The `reading_logs` table had an additional FK problem — its `user_id` was referencing `auth.users(id)` instead of `public.users(id)`:
+
+```sql
+-- Fix the FK reference
+ALTER TABLE reading_logs DROP CONSTRAINT IF EXISTS reading_logs_user_id_fkey;
+ALTER TABLE reading_logs ADD CONSTRAINT reading_logs_user_id_fkey
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+```
+
+This brought us to 51.6% — better, but still more than half failing.
+
+### Fix 2: Board Advisor Finds Two Critical Flaws (Pass Rate: 75%)
+
+We ran a Board Advisor cross-check at this point. Two issues were found that the core team had missed.
+
+**Flaw 1**: The activities SELECT policy blocking the social feed (covered above).
+
+**Flaw 2**: Inconsistent ID usage across components. `PostItem.tsx` was already using `userProfile.id` correctly, but other components still relied on `currentUser.uid`. The ID inconsistency was the true root cause of the auth failures — it wasn't just one place.
+
+We updated the activities policy to allow social feed access:
+
+```sql
+-- Updated activities SELECT policy
+DROP POLICY IF EXISTS "Users can view own activities" ON activities;
+
+CREATE POLICY "Users can view followees activities"
+ON activities FOR SELECT
+USING (
+  user_id = get_current_user_id()
+  OR EXISTS (
+    SELECT 1 FROM follows
+    WHERE follower_id = get_current_user_id()
+    AND following_id = activities.user_id
+  )
+);
+```
+
+On the frontend, we searched the entire codebase for `currentUser.uid` usage in queries and standardized everything to `userProfile.id`. Pass rate jumped to 75%.
+
+### Fix 3: Timing Issues Resolved (Pass Rate: 100%)
+
+Two scenarios were still failing.
+
+**Comment display issue**: After posting a comment, the list wasn't refreshing immediately. We had updated `PostItem.tsx`, but the actual comment rendering was happening in `PostDetail.tsx`. We fixed the wrong file.
+
+**Bookmark timing guard**: Bookmark add/remove was intermittently getting its state out of sync due to an optimistic update timing issue. We added a guard to prevent race conditions.
+
+Both fixed. 33/33 scenarios passing. 100%.
+
+## Key Lessons for Other Developers
+
+### Lesson 1: Decide auth_id vs users.id Up Front
+
+When designing your Supabase schema, make one foundational decision early:
+
+> Will RLS policies use auth.uid() directly, or will they operate on a separate users table PK?
+
+If you're migrating from Firebase, pay extra attention. Firebase UIDs map to `auth.uid()` in Supabase, but your application's `public.users.id` (the table's primary key) is a different value. Mixing these up leads to widespread, hard-to-diagnose RLS failures.
+
+Our approach: store `auth_id` in the `users` table, use `auth.uid() = users.auth_id` in RLS conditions, and use `userProfile.id` (users.id) in all frontend queries. Define this convention early and enforce it everywhere.
+
+### Lesson 2: .single() Is for Exactly One Row
+
+Supabase's `.single()` throws an error when the result is empty. For existence checks, always use `.maybeSingle()`.
+
+```typescript
+// Correct pattern for "has the user liked this post?"
+const { data } = await supabase
+  .from('post_likes')
+  .select('id')
+  .eq('post_id', postId)
+  .eq('user_id', userId)
+  .maybeSingle();  // null when not liked, no error
+
+const isLiked = !!data;
+```
+
+This rule is simple, but violating it produces intermittent errors that are frustrating to debug.
+
+### Lesson 3: RLS Must Be Tested End-to-End
+
+RLS policies are extremely difficult to verify with unit tests. Scenarios like "can user A access user B's data?" require a real authentication flow.
+
+We used Playwright to automate 33 scenarios across 5 personas. Without this test suite, we would have shipped with a 30% pass rate and never known it. No amount of code review substitutes for real runtime behavior under real auth conditions.
+
+### Lesson 4: Social Tables Need Explicit SELECT Policy Design
+
+For any table involved in social features — feeds, follows, notifications — ask this question before writing the SELECT policy:
+
+> Who needs to see this data?
+
+Define your answer as a matrix first:
+
+| Table | Who Can Read |
+|-------|-------------|
+| posts | Everyone (public content) |
+| bookmarks | Owner only |
+| activities | Owner + followers |
+| notifications | Owner only |
+
+Write policies after the matrix, not before.
+
+### Lesson 5: Verify Which Component Actually Renders the UI
+
+When debugging, it's tempting to assume "this file handles this feature." Sometimes the component you modify isn't the one that renders what you see on screen. We updated `PostItem.tsx` but the actual comment display was in `PostDetail.tsx`.
+
+Before any fix, confirm in the browser which component is rendering the UI element you're targeting.
+
+## Closing Thoughts
+
+RLS is a powerful primitive, but "doing it right from day one" demands more design upfront than most expect. We hope our 30.3% pass rate crisis serves as a useful preview of what not to do.
+
+We did the painful iteration. Take the lessons and skip straight to 100%.
+
+---
+
+Related: [Building BookSalon — Firebase to Supabase Migration and 70% Bundle Optimization](/blog/booksalon-development-story)
+
+Got a different approach or a question? We'd love to hear it.

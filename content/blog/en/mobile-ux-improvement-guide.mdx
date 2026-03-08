@@ -1,0 +1,244 @@
+---
+title: A Solo Developer's Mobile UX Improvement Journey — Using Stitch Design References
+description: A hands-on guide on how a solo developer without a designer systematically improved BookSalon's UX through Phase 8~9.5, leveraging Stitch design references and an OKLCH design token system.
+date: 2026-03-12
+author: SidequestLab
+tags: [UX, Mobile, Design, SoloDev, BookSalon, Stitch]
+---
+
+"All the features work. But why doesn't it feel polished?"
+
+That was the question I asked myself before launching BookSalon v1.0.0. Reading logs, reviews, discussion threads — all the core features were complete. The Supabase migration was done, RLS policies were 100% passing. But when I actually opened the app, something felt off. Rough around the edges.
+
+The problem was design. And I'm a solo developer without a designer.
+
+This post is an honest account of how I approached UX improvement systematically under those constraints. I'll walk through all seven phases of improvement — from Phase 8 to 9.5 — and share what actually worked.
+
+## The Design System Was There, But the Layout Was Improvised
+
+By Phase 7, I had built a solid design system: OKLCH-based color tokens, 21 semantic colors, Pretendard Variable webfont, a sage-and-amber brand palette. Change one CSS variable and the entire color scheme updates. Clean.
+
+But the layout and UX structure were a different story. They'd been improvised on the fly during development.
+
+- Cards were in a single column, showing very little content per scroll
+- Filters were hidden behind an accordion, requiring an extra tap to access
+- The hero section was oversized and the search bar was a separate section below it — awkward first-impression UX
+- Card image sizes varied wildly on mobile
+
+The design system had laid the foundation. But layout and navigation UX still needed work.
+
+## How to Use Stitch Design References
+
+I used Stitch to tackle this problem. Stitch is Google's design reference tool that lets you explore UI patterns from real apps and web services. For a solo developer without a designer, it's invaluable for quickly developing an intuition for "this is how well-built products solve this problem."
+
+### The "Inspiration → Application" Process
+
+The key to using references well is **not copying them directly**. Here's the process I followed:
+
+1. **Extract the pattern**: Understand *why* a reference uses a particular design — what UX problem does it solve?
+2. **Abstract the principle**: Turn it into a reusable rule, like "exposing filters persistently reduces navigation friction"
+3. **Apply in context**: Adapt it to BookSalon's brand (sage + amber), category (reading community), and users (book lovers)
+
+For example, when I referenced the two-column card grid common in content platforms, I didn't copy the layout. I first understood the principle: "Two columns show more books per screen, encouraging browsing." Then I designed a grid that fit BookSalon's card structure — cover image, title, author, review count.
+
+## Phase 8: The First Major Overhaul
+
+Phase 8 was the first comprehensive redesign based on Stitch references.
+
+### Two-Column Card Grid
+
+**Before**: Cards were in a single column on mobile. Users had to scroll a lot just to see a handful of books.
+
+**After**: Two-column grid. Double the books visible in the same scroll range. Card information hierarchy was also reorganized — cover image first, then title and author, with review count and rating as secondary info.
+
+```tsx
+// Two-column grid implementation
+<div className="grid grid-cols-2 gap-3 px-4">
+  {forums.map((forum) => (
+    <ForumCard key={forum.id} forum={forum} />
+  ))}
+</div>
+```
+
+### Always-Visible Filter Chips
+
+**Before**: Filters were collapsed inside an accordion. To filter by category, users had to open the accordion first.
+
+**After**: Category chips are always visible in a horizontal scroll strip. One tap to filter, no accordion needed.
+
+### Hero Gradient Enhancement
+
+Applied a stronger sage-toned gradient to the hero section, improving the brand's first impression. The goal was to match the "warm library" brand concept — inviting but composed.
+
+## Phase 8.1: Third-Party UX Analysis for Mobile Optimization
+
+After shipping Phase 8, I ran through the app with a structured UX analysis checklist — deliberately trying to look at it as an outsider would.
+
+When you build something alone, familiarity creates blind spots. "That's just how it works" becomes an excuse for friction. The external perspective — examining the app as if seeing it for the first time — revealed issues I'd stopped noticing.
+
+**Mobile issues discovered**:
+- Container padding was too narrow, making content feel cramped against the screen edge
+- The hero section was too tall, pushing cards below the fold on mobile
+- The search bar required scrolling past the hero to reach
+- Card image heights were inconsistent, causing visual instability
+
+**Fixes applied**:
+
+```css
+/* Fixed card image aspect ratio */
+.book-cover {
+  aspect-ratio: 3/4;
+  object-fit: cover;
+}
+```
+
+- Ensured 16px container padding on all sides
+- Reduced hero minimum height so cards are visible without scrolling
+- Moved filter chips to a horizontal scroll strip to save vertical space
+
+> Something I discovered through trial and error: An external perspective forces you to see your product the way a first-time user does. Things you assumed were obvious often turn out to have real friction when you look at them fresh.
+
+## Phase 9.0: Small Changes, Big Impact
+
+These are improvements that don't require structural changes but make a meaningful difference.
+
+### Copy Improvements
+
+Text matters more than most developers realize. Changing "Leave a comment" to "Share what's on your mind" shifts the entire emotional temperature of a service.
+
+| Before | After |
+|--------|-------|
+| Leave a comment | Share what's on your mind |
+| Login required | Welcome — please log in to continue |
+| No results found | No reviews for this book yet. Be the first! |
+
+### Safe Area Inset
+
+On iOS, the notch and home indicator can overlap content if not handled properly. This is the kind of bug that only affects certain devices and only surfaces when you test on real hardware.
+
+```css
+.bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+```
+
+One line of CSS. Huge impact for iPhone users. Easy to miss if you only test on desktop.
+
+## Phase 9.2: The Navigation Header Epic
+
+Phase 9.2 was the most significant structural change in this entire improvement cycle. I called it the "Navigation Header Epic" for a reason.
+
+### Hero + Search Bar Integration
+
+**Before**: The hero section (slogan + brand visuals) and the search bar were separate sections. Users had to scroll past the hero to reach search.
+
+**After**: Search bar integrated directly into the hero section as a pill-shaped input. Immediately accessible on entry.
+
+This decision wasn't easy. Reducing hero real estate felt like a sacrifice for brand visibility. But returning to first principles — "people come to BookSalon to find books to read" — made it clear that search should be the primary action on entry.
+
+### Complete Removal of the Filter Accordion
+
+Phase 8 replaced the accordion with always-visible chips. Phase 9.2 removed the accordion code entirely. Less code means easier maintenance and a cleaner UI. If you're not going to use it, delete it.
+
+### Sort Dropdown in the Section Header
+
+Placed a "Latest / Popular" sort dropdown directly next to the section header, so users can change sort order immediately when they reach the list — no extra scrolling required.
+
+## Phase 9.3–9.5: The Finishing Polish
+
+### Image and iOS Stabilization (Phase 9.3)
+
+Image optimization across 7 components, and iOS Safari compatibility fixes.
+
+iOS Safari handles images differently from Chrome. When `object-fit: cover` doesn't behave as expected, wrapping the image in a positioned container is more reliable:
+
+```tsx
+// iOS Safari stable image pattern
+<div className="relative aspect-[3/4] overflow-hidden rounded-lg">
+  <img
+    src={coverUrl}
+    alt={title}
+    className="absolute inset-0 h-full w-full object-cover"
+  />
+</div>
+```
+
+### Retention Improvements (Phase 9.4)
+
+Details that encourage users to stay and explore.
+
+- **Card hover effect**: `translateY(-2px)` on hover gives cards a subtle "lift" that makes them feel clickable
+- **Community activity indicators**: Showing recent post count and activity signals that the platform is alive and active
+
+### Brand Polish (Phase 9.5)
+
+Fine-tuned OKLCH chroma (color saturation) values in dark mode by 1.3–2.0x. Dark mode requires slightly higher saturation than light mode to achieve the same visual vibrancy. OKLCH makes this kind of adjustment intuitive — just tweak the C (chroma) value directly.
+
+## Synergy With the OKLCH Design Token System
+
+These Phase 8–9.5 improvements were only possible because of the design token foundation built in Phases 1–7.
+
+```css
+/* Semantic token usage */
+.card {
+  background-color: var(--color-bg-card);
+  border-color: var(--color-border-default);
+  color: var(--color-text-foreground);
+}
+
+.card:hover {
+  background-color: var(--color-bg-card-hover);
+}
+```
+
+When adjusting dark mode saturation in Phase 9.5, I only needed to modify one CSS variables file. No need to touch 38 individual component files.
+
+**Real-world token benefits**:
+- When adding card hover colors in Phase 8, I used `bg-card-hover` instead of `bg-gray-100`. Dark mode handled it automatically later
+- The Phase 9.5 OKLCH saturation adjustment was 5 variable changes that improved the entire dark mode experience
+
+The time invested in design tokens created a compounding return on every subsequent improvement.
+
+## Key Lessons — Solo Devs Can Do Systematic UX
+
+### 1. Break It Into Phases, QA After Each One
+
+Seven phases, QA required before moving to the next. This feels slow at first. It's actually faster.
+
+When you change everything at once, debugging becomes a nightmare. When you change things incrementally, the source of any problem is immediately clear.
+
+### 2. An External Perspective Reveals What You've Stopped Seeing
+
+Phase 8.1's third-party UX analysis worked because it forced me to look at the product through unfamiliar eyes. Developers get too close to their own work.
+
+The method is simple: pick a user scenario ("I want to search for a book and leave a review"), walk through it step by step from scratch, and pay attention to every moment of friction. Things you thought were obvious often turn out to be confusing to someone who isn't you.
+
+### 3. Mobile Optimization Starts on Day One
+
+Many of the issues found in Phase 8.1 were mobile-only. They're easy to miss when testing responsiveness in a desktop browser.
+
+Test on real mobile devices. At minimum, use developer tools at real device resolution (iPhone 14: 390x844). Always check iOS Safe Area, notch, and home indicator in the emulator — these are all visible in browser dev tools.
+
+### 4. Study References to Learn Principles, Not Patterns
+
+When using Stitch or other design references, the most important habit is asking "why did they do it this way?" Copying a layout without understanding the UX problem it solves leads to mismatched solutions. Translate the principle, not the pixels.
+
+## Results
+
+What changed after Phase 8–9.5:
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Cards visible on first screen | 2–3 (1 column) | 4–6 (2 columns) |
+| Taps to reach search | 3 (hero → scroll → search) | 1 (immediate on entry) |
+| Filter access | Accordion required | Always visible |
+| iOS Safe Area | Content clipped | Properly applied |
+| Dark mode saturation | Washed out vs. light mode | Uniform via OKLCH tuning |
+
+You don't need a designer to improve UX systematically. You need a process: reference tools like Stitch to understand design principles, a token system to maintain consistency, and a phased approach with QA checkpoints.
+
+For solo developers, systematic UX improvement starts not with design instinct — but with a repeatable process.
+
+---
+
+BookSalon is live at https://booksalon-nine.vercel.app. See the improvements described in this post in action, or share your own tips on solo dev UX improvement.

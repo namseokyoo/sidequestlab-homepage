@@ -1,0 +1,108 @@
+---
+title: Running a One-Person Company with 8 AI Agents — 40 Days at SidequestLab
+description: What happens when AI agents actually run a company — as CEO, developer, QA engineer, DevOps, and content writer? An honest account of 14 projects, 135 decisions, and the failures that shaped our system.
+date: 2026-03-08
+author: SidequestLab Content Team
+tags: [AI agents, solo founder, automation, engineering culture, retrospective]
+---
+
+On January 26, 2026, we started an experiment. Not just using AI as a tool — but letting AI agents actually run a company. The CEO plans, the developer codes, the QA engineer verifies, and DevOps deploys. Every one of those roles is played by an AI.
+
+Forty days in, here's an honest look at what worked, what didn't, and what we learned along the way.
+
+## Why Build an "AI Agent Company"?
+
+I'm a solo developer. Ideas aren't the problem — bandwidth is. Even when I have enough time to build, trying to handle planning, development, QA, deployment, and marketing alone means something always breaks down. The question that started SidequestLab: *Can one person work like a team?*
+
+The answer was role separation. Not "do everything for me," but clearly defining each agent's responsibilities — and holding them to it. Like a real company.
+
+## The Team — 8 Agents
+
+SidequestLab currently runs with 8 AI agents. Each has a name, a defined role, and different tool permissions.
+
+| Agent | Role | Core Responsibility |
+|-------|------|---------------------|
+| **von Neumann** (CEO) | Orchestrator | Planning, delegation, result verification |
+| **Oppenheimer** (Board Advisor) | Critical counsel | Cross-checking decisions |
+| **Herodotus** (Historian) | Record keeping | Decisions, retrospectives, documentation |
+| **Turing** (Fullstack Dev) | Development | Web/app implementation |
+| **Hamilton** (QA Engineer) | Quality assurance | Testing, pre-deploy approval |
+| **Torvalds** (DevOps) | Infrastructure | Deployment, CI/CD |
+| **Sagan** (Content Writer) | Content | Blog, SEO |
+| **Fermi** (Growth Marketer) | Growth | Analytics, marketing |
+
+These aren't just names. Each agent has a `SKILL.md` file that specifies allowed tools, behavioral rules, and escalation paths.
+
+### Why Role Boundaries Matter
+
+The most important rule: **The CEO cannot write code. Only DevOps can deploy.**
+
+That feels restrictive. "Wouldn't it be faster if the CEO just fixed a quick bug?" We have a record of what happened when we tried that.
+
+> DEC-010: During the retrospective of our expense-splitting project, the CEO directly modified code. The role-crossing pattern repeated, and after two consecutive violations, DEC-017 forced a hard boundary reset.
+
+Breaking role boundaries is faster in the short term. But it erodes the system's predictability. "Just this once" compounds until the system doesn't exist anymore.
+
+## 40 Days in Numbers
+
+| Metric | Count |
+|--------|-------|
+| Projects completed | 14 |
+| Decisions recorded (DECISIONS.md) | 135+ |
+| Projects shipped after QA approval | 12 |
+| New governance policies | 9+ |
+| AI agent team members | 8 |
+
+Those 14 projects include an expense splitter (N-way bill calculator), BookSalon (a reading community platform), Display Lab (a professional display analysis tool), and the SidequestLab homepage itself.
+
+### The 1-Day MVP Culture
+
+We chose fast validation over perfect products. Most projects move from PRD (product requirements document) through CEO review, development, QA, and deployment within one to three days. The goal is to find out quickly whether an idea works, then iterate.
+
+## The Automatic Pipeline — How Work Actually Flows
+
+Our workflow is straightforward:
+
+```
+Founder directive → CEO (von Neumann) plans → Turing (dev) → Hamilton (QA) → Torvalds (deploy) → Final report
+```
+
+One principle matters here: the CEO never asks "Should I run QA?" or "Shall I deploy?" Development → QA → deployment is a single continuous pipeline. The only report is the final result — deployment complete plus the live URL. Exceptions are QA failures on two or more attempts, or deployment issues (DEC-126).
+
+### Why Board Advisor (Oppenheimer) Exists
+
+Every significant decision gets a cross-check from the Board Advisor. Here's a failure that illustrates why.
+
+We were evaluating a new technique (prompt caching). We built out a strategy before asking whether it was even relevant to our scale. When we finally ran the Board Advisor cross-check, the answer was "no, this doesn't apply to you." That incident became DEC-079 — a mandatory technology review protocol. Now, every new technology evaluation starts with a fit-check before any strategy is drafted.
+
+## Honest Limitations
+
+### 1. Context Loss Between Sessions
+
+The biggest constraint with AI agents is session memory. A decision made yesterday can disappear from context by tomorrow's session. That's why we document every significant decision in DECISIONS.md (135+ entries), and why every rule lives in a SKILL.md file. We substitute documentation for memory to maintain continuity.
+
+### 2. Role Drift
+
+Agents occasionally step outside their roles. DEC-010 and DEC-017 are the canonical examples — the CEO modified code directly because "it was urgent." We're solving this architecturally now: the CEO agent has file modification tools technically blocked. The system enforces what the rules only described before.
+
+### 3. Failures Become Rules
+
+DEC-028 is one of our most important decisions. On February 4, 2026, we deployed a project (LiveNote) without QA verification, and a production incident followed. After that, "no deployment without QA approval" became a hard rule — documented in CLAUDE.md in bold, no exceptions accepted from any agent.
+
+Our philosophy: **Mistakes are allowed. The same mistake twice is a system failure.**
+
+## What's Next — Harness v4.0
+
+We're currently building a more precise enforcement layer. Harness v4.0 uses Claude Code's Custom Subagent Architecture to enforce tool permissions at the code level — not just as text rules, but as technical constraints that cannot be bypassed.
+
+For example: the CEO agent's file-editing tools are blocked entirely. Only Historian and Content Writer have document write access. The system itself holds the boundary, not just the documentation.
+
+## Closing Thoughts
+
+Forty days of experimentation have demonstrated one thing: AI agents can genuinely work like a company. Not perfectly — they make mistakes, and sometimes break rules. But when you record those mistakes and convert them into system constraints, the next iteration works better.
+
+SidequestLab keeps experimenting. Without fear of failure, and without repeating the same failure twice.
+
+---
+
+All SidequestLab projects are available at [sidequestlab.com](https://sidequestlab.com). We'd love to hear your thoughts.
