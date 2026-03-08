@@ -1,0 +1,123 @@
+---
+title: "Building Display Lab: Technical Decisions Behind Filling a Market Gap"
+description: "How we built Display Lab to fill the empty space between thousand-dollar professional tools and simple online calculators — a candid look at our tech stack choices and development journey."
+date: 2026-03-08
+author: SidequestLab
+tags: ["Display Lab", "Development Journey", "D3.js", "Vite", "React", "Color Science", "Case Study"]
+---
+
+Anyone who has spent time in the display industry knows this frustration: analyzing measurement data from a colleague requires an expensive software license. Without it, you either write your own Python script or give up.
+
+**Display Lab** started from that frustration. But a problem statement alone does not build a product. Getting from idea to deployment required dozens of technical decisions, and those decisions shaped what Display Lab is today. This is the story of those decisions.
+
+## The Gap We Decided to Fill
+
+When we first mapped the landscape, the picture was straightforward.
+
+| Tool Type | Examples | Cost | Problem |
+|-----------|----------|------|---------|
+| Professional Desktop SW | Fluxim Setfos, CalMAN, ColourSpace | Tens of thousands of dollars/year | Inaccessible to individuals and small teams |
+| Python Libraries | colour-science | Free | Requires coding; visualization must be built separately |
+| Simple Web Calculators | Bruce Lindbloom, personal blog tools | Free | Single-function; outdated UI |
+| **Display Lab** | — | Free | **The empty space** |
+
+Between the third and fourth rows of that table, there was nothing. A tool that professionals could use directly in the browser without writing code, yet one that was color-scientifically accurate. That was the gap we set out to fill.
+
+The **viewing angle analysis** space was entirely vacant. A tool that accepts goniometer-measured CSV data and immediately renders a polar plot with a color difference heatmap — this was a complete blue ocean.
+
+## Reusing ISCV's Technical Assets
+
+Before we wrote a single line of Display Lab code, we had something to work with: **ISCV (Interactive Spectrum & Chromaticity Visualizer)**, an earlier SidequestLab project.
+
+ISCV was a single-purpose tool for visualizing spectral data on a CIE chromaticity diagram. Building it taught us how to implement the following things correctly.
+
+- CIE 1931/1976 chromaticity diagram rendering with D3.js
+- Cubic spline interpolation for the Spectral Locus with C2 continuity
+- CSV parsing and spectral data processing pipeline
+- Color gamut overlays for sRGB, DCI-P3, and BT.2020
+
+These components could become the backbone of Display Lab — but a simple copy-paste was not the right approach.
+
+### The Reuse Strategy: Fork, Then Modularize, Then Extract
+
+We adopted a phased approach.
+
+**MVP phase (current)**: Extract the necessary modules from ISCV and include them directly in Display Lab. Speed was the priority, and we registered the resulting code duplication as technical debt.
+
+**Phase 2 (planned)**: Extract the shared logic — CIE calculations, gamut utilities, D3 diagram components — into a `@sidequestlab/color-science` package so both projects reference a single source of truth.
+
+This decision allowed us to ship MVP-A (the Color Gamut Analyzer and Color Science Calculator) in a single day. Rendering a CIE 1931 diagram from scratch takes two to three days. Starting from validated code turned that into hours.
+
+## Key Technical Decisions
+
+### Vite + React Instead of Next.js
+
+Most SidequestLab projects use Next.js. Display Lab does not, and the reasoning comes down to one thing: **all of Display Lab's computation happens entirely on the client side**.
+
+CSV measurement data uploaded by users never touches a server. Every CIE calculation, every ΔE operation, every D3 render happens inside the browser. This is not just an implementation detail — it is the foundation of our privacy policy. "Your data never leaves your browser." Honoring that sentence meant server-side rendering was simply not needed.
+
+There was also the matter of consistency with ISCV. The D3.js and Vite combination provides fast HMR, which matters when you are debugging complex SVG manipulation. When you are working with hundreds of SVG elements in a CIE diagram, the feedback loop speed of the dev server is something you actually feel.
+
+### D3.js for Visualization
+
+There are multiple ways to render a chromaticity diagram: raw Canvas API, WebGL, or direct SVG manipulation. We chose D3.js because of **conventions in the color science community**.
+
+The Spectral Locus in a CIE 1931 diagram is not a simple polyline. It must be a smooth curve derived from CIE Standard Observer data across the 380–780 nm range, with C2 continuity guaranteed through cubic spline interpolation. D3's curve interpolators, specifically the Catmull-Rom family, map naturally to this requirement.
+
+The real challenge with D3.js was performance. For data-heavy displays like the viewing angle heatmap, DOM manipulation becomes a bottleneck. We solved this by separating static and dynamic render layers. The Locus and gamut boundaries live in a static SVG layer; user data overlays live in a dynamic layer. This eliminates redundant recalculation on every state change.
+
+### Custom i18n Instead of react-i18next
+
+When we added dual-language support in Phase 2-B, react-i18next was the obvious first candidate. It is the industry standard with a rich feature set.
+
+But we analyzed Display Lab's actual localization requirements. Two languages for UI strings, unified number formatting (color coordinates use the same decimal notation globally), no date formatting. Total translated strings: under 200.
+
+Shipping react-i18next would increase bundle size, introduce configuration overhead, and add an i18n initialization step to the SPA cold start. For a professional tool where initial load time matters, those costs were hard to justify.
+
+We built a `useContext`-based i18n hook in under 100 lines of code. No bundle overhead, instant language switching. We made a deliberate note: if requirements grow to include plural forms, date formatting, or RTL support, we bring in the library then. Not before.
+
+### Integrating Kakao AdFit for Monetization
+
+Placing ads inside a professional tool is always a delicate decision. Done poorly, it undermines the tool's credibility.
+
+Our ad policy rested on two principles. First, ad placements must not interfere with the analysis interface. Second, ad behavior must be controlled via environment variables, so ads are disabled in test environments.
+
+On the technical side, we implemented graceful fallback. If the ad SDK fails to load or a slot returns empty, the layout does not break. The ad component falls back to an empty container of the same dimensions. Desktop slots use a 728x90 banner; mobile slots use 320x100, switching conditionally based on viewport.
+
+## Development Speed — MVP in a Day, Eight Modules in Two Days
+
+The question we hear most often is some variation of "how did you build it that fast?"
+
+**MVP-A and MVP-B each shipped in a single day.** The combined Phase 2-A and Phase 2-B work extended the platform to eight modules in under two more days.
+
+Two things made this possible.
+
+First, **technical asset reuse**. The validated D3.js CIE diagram code from ISCV powered both the Color Gamut Analyzer and the Viewing Angle Analyzer in Display Lab. We were not building from scratch — we were extending proven code.
+
+Second, **accuracy-first development**. We validated calculation logic through unit tests before building UI. ΔE2000 calculations were checked against the 33 test pairs from Sharma et al. (2005). CIE coordinate transformations were verified against the examples in CIE 15:2004. This pre-empted the most damaging feedback a professional tool can receive — "the numbers are wrong." Accuracy validation is how you earn trust with an expert user base.
+
+Speed did not mean skipping quality. MVP-A shipped after fixing 4 QA-reported bugs. MVP-B shipped after fixing 2. Fast delivery and unverified delivery are not the same thing.
+
+## What We Learned
+
+Three lessons from building Display Lab.
+
+**1. Technical assets are real assets.** Without the ISCV codebase, Display Lab's development velocity would have been less than half. Cross-project technical reuse is not copy-pasting — it is extending validated implementations.
+
+**2. Accuracy is the foundation of trust.** In a professional tool, "close enough" does not cut it. A single "validated against CIE standards" badge does more than ten marketing lines. Investing time in verification test suites was the right call.
+
+**3. Introduce libraries when you need them.** Building i18n ourselves was the right choice given our actual requirements. Premature library adoption introduces complexity that the problem does not warrant. Start simple; extend when the requirements demand it.
+
+**What comes next — Phase 2-C** targets three additions.
+
+- Database integration for saving and managing analysis history
+- PDF report generation for exporting professional-grade reports
+- A RESTful API for external system integration and automation workflows
+
+Display Lab is still evolving. If you work in display engineering and run into friction that a better tool could solve, let us know. That feedback shapes what we build next.
+
+**[Try Display Lab](https://displaylab.vercel.app)**
+
+---
+
+The SidequestLab Team
