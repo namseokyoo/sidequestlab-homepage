@@ -319,26 +319,6 @@ export const projects: Project[] = [
     tags: ['productivity']
   },
   {
-    id: 'mailbox-dashboard',
-    name: {
-      ko: '메일박스 대시보드',
-      en: 'Mailbox Dashboard'
-    },
-    description: {
-      ko: '팀 협업 Work Order 대시보드',
-      en: 'Team collaboration Work Order dashboard'
-    },
-    url: 'https://mailbox-dashboard-v2.vercel.app',
-    github: 'https://github.com/namseokyoo/mailbox-dashboard-v2',
-    techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'GitHub Actions'],
-    featured: false,
-    status: 'completed',
-    category: 'internal',
-    startDate: '2026-01-28',
-    gradient: 'from-blue-600 to-blue-400',
-    tags: ['internal-tool', 'dashboard']
-  },
-  {
     id: 'sidequestlab-homepage',
     name: {
       ko: 'SidequestLab 홈페이지',

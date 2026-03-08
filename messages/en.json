@@ -19,9 +19,9 @@
     },
     "stats": {
       "projects": "Projects",
-      "projects_count": "12",
+      "projects_count": "11",
       "services": "Live Services",
-      "services_count": "10",
+      "services_count": "9",
       "techstack": "Tech Stacks",
       "techstack_count": "10+"
     },
@@ -196,15 +196,15 @@
       "short_term": {
         "title": "Short-term (Q1 2026)",
         "items": [
-          "Prove economic sustainability with ad monetization",
-          "Complete Display Lab Phase 2-C",
-          "Optimize existing projects with SEO + GA4"
+          "KakaoAdFit ad monetization already running",
+          "Display Lab Phase 2-C development (Display DB, PDF reports)",
+          "AI agent harness engineering advancement"
         ]
       },
       "mid_term": {
         "title": "Mid-term (2026)",
         "items": [
-          "Transform BookSalon into community platform",
+          "Strengthen Display Lab global professional tool positioning",
           "Build premium feature revenue model",
           "Stable operation of 10+ production services"
         ]
@@ -254,6 +254,7 @@
       "button": "About Us"
     },
     "sections": {
+      "constraints_title": "Key Constraints",
       "project_lifecycle": {
         "title": "Project Lifecycle",
         "description": "From PRD creation to post-deploy verification, with S/A/B/L grade classification and 3-tier QA verification",

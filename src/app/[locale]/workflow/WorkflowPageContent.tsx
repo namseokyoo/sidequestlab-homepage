@@ -215,7 +215,7 @@ export default function WorkflowPageContent() {
                 >
                   <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 dark:border-amber-800/50 dark:bg-amber-900/20">
                     <h3 className="mb-3 text-sm font-semibold text-amber-800 dark:text-amber-300">
-                      {locale === 'ko' ? '핵심 제약 조건' : 'Key Constraints'}
+                      {t('sections.constraints_title')}
                     </h3>
                     <ul className="space-y-2">
                       {(

@@ -90,4 +90,22 @@ export const timelineEvents: TimelineEvent[] = [
     },
     type: 'governance',
   },
+  {
+    date: '2026-02-25',
+    title: { ko: '북살롱 디자인 시스템 완성', en: 'BookSalon Design System Completed' },
+    description: {
+      ko: 'OKLCH 디자인 토큰, "다정한 도서관" 브랜딩, UI/UX 전면 개선',
+      en: 'OKLCH design tokens, "Warm Library" branding, full UI/UX overhaul',
+    },
+    type: 'milestone',
+  },
+  {
+    date: '2026-02-28',
+    title: { ko: '북살롱 UX 전면 개선', en: 'BookSalon Full UX Overhaul' },
+    description: {
+      ko: 'Stitch 디자인 레퍼런스 기반 카드 그리드, 검색 UX, 모바일 최적화 완료',
+      en: 'Card grid, search UX, and mobile optimization based on Stitch design reference',
+    },
+    type: 'project',
+  },
 ];
