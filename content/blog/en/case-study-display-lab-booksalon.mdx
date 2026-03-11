@@ -1,0 +1,134 @@
+---
+title: "What SidequestLab Builds — A Case Study of Display Lab and BookSalon"
+description: "An in-depth look at SidequestLab's two flagship projects. Discover how Display Lab serves display engineers with professional analysis tools and how BookSalon creates a space for readers to connect around books."
+date: 2026-03-11
+author: SidequestLab
+tags: ["Display Lab", "BookSalon", "case study", "SidequestLab", "side project", "display engineering", "reading community"]
+---
+
+SidequestLab calls itself "a lab that creates value through diverse side projects." But if you're visiting for the first time and wondering "what exactly do they build?" — this article is for you.
+
+We want to walk you through our two most active projects: **Display Lab** and **BookSalon**. They serve completely different users with completely different products. Yet they share one thing in common: both try to fill a gap between things that already exist but don't quite meet the real need.
+
+## Display Lab: A Professional Analysis Platform for Display Engineers
+
+### The Problem: The Empty Space Between Million-Dollar Software and Simple Calculators
+
+If you work in display engineering or research, you've probably run into this situation. A colleague sends you measurement data to analyze, but the right tool isn't available. Professional software like Fluxim or CalMAN requires licenses that cost tens of thousands of dollars per year. Without that, you write a Python script yourself — or you give up.
+
+The free web tools available aren't much better. They handle single calculations — converting CIE color coordinates, computing color gamut area — but you can't upload real measurement data, run integrated analyses, or visualize results interactively.
+
+Here's the market landscape we mapped out:
+
+| Tool Type | Price | Limitation |
+|-----------|-------|------------|
+| Professional desktop SW (Fluxim, CalMAN) | $10,000–$50,000+/year | Out of reach for individuals and small teams |
+| Python libraries (colour-science, etc.) | Free | Requires coding; no built-in visualization |
+| Simple web calculators | Free | Single function, no integration |
+| **Display Lab** | **Free** | **This gap** |
+
+The last row is the space we're trying to fill: a professional-grade tool that works in the browser, requires no coding, and is scientifically accurate.
+
+The **Viewing Angle Analysis** space was particularly wide open. No web-based tool existed for uploading goniometer measurement CSV files and immediately generating polar plots, CIE trajectory charts, and ΔE heatmaps. That was a clear opportunity.
+
+### The Solution: 8 Modules, One Platform
+
+Display Lab (https://displaylab.vercel.app) currently offers 8 analysis modules.
+
+**Core Analysis Tools**
+- **Color Gamut Analyzer**: Compare sRGB, DCI-P3, BT.2020, Adobe RGB, and NTSC color gamut coverage directly on CIE 1931 or CIE 1976 chromaticity diagrams
+- **Viewing Angle Analyzer**: Upload goniometer measurement CSV files to instantly visualize polar plots, CIE color coordinate trajectories, and ΔE heatmaps
+- **Spectrum Analyzer**: Input SPD (spectral power distribution) data to calculate color coordinates and visualize them in Spectrum-on-Locus form
+
+**Calculation and Conversion Tools**
+- **Color Science Calculator**: ΔE (CIE76/CIE94/CIEDE2000), CCT/Duv, coordinate conversion (XYZ↔xyY↔u'v'↔L\*a\*b\*)
+- **Universal Color Space Converter**: Convert between 10 color spaces — sRGB, Linear sRGB, CIE XYZ, xyY, L\*a\*b\*, L\*u\*v\*, LCH_ab, LCH_uv, HSL, and Display P3
+- **Panel Technology Comparator**: Compare IPS, VA, OLED, Mini-LED, and QD-OLED panel characteristics on a radar chart
+
+**Performance Evaluation Tools**
+- **HDR Analyzer**: PQ/HLG EOTF curves, tone mapping analysis, HDR10 metadata processing
+- **CRI/TLCI/TM-30 Analyzer**: CRI Ra and individual R1–R14 scores, TLCI Qa, TM-30 Rf/Rg analysis
+
+The interface supports both English and Korean. All user data is processed entirely in the browser — nothing is sent to a server. "Your data never leaves your browser" isn't just a tagline; it's a technical architecture decision and a commitment to privacy that matters in professional workflows.
+
+### The Results: Accuracy First, Speed as a Bonus
+
+The most important design principle for Display Lab was computational accuracy. ΔE2000 calculations were validated against the 34-pair dataset from Sharma et al. (2005). CIE coordinate conversions were verified against CIE 15:2004 standard examples. Building trust with professional users starts with getting the math exactly right.
+
+The first two modules (Color Gamut Analyzer + Color Science Calculator) shipped as MVP-A in a single day. The Viewing Angle Analyzer followed the same day as MVP-B. Within two days, the platform had expanded to 8 modules — possible in part because we reused validated D3.js CIE diagram code from our previous project, ISCV (Spectrum Visualizer).
+
+Display Lab is preparing for Phase 2-C, which will add a display measurement database, PDF report generation, and a RESTful API. The free web tool is the foundation; a Premium plan ($9.99/month) and Enterprise tier are designed for teams that need more.
+
+---
+
+## BookSalon: A Reading Community Platform
+
+### The Problem: Why Reading Feels Lonely
+
+After finishing a good book, most people want to talk about it. But finding a reading group is hard work. Posting on social media rarely sparks real conversation. Reading apps focus on logging and tracking, not connecting. There aren't many online spaces built around "reading together."
+
+There are platforms for writing reviews. There are services for finding book information. But a place where people who read the same book gather to share thoughts — where threaded conversations flow naturally and reading logs become a shared activity — that's much harder to find.
+
+BookSalon is an attempt to build that space.
+
+### The Solution: "Warm Library" Branding and Community-First Features
+
+BookSalon (https://booksalon-nine.vercel.app) launched its official v1.0.0 on March 4, 2026 — about one month after development began.
+
+**Core Features**
+
+The most deliberate design decision in BookSalon was building a structure where conversations naturally continue.
+
+- **Nested Comments**: Not just flat comments, but threaded replies — you can respond to a specific point someone made, and others can respond to that, too
+- **Reading Log Management**: Track books you want to read, are currently reading, or have finished; earn badges for reading milestones
+- **Forum Structure**: Each book has its own discussion space; view counts and likes help surface the most active conversations
+- **Personalized Experience**: After logging in, users see a personalized greeting and a summary of their current reading activity
+
+**The "Warm Library" Design System**
+
+BookSalon's brand identity is built around the concept of a "Warm Library" — the calm and comfort of a library, with warmth added.
+
+The color system is designed in the OKLCH color space, which models human color perception more accurately than traditional RGB or HSL. This ensures colors appear consistent and accessible across both light and dark modes. The palette uses sage blue as the primary color, amber as the accent, and terracotta as a supporting tone — a split-complementary combination.
+
+Typography pairs Marubiuri (a brand serif typeface for Korean) with Pretendard Variable (the UI typeface). Marubiuri was chosen because it captures a library atmosphere naturally while maintaining strong readability for Korean text.
+
+**A Stable Technical Foundation**
+
+We want to be straightforward about the technical journey. BookSalon started with Firebase and migrated entirely to Supabase. All 12 service files were rewritten. Row Level Security (RLS) policies were designed at the database level — a process that took three rounds of iteration to get right. The initial bundle was also reduced from 927KB to 278KB, roughly a 70% decrease.
+
+That path was challenging. But the result is a foundation that's significantly more secure and ready to scale.
+
+### The Results: v1.0.0 and Beyond
+
+The journey to BookSalon v1.0.0 in numbers:
+
+| Metric | Detail |
+|--------|--------|
+| QA verification | E2E test suite: 33 scenarios, 100% pass rate |
+| Design system | 38 files, ~447 hardcoded color classes replaced with OKLCH semantic tokens |
+| Bundle optimization | Initial bundle 927KB → 278KB (~70% reduction) |
+| Launch date | March 4, 2026, tagged v1.0.0 |
+
+The current focus is completing full E2E test coverage across 63 scenarios (BL-153). The next goal is simple: more readers having real conversations about books on BookSalon.
+
+---
+
+## What Both Projects Are Really After
+
+Display Lab and BookSalon look nothing alike on the surface. One is a professional tool aimed at engineers and researchers. The other is a community platform for everyday readers.
+
+But building both has surfaced the same underlying feeling: **"there are things that already exist nearby, and there's a gap between them."**
+
+Display Lab wants to fill the gap between expensive professional software and simple free calculators. BookSalon wants to fill the gap between solo reading-tracker apps and general social feeds — creating a natural space for the conversation that happens after you close a book.
+
+The next projects SidequestLab takes on will probably start from the same question: "Given what already exists, what's still missing?"
+
+---
+
+**Try Display Lab**: https://displaylab.vercel.app
+
+**Visit BookSalon**: https://booksalon-nine.vercel.app
+
+We'd love to hear what you think.
+
+— SidequestLab
