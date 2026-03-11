@@ -312,7 +312,7 @@
     "hero": {
       "badge": "AI Agent Quality Assurance System",
       "title": "8 AI Agents Modifying Code.\nHow Do We Ensure Quality?",
-      "subtitle": "The Harness Engineering system evolved across 5 versions answers this",
+      "subtitle": "The Harness Engineering system, evolved across 5 versions, answers this question",
       "stat_decisions_label": "Decisions",
       "stat_decisions_suffix": "+",
       "stat_agents_label": "AI Agents",
