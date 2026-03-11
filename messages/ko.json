@@ -8,7 +8,8 @@
     "projects": "프로젝트",
     "blog": "블로그",
     "about": "소개",
-    "workflow": "워크플로우"
+    "workflow": "워크플로우",
+    "harness": "하네스 엔지니어링"
   },
   "home": {
     "hero": {
@@ -72,7 +73,7 @@
       "vision_title": "비전",
       "vision_desc": "다양한 사이드 프로젝트를 통해 기술적 가치와 사업적 가치를 동시에 창출하는 실험실이 됩니다.",
       "mission_title": "미션",
-      "mission_desc": "AI 에이전트 팀과 함께 아이디어를 빠르게 실현하고, 투명한 프로세스로 지속 성장합니다."
+      "mission_desc": "AI 에이전트 팀과 함께 아이디어를 빠르게 실현하고, 하네스 품질 보증 체계로 안전하게 운영합니다."
     },
     "values": {
       "title": "핵심 가치",
@@ -194,19 +195,19 @@
     "roadmap": {
       "title": "성장 로드맵",
       "short_term": {
-        "title": "단기 목표 (Q1 2026)",
+        "title": "단기 목표 (Q2 2026)",
         "items": [
-          "카카오 애드핏 광고 수익화 운영 중",
-          "Display Lab Phase 2-C 개발 (디스플레이 DB, PDF 리포트)",
-          "AI 에이전트 하네스 엔지니어링 고도화"
+          "북살롱 E2E 테스트 자동화 (63개 시나리오)",
+          "Display Lab Phase 2-C (디스플레이 DB, PDF 리포트)",
+          "하네스 v5.0 KPI 2회차 리뷰"
         ]
       },
       "mid_term": {
         "title": "중기 목표 (2026)",
         "items": [
-          "Display Lab 글로벌 전문 도구 포지셔닝 강화",
-          "프리미엄 기능 수익 모델 구축",
-          "10개+ 프로덕션 서비스 안정 운영"
+          "북살롱 커뮤니티 기능 강화",
+          "Display Lab 글로벌 전문 도구 포지셔닝",
+          "프리미엄 기능 수익 모델 구축"
         ]
       }
     },
@@ -220,7 +221,7 @@
     "subtitle": "SidequestLab의 핵심 업무 프로세스와 의사결정 흐름을 소개합니다",
     "hero_stats": {
       "decisions": "의사결정",
-      "decisions_count": "84",
+      "decisions_count": "146+",
       "rules": "강제 규칙",
       "rules_count": "15",
       "quality_gates": "품질 게이트",
@@ -252,6 +253,11 @@
       "title": "이 모든 프로세스가 AI 에이전트로 운영됩니다",
       "subtitle": "사람은 회장님 한 명, 나머지는 모두 AI 에이전트",
       "button": "회사 소개 보기"
+    },
+    "harness_teaser": {
+      "title": "AI 에이전트 품질은 어떻게 보장하는가?",
+      "desc": "L0 Safety Net, L1 Enablement, L2 Traceable Ops — 5개 버전에 걸쳐 완성된 AI 에이전트 하네스 엔지니어링 시스템",
+      "cta": "하네스 엔지니어링 자세히 보기"
     },
     "sections": {
       "constraints_title": "핵심 제약 조건",
@@ -297,5 +303,82 @@
   "footer": {
     "copyright": "SidequestLab. All rights reserved.",
     "description": "다양한 사이드 프로젝트를 통해 가치를 창출하는 실험실"
+  },
+  "harness": {
+    "metadata": {
+      "title": "하네스 엔지니어링 - SidequestLab",
+      "description": "AI 에이전트 8명이 코드를 수정하는 환경에서 품질을 보장하는 방법"
+    },
+    "hero": {
+      "badge": "AI 에이전트 품질 보증 시스템",
+      "title": "AI 에이전트 8명이 코드를 수정하는 회사.\n품질은 어떻게 보장하는가?",
+      "subtitle": "5개 버전에 걸쳐 진화한 하네스 엔지니어링 시스템이 답합니다",
+      "stat_decisions_label": "의사결정",
+      "stat_decisions_suffix": "+",
+      "stat_agents_label": "AI 에이전트",
+      "stat_versions_label": "버전 진화"
+    },
+    "architecture": {
+      "title": "3계층 품질 보증 아키텍처",
+      "subtitle": "각 계층은 독립적으로 동작하며, 중첩 방어(Defense in Depth) 전략을 구현합니다",
+      "l0_title": "L0 — Safety Net",
+      "l0_subtitle": "pre-commit hook 기반 자동 방어",
+      "l0_item1": "비밀정보 보호 (protect-secrets)",
+      "l0_item2": "위험 명령 차단 (block-dangerous-commands)",
+      "l0_item3": "Edit/Write 도구 감시",
+      "l1_title": "L1 — Enablement",
+      "l1_subtitle": "Custom Subagent Architecture",
+      "l1_item1": "agent.md 도구 권한 매트릭스",
+      "l1_item2": "SKILL.md 역할 정의 시스템",
+      "l1_item3": "에이전트별 허용/차단 도구 명세",
+      "l2_title": "L2 — Traceable Ops",
+      "l2_subtitle": "run_id 기반 추적 가능한 운영",
+      "l2_item1": "run_id 추적 시스템",
+      "l2_item2": "로그 수집 파이프라인",
+      "l2_item3": "KPI 측정 및 2회차 리뷰"
+    },
+    "matrix": {
+      "title": "에이전트 권한 매트릭스",
+      "subtitle": "7개 에이전트 × Write/Edit · Bash · 코딩 모델 권한",
+      "col_agent": "에이전트",
+      "col_write_edit": "Write/Edit",
+      "col_bash": "Bash",
+      "col_coding": "코딩 모델",
+      "blocked": "차단",
+      "allowed": "허용",
+      "open": "오픈",
+      "allowlist": "allowlist",
+      "limited": "제한",
+      "subcontract": "하청 (codex)",
+      "direct": "직접 수정",
+      "none": "—"
+    },
+    "versions": {
+      "title": "버전 히스토리",
+      "subtitle": "v1.0에서 v5.0까지, 5개 버전의 진화",
+      "v1_title": "v1.0 — 초기 안전망",
+      "v1_desc": "hooks 기반 비밀정보 보호 및 위험 명령 차단 시작",
+      "v2_title": "v2.0 — 역할 정의 시스템",
+      "v2_desc": "SKILL.md 도입으로 에이전트별 역할과 행동 규칙 명세화",
+      "v3_title": "v3.0 — Safety Net 강화",
+      "v3_desc": "protect-secrets, block-dangerous-commands L0 계층 완성",
+      "v4_title": "v4.0 — Custom Subagent Architecture",
+      "v4_desc": "agent.md 기반 도구 권한 매트릭스, 역할 인지율 100% 달성",
+      "v5_title": "v5.0 — Traceable Operations",
+      "v5_desc": "run_id 추적 시스템, 로그 수집, KPI 측정 체계 구축 완료"
+    },
+    "kpi": {
+      "title": "KPI — 내부 검증 기준",
+      "subtitle": "모든 수치는 내부 스모크 테스트 및 Sprint D 기준입니다",
+      "item1_value": "0건",
+      "item1_label": "오탐률",
+      "item1_note": "Sprint D 기준 (2026-03-11)",
+      "item2_value": "100%",
+      "item2_label": "E2E 파이프라인 성공률",
+      "item2_note": "v4.0 Phase 1B-2 검증 기준",
+      "item3_value": "100%",
+      "item3_label": "역할 인지율",
+      "item3_note": "v4.0 스모크 테스트 기준"
+    }
   }
 }

@@ -84,15 +84,15 @@ export const projects: Project[] = [
     },
     features: {
       ko: [
-        '독서 기록 - 읽은 책을 기록하고 별점과 메모 관리',
-        '토론 게시판 - 책별 의견 공유 및 토론',
-        '독서 배지 - 활동에 따른 성취 배지 시스템',
+        '대댓글 시스템 - 중첩 댓글 및 좋아요 기능',
+        'React Router v7 - 최신 라우팅 아키텍처',
+        'OKLCH 디자인 시스템 - "다정한 도서관" 브랜딩',
         'Supabase RLS - Row Level Security로 안전한 데이터 관리',
       ],
       en: [
-        'Reading logs - Record books with ratings and notes',
-        'Discussion boards - Share opinions and discuss by book',
-        'Reading badges - Achievement badge system based on activity',
+        'Nested comments - Threaded replies and likes system',
+        'React Router v7 - Modern routing architecture',
+        'OKLCH design system - "Warm Library" branding',
         'Supabase RLS - Secure data management with Row Level Security',
       ],
     },
@@ -124,13 +124,17 @@ export const projects: Project[] = [
       ko: [
         '색역 분석 - sRGB, DCI-P3, BT.2020 색역 커버리지 측정',
         '시야각 분석 - 각도별 색 변화 및 휘도 감소 분석',
-        'HDR 성능 - 명암비, 피크 휘도, 톤 매핑 평가',
+        '색채과학 계산기 & 스펙트럼 분석기 - 고급 색채 연산',
+        '범용 변환기 & 패널 비교기 - 규격 간 변환 및 비교',
+        'HDR 성능 & CRI/TLCI/TM-30 분석 (8개 모듈 총 집결)',
         '다국어 지원 - 한국어, 영어, 일본어 인터페이스',
       ],
       en: [
         'Color gamut analysis - sRGB, DCI-P3, BT.2020 coverage measurement',
         'Viewing angle analysis - Color shift and luminance decrease by angle',
-        'HDR performance - Contrast ratio, peak brightness, tone mapping evaluation',
+        'Color Science Calculator & Spectrum Analyzer - Advanced colorimetry',
+        'Universal Converter & Panel Comparator - Cross-spec conversion and comparison',
+        'HDR performance & CRI/TLCI/TM-30 analysis (8 modules total)',
         'Multilingual support - Korean, English, Japanese interface',
       ],
     },
@@ -177,12 +181,12 @@ export const projects: Project[] = [
     url: 'https://spectrum-visualizer-seven.vercel.app',
     github: 'https://github.com/namseokyoo/spectrum-visualizer',
     techStack: ['React', 'Vite', 'TypeScript', 'D3.js', 'Tailwind CSS'],
-    featured: true,
+    featured: false,
     status: 'completed',
     category: 'product',
     startDate: '2026-01-28',
     gradient: 'from-emerald-500 to-teal-400',
-    tags: ['professional-tool', 'visualization']
+    tags: ['professional-tool', 'visualization', 'archived']
   },
   {
     id: 'pomodoro-timer',

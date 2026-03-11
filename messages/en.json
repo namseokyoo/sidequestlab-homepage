@@ -8,7 +8,8 @@
     "projects": "Projects",
     "blog": "Blog",
     "about": "About",
-    "workflow": "Workflow"
+    "workflow": "Workflow",
+    "harness": "Harness Engineering"
   },
   "home": {
     "hero": {
@@ -72,7 +73,7 @@
       "vision_title": "Vision",
       "vision_desc": "We become a lab that simultaneously creates technical and business value through diverse side projects.",
       "mission_title": "Mission",
-      "mission_desc": "We rapidly bring ideas to life with our AI agent team and grow sustainably through transparent processes."
+      "mission_desc": "We rapidly bring ideas to life with our AI agent team, operating safely with our Harness quality assurance system."
     },
     "values": {
       "title": "Core Values",
@@ -194,19 +195,19 @@
     "roadmap": {
       "title": "Growth Roadmap",
       "short_term": {
-        "title": "Short-term (Q1 2026)",
+        "title": "Short-term (Q2 2026)",
         "items": [
-          "KakaoAdFit ad monetization already running",
-          "Display Lab Phase 2-C development (Display DB, PDF reports)",
-          "AI agent harness engineering advancement"
+          "BookSalon E2E test automation (63 scenarios)",
+          "Display Lab Phase 2-C (Display DB, PDF reports)",
+          "Harness v5.0 KPI 2nd review"
         ]
       },
       "mid_term": {
         "title": "Mid-term (2026)",
         "items": [
-          "Strengthen Display Lab global professional tool positioning",
-          "Build premium feature revenue model",
-          "Stable operation of 10+ production services"
+          "BookSalon community features enhancement",
+          "Display Lab global professional tool positioning",
+          "Premium feature revenue model development"
         ]
       }
     },
@@ -220,7 +221,7 @@
     "subtitle": "Explore the core processes and decision-making flows of SidequestLab",
     "hero_stats": {
       "decisions": "Decisions",
-      "decisions_count": "84",
+      "decisions_count": "146+",
       "rules": "Enforced Rules",
       "rules_count": "15",
       "quality_gates": "Quality Gates",
@@ -252,6 +253,11 @@
       "title": "All these processes are operated by AI agents",
       "subtitle": "Only one human — the Chairman. Everyone else is an AI agent.",
       "button": "About Us"
+    },
+    "harness_teaser": {
+      "title": "How Do We Ensure AI Agent Quality?",
+      "desc": "L0 Safety Net, L1 Enablement, L2 Traceable Ops — Harness Engineering System perfected over 5 versions",
+      "cta": "Explore Harness Engineering"
     },
     "sections": {
       "constraints_title": "Key Constraints",
@@ -297,5 +303,82 @@
   "footer": {
     "copyright": "SidequestLab. All rights reserved.",
     "description": "A laboratory that creates value through various side projects"
+  },
+  "harness": {
+    "metadata": {
+      "title": "Harness Engineering - SidequestLab",
+      "description": "How we ensure quality when 8 AI agents modify code"
+    },
+    "hero": {
+      "badge": "AI Agent Quality Assurance System",
+      "title": "8 AI Agents Modifying Code.\nHow Do We Ensure Quality?",
+      "subtitle": "The Harness Engineering system evolved across 5 versions answers this",
+      "stat_decisions_label": "Decisions",
+      "stat_decisions_suffix": "+",
+      "stat_agents_label": "AI Agents",
+      "stat_versions_label": "Version Iterations"
+    },
+    "architecture": {
+      "title": "3-Layer Quality Assurance Architecture",
+      "subtitle": "Each layer operates independently, implementing a Defense in Depth strategy",
+      "l0_title": "L0 — Safety Net",
+      "l0_subtitle": "Automated defense via pre-commit hooks",
+      "l0_item1": "Secret protection (protect-secrets)",
+      "l0_item2": "Dangerous command blocking (block-dangerous-commands)",
+      "l0_item3": "Edit/Write tool monitoring",
+      "l1_title": "L1 — Enablement",
+      "l1_subtitle": "Custom Subagent Architecture",
+      "l1_item1": "agent.md tool permission matrix",
+      "l1_item2": "SKILL.md role definition system",
+      "l1_item3": "Per-agent allowed/blocked tool specification",
+      "l2_title": "L2 — Traceable Ops",
+      "l2_subtitle": "Traceable operations via run_id",
+      "l2_item1": "run_id tracking system",
+      "l2_item2": "Log collection pipeline",
+      "l2_item3": "KPI measurement and 2nd review"
+    },
+    "matrix": {
+      "title": "Agent Permission Matrix",
+      "subtitle": "7 agents × Write/Edit · Bash · Coding model permissions",
+      "col_agent": "Agent",
+      "col_write_edit": "Write/Edit",
+      "col_bash": "Bash",
+      "col_coding": "Coding Model",
+      "blocked": "Blocked",
+      "allowed": "Allowed",
+      "open": "Open",
+      "allowlist": "Allowlist",
+      "limited": "Limited",
+      "subcontract": "Subcontract (codex)",
+      "direct": "Direct edit",
+      "none": "—"
+    },
+    "versions": {
+      "title": "Version History",
+      "subtitle": "Evolution from v1.0 to v5.0 across 5 versions",
+      "v1_title": "v1.0 — Initial Safety Net",
+      "v1_desc": "Started hooks-based secret protection and dangerous command blocking",
+      "v2_title": "v2.0 — Role Definition System",
+      "v2_desc": "SKILL.md introduced to specify per-agent roles and behavior rules",
+      "v3_title": "v3.0 — Safety Net Reinforcement",
+      "v3_desc": "protect-secrets, block-dangerous-commands L0 layer completed",
+      "v4_title": "v4.0 — Custom Subagent Architecture",
+      "v4_desc": "agent.md-based tool permission matrix, 100% role awareness achieved",
+      "v5_title": "v5.0 — Traceable Operations",
+      "v5_desc": "run_id tracking system, log collection, KPI measurement framework completed"
+    },
+    "kpi": {
+      "title": "KPI — Internal Validation Benchmarks",
+      "subtitle": "All figures are based on internal smoke tests and Sprint D benchmarks",
+      "item1_value": "0",
+      "item1_label": "False Positives",
+      "item1_note": "Sprint D benchmark (2026-03-11)",
+      "item2_value": "100%",
+      "item2_label": "E2E Pipeline Success Rate",
+      "item2_note": "v4.0 Phase 1B-2 validation benchmark",
+      "item3_value": "100%",
+      "item3_label": "Role Awareness Rate",
+      "item3_note": "v4.0 smoke test benchmark"
+    }
   }
 }

@@ -17,6 +17,7 @@ export default function Header() {
     { href: '/blog', label: t('blog') },
     { href: '/about', label: t('about') },
     { href: '/workflow', label: t('workflow') },
+    { href: '/harness', label: t('harness') },
   ];
 
   const isActive = (href: string) => {

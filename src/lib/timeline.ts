@@ -108,4 +108,40 @@ export const timelineEvents: TimelineEvent[] = [
     },
     type: 'project',
   },
+  {
+    date: '2026-03-04',
+    title: { ko: '북살롱 v1.0.0 정식 출시', en: 'BookSalon v1.0.0 Official Launch' },
+    description: {
+      ko: '대댓글 시스템, React Router v7, OKLCH "다정한 도서관" 브랜딩 적용. 정식 v1.0.0 출시',
+      en: 'Nested comments, React Router v7, OKLCH "Warm Library" branding applied. Official v1.0.0 release',
+    },
+    type: 'project',
+  },
+  {
+    date: '2026-03-07',
+    title: { ko: '하네스 v4.0 Custom Subagent Architecture 완성', en: 'Harness v4.0 Custom Subagent Architecture Completed' },
+    description: {
+      ko: 'agent.md 기반 도구 권한 매트릭스, SKILL.md 역할 인지율 100% 달성',
+      en: 'agent.md-based tool permission matrix, SKILL.md role awareness 100% achieved',
+    },
+    type: 'milestone',
+  },
+  {
+    date: '2026-03-10',
+    title: { ko: 'ISCV 아카이브 → Display Lab 자산 흡수', en: 'ISCV Archived → Assets Absorbed into Display Lab' },
+    description: {
+      ko: 'ISCV 영문 SEO 3주 0명 → 아카이브 결정. Spectrum Analyzer 모듈로 Display Lab에 통합',
+      en: 'ISCV English SEO 3 weeks 0 visitors → archived. Spectrum Analyzer module integrated into Display Lab',
+    },
+    type: 'governance',
+  },
+  {
+    date: '2026-03-11',
+    title: { ko: '하네스 v5.0 Sprint D 완료 (추적 기반 강화)', en: 'Harness v5.0 Sprint D Completed (Traceability Enhanced)' },
+    description: {
+      ko: 'run_id 추적 시스템, 로그 수집 파이프라인, KPI 측정 체계 구축 완료',
+      en: 'run_id tracking system, log collection pipeline, and KPI measurement framework completed',
+    },
+    type: 'milestone',
+  },
 ];

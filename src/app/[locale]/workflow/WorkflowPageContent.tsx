@@ -115,6 +115,8 @@ function FlowComponent({
 // ---------------------------------------------------------------------------
 export default function WorkflowPageContent() {
   const t = useTranslations('workflow_page');
+  const tHarness = useTranslations('harness');
+  const tNav = useTranslations('nav');
   const locale = useLocale() as 'ko' | 'en';
 
   return (
@@ -251,6 +253,61 @@ export default function WorkflowPageContent() {
           </section>
         );
       })}
+
+      {/* ================================================================= */}
+      {/* HARNESS TEASER                                                     */}
+      {/* ================================================================= */}
+      <section className="bg-gray-50 py-16 sm:py-20 dark:bg-gray-900/50">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            {...fadeInUp}
+            transition={{ duration: 0.6 }}
+            className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-10"
+          >
+            <div className="mb-3 inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+              {tNav('harness')}
+            </div>
+            <h2 className="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+              {t('harness_teaser.title')}
+            </h2>
+            <p className="mb-6 text-base leading-relaxed text-gray-600 dark:text-gray-400">
+              {t('harness_teaser.desc')}
+            </p>
+            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {(['l0', 'l1', 'l2'] as const).map((layerKey) => {
+                const title = tHarness(`architecture.${layerKey}_title`);
+                const [layer, ...labelParts] = title
+                  .split('—')
+                  .map((part) => part.trim());
+
+                return (
+                  <div
+                    key={layerKey}
+                    className="rounded-lg border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/50"
+                  >
+                    <div className="mb-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
+                      {layer}
+                    </div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                      {labelParts.join(' — ') || title}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      {tHarness(`architecture.${layerKey}_subtitle`)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <Link
+              href={`/${locale}/harness`}
+              className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
+            >
+              {t('harness_teaser.cta')}
+              <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
 
       {/* ================================================================= */}
       {/* FOOTER CTA                                                         */}
