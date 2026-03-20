@@ -3,6 +3,6 @@
 
 export const DECISION_COUNT = 178;
 export const AGENT_COUNT = 8;
-export const HARNESS_VERSION_COUNT = 5;
+export const HARNESS_VERSION_COUNT = 6;
 export const ACTIVE_PROJECT_COUNT = 4;  // 엔빵, 북살롱, Display Lab, PulseUp (n8n은 내부)
 export const SERVICE_COUNT = 4;  // nbbang.click, booksalon, displaylab, pulseup.cc

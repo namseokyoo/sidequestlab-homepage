@@ -312,7 +312,7 @@
     "hero": {
       "badge": "AI 에이전트 품질 보증 시스템",
       "title": "AI 에이전트 8명이 코드를 수정하는 회사.\n품질은 어떻게 보장하는가?",
-      "subtitle": "5개 버전에 걸쳐 진화한 하네스 엔지니어링 시스템이 답합니다",
+      "subtitle": "6개 버전에 걸쳐 진화한 하네스 엔지니어링 시스템이 답합니다",
       "stat_decisions_label": "의사결정",
       "stat_decisions_suffix": "+",
       "stat_agents_label": "AI 에이전트",
@@ -329,8 +329,8 @@
       "l1_title": "L1 — Enablement",
       "l1_subtitle": "Custom Subagent Architecture",
       "l1_item1": "agent.md 도구 권한 매트릭스",
-      "l1_item2": "SKILL.md 역할 정의 시스템",
-      "l1_item3": "에이전트별 허용/차단 도구 명세",
+      "l1_item2": "core SKILL.md + references/ 분리 구조",
+      "l1_item3": "7개 에이전트 SKILL 경량화 완료",
       "l2_title": "L2 — Traceable Ops",
       "l2_subtitle": "run_id 기반 추적 가능한 운영",
       "l2_item1": "run_id 추적 시스템",
@@ -355,7 +355,7 @@
     },
     "versions": {
       "title": "버전 히스토리",
-      "subtitle": "v1.0에서 v5.0까지, 5개 버전의 진화",
+      "subtitle": "v1.0에서 v5.1까지, 6개 버전의 진화",
       "v1_title": "v1.0 — 초기 안전망",
       "v1_desc": "hooks 기반 비밀정보 보호 및 위험 명령 차단 시작",
       "v2_title": "v2.0 — 역할 정의 시스템",
@@ -365,14 +365,16 @@
       "v4_title": "v4.0 — Custom Subagent Architecture",
       "v4_desc": "agent.md 기반 도구 권한 매트릭스, 역할 인지율 100% 달성",
       "v5_title": "v5.0 — Traceable Operations",
-      "v5_desc": "run_id 추적 시스템, 로그 수집, KPI 측정 체계 구축 완료"
+      "v5_desc": "run_id 추적 시스템, 로그 수집, KPI 측정 체계 구축 완료",
+      "v5_1_title": "v5.1 — SKILL Diet",
+      "v5_1_desc": "core SKILL.md + references/ 분리 구조 도입. 680줄→134줄 경량화, 7개 에이전트 전원 완료. .claude/skills/ 경로 이전"
     },
     "kpi": {
       "title": "KPI — 내부 검증 기준",
       "subtitle": "모든 수치는 내부 스모크 테스트 및 Sprint D 기준입니다",
       "item1_value": "0건",
       "item1_label": "오탐률",
-      "item1_note": "Sprint D 기준 (2026-03-11)",
+      "item1_note": "SKILL Diet 완료 기준 (2026-03-19)",
       "item2_value": "100%",
       "item2_label": "E2E 파이프라인 성공률",
       "item2_note": "v4.0 Phase 1B-2 검증 기준",

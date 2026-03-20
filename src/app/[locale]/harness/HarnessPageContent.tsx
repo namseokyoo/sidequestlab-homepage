@@ -79,7 +79,7 @@ const LAYERS: LayerConfig[] = [
   },
 ];
 
-const VERSIONS = ['v1', 'v2', 'v3', 'v4', 'v5'] as const;
+const VERSIONS = ['v1', 'v2', 'v3', 'v4', 'v5', 'v5_1'] as const;
 const KPI_ITEMS = ['item1', 'item2', 'item3'] as const;
 
 function getStatusClassName(status: PermissionStatus): string {

@@ -312,7 +312,7 @@
     "hero": {
       "badge": "AI Agent Quality Assurance System",
       "title": "8 AI Agents Modifying Code.\nHow Do We Ensure Quality?",
-      "subtitle": "The Harness Engineering system, evolved across 5 versions, answers this question",
+      "subtitle": "The Harness Engineering system, evolved across 6 versions, answers this question",
       "stat_decisions_label": "Decisions",
       "stat_decisions_suffix": "+",
       "stat_agents_label": "AI Agents",
@@ -329,8 +329,8 @@
       "l1_title": "L1 — Enablement",
       "l1_subtitle": "Custom Subagent Architecture",
       "l1_item1": "agent.md tool permission matrix",
-      "l1_item2": "SKILL.md role definition system",
-      "l1_item3": "Per-agent allowed/blocked tool specification",
+      "l1_item2": "core SKILL.md + references/ separation architecture",
+      "l1_item3": "All 7 agents SKILL streamlined",
       "l2_title": "L2 — Traceable Ops",
       "l2_subtitle": "Traceable operations via run_id",
       "l2_item1": "run_id tracking system",
@@ -355,7 +355,7 @@
     },
     "versions": {
       "title": "Version History",
-      "subtitle": "Evolution from v1.0 to v5.0 across 5 versions",
+      "subtitle": "Evolution from v1.0 to v5.1 across 6 versions",
       "v1_title": "v1.0 — Initial Safety Net",
       "v1_desc": "Started hooks-based secret protection and dangerous command blocking",
       "v2_title": "v2.0 — Role Definition System",
@@ -365,14 +365,16 @@
       "v4_title": "v4.0 — Custom Subagent Architecture",
       "v4_desc": "agent.md-based tool permission matrix, 100% role awareness achieved",
       "v5_title": "v5.0 — Traceable Operations",
-      "v5_desc": "run_id tracking system, log collection, KPI measurement framework completed"
+      "v5_desc": "run_id tracking system, log collection, KPI measurement framework completed",
+      "v5_1_title": "v5.1 — SKILL Diet",
+      "v5_1_desc": "Introduced core SKILL.md + references/ separation. 680→134 lines streamlined, all 7 agents completed. Migrated to .claude/skills/ path"
     },
     "kpi": {
       "title": "KPI — Internal Validation Benchmarks",
       "subtitle": "All figures are based on internal smoke tests and Sprint D benchmarks",
       "item1_value": "0",
       "item1_label": "False Positives",
-      "item1_note": "Sprint D benchmark (2026-03-11)",
+      "item1_note": "SKILL Diet completion benchmark (2026-03-19)",
       "item2_value": "100%",
       "item2_label": "E2E Pipeline Success Rate",
       "item2_note": "v4.0 Phase 1B-2 validation benchmark",
