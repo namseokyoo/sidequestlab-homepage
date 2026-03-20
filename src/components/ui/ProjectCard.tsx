@@ -93,12 +93,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           )}
           {project.url !== '#' && (
             <a
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={project.showcase?.cta.href || project.url}
+              target={project.showcase ? (project.showcase.cta.external ? '_blank' : undefined) : '_blank'}
+              rel={project.showcase ? (project.showcase.cta.external ? 'noopener noreferrer' : undefined) : 'noopener noreferrer'}
               className="ml-auto inline-flex items-center gap-1 rounded-lg bg-gray-900 px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
             >
-              {t('visitSite')}
+              {project.showcase?.cta.label[locale] || t('visitSite')}
               <svg
                 className="h-3.5 w-3.5"
                 fill="none"

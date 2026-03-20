@@ -64,7 +64,11 @@
       "planned": "Planned",
       "product": "Products",
       "internal": "Internal Tools"
-    }
+    },
+    "showcase_title": "Projects in the Spotlight",
+    "showcase_subtitle": "The most actively growing projects at SidequestLab",
+    "recently_updated": "Recently Updated",
+    "days_ago_updated": "Updated {days} days ago"
   },
   "about": {
     "vision": {

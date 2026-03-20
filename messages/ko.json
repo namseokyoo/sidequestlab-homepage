@@ -64,7 +64,11 @@
       "planned": "예정",
       "product": "제품",
       "internal": "내부 도구"
-    }
+    },
+    "showcase_title": "지금 주목할 프로젝트",
+    "showcase_subtitle": "SidequestLab에서 가장 활발하게 성장 중인 프로젝트",
+    "recently_updated": "최근 업데이트",
+    "days_ago_updated": "{days}일 전 업데이트"
   },
   "about": {
     "vision": {

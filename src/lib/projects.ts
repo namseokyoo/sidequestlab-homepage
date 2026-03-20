@@ -25,6 +25,16 @@ export interface Project {
   tags?: string[];
   startDate?: string;
   gradient?: string;
+  showcase?: {
+    rank: number;
+    headline: { ko: string; en: string };
+    cta: {
+      label: { ko: string; en: string };
+      href: string;
+      external: boolean;
+    };
+    updatedAt?: string;
+  };
 }
 
 export const projects: Project[] = [
@@ -66,6 +76,18 @@ export const projects: Project[] = [
     category: 'product',
     startDate: '2026-01-27',
     gradient: 'from-blue-500 to-cyan-400',
+    showcase: {
+      rank: 4,
+      headline: {
+        ko: '복잡한 N차 모임 정산, 한 번에 끝',
+        en: 'Multi-round group bills, settled at once',
+      },
+      cta: {
+        label: { ko: '바로 계산해보기', en: 'Calculate Now' },
+        href: 'https://nbbang.click',
+        external: true,
+      },
+    },
     tags: ['monetization', 'utility']
   },
   {
@@ -104,6 +126,19 @@ export const projects: Project[] = [
     category: 'product',
     startDate: '2026-02-05',
     gradient: 'from-amber-500 to-orange-400',
+    showcase: {
+      rank: 2,
+      headline: {
+        ko: '혼자 읽던 책이 대화가 되는 곳',
+        en: 'Where solo reading becomes conversation',
+      },
+      cta: {
+        label: { ko: '커뮤니티 둘러보기', en: 'Explore Community' },
+        href: 'https://booksalon-nine.vercel.app',
+        external: true,
+      },
+      updatedAt: '2026-03-12',
+    },
     tags: ['community', 'social']
   },
   {
@@ -146,6 +181,19 @@ export const projects: Project[] = [
     category: 'product',
     startDate: '2026-02-20',
     gradient: 'from-violet-500 to-purple-400',
+    showcase: {
+      rank: 3,
+      headline: {
+        ko: '브라우저에서 바로 쓰는 디스플레이 분석 도구',
+        en: 'Display analysis tools, right in your browser',
+      },
+      cta: {
+        label: { ko: '분석 시작하기', en: 'Start Analyzing' },
+        href: 'https://displaylab.vercel.app',
+        external: true,
+      },
+      updatedAt: '2026-02-21',
+    },
     tags: ['professional-tool', 'display']
   },
   {
@@ -186,6 +234,19 @@ export const projects: Project[] = [
     category: 'product' as const,
     startDate: '2026-03-12',
     gradient: 'from-rose-500 to-orange-400',
+    showcase: {
+      rank: 1,
+      headline: {
+        ko: '6시간 후 사라지는 글, 투표로 살린다',
+        en: 'Posts die in 6 hours. Vote to keep them alive',
+      },
+      cta: {
+        label: { ko: '살아있는 글 보기', en: 'See Living Posts' },
+        href: 'https://pulseup.cc',
+        external: true,
+      },
+      updatedAt: '2026-03-17',
+    },
     tags: ['community', 'anonymous', 'gamification']
   },
   {
@@ -472,4 +533,10 @@ export function getAllProjects(): Project[] {
 
 export function getProjectsByStatus(status: Project['status']): Project[] {
   return projects.filter(p => p.status === status);
+}
+
+export function getShowcaseProjects(): Project[] {
+  return projects
+    .filter(p => p.showcase)
+    .sort((a, b) => (a.showcase!.rank - b.showcase!.rank));
 }

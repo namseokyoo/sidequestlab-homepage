@@ -1,14 +1,17 @@
 import { getTranslations, getLocale } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
-import { getFeaturedProjects } from '@/lib/projects';
+import { getFeaturedProjects, getShowcaseProjects } from '@/lib/projects';
 import { getBlogPosts } from '@/lib/blog';
 import ProjectCard from '@/components/ui/ProjectCard';
 import BlogCard from '@/components/ui/BlogCard';
+import FeaturedShowcase from '@/components/ui/FeaturedShowcase';
 
 export default async function HomePage() {
   const t = await getTranslations('home');
   const locale = await getLocale();
   const featuredProjects = getFeaturedProjects();
+  const showcaseProjects = getShowcaseProjects().slice(0, 1);
+  const otherFeatured = featuredProjects.filter(p => p.showcase?.rank !== 1);
   const recentPosts = getBlogPosts(locale).slice(0, 3);
 
   const heroTitle = t('hero.title');
@@ -91,8 +94,14 @@ export default async function HomePage() {
             </p>
           </div>
 
+          {showcaseProjects.length > 0 && (
+            <div className="mb-8">
+              <FeaturedShowcase projects={showcaseProjects} variant="hero" />
+            </div>
+          )}
+
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredProjects.map((project) => (
+            {otherFeatured.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
           </div>

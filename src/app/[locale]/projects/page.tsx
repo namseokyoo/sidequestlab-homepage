@@ -2,14 +2,17 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
-import { projects } from '@/lib/projects';
+import { projects, getShowcaseProjects } from '@/lib/projects';
 import ProjectCard from '@/components/ui/ProjectCard';
+import FeaturedShowcase from '@/components/ui/FeaturedShowcase';
 
 type FilterTab = 'all' | 'in-progress' | 'completed' | 'planned';
 
 export default function ProjectsPage() {
   const t = useTranslations('projects');
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
+  const showcaseProjects = useMemo(() => getShowcaseProjects().slice(0, 2), []);
+  const showcaseIds = useMemo(() => new Set(showcaseProjects.map(p => p.id)), [showcaseProjects]);
 
   const tabs: { key: FilterTab; label: string }[] = [
     { key: 'all', label: t('filter.all') },
@@ -19,9 +22,10 @@ export default function ProjectsPage() {
   ];
 
   const filteredAndSortedProjects = useMemo(() => {
+    const baseProjects = projects.filter(p => !showcaseIds.has(p.id));
     const filtered = activeFilter === 'all'
-      ? projects
-      : projects.filter((p) => p.status === activeFilter);
+      ? baseProjects
+      : baseProjects.filter((p) => p.status === activeFilter);
 
     const statusOrder: Record<string, number> = {
       'in-progress': 0,
@@ -36,7 +40,7 @@ export default function ProjectsPage() {
       // Then by status order
       return (statusOrder[a.status] ?? 3) - (statusOrder[b.status] ?? 3);
     });
-  }, [activeFilter]);
+  }, [activeFilter, showcaseIds]);
 
   return (
     <div className="py-16">
@@ -51,7 +55,20 @@ export default function ProjectsPage() {
           </p>
         </div>
 
-        {/* Filter Tabs */}
+        {showcaseProjects.length > 0 && (
+          <div className="mb-16">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                {t('showcase_title')}
+              </h2>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                {t('showcase_subtitle')}
+              </p>
+            </div>
+            <FeaturedShowcase projects={showcaseProjects} variant="compare" />
+          </div>
+        )}
+
         <div className="mb-10 flex justify-center">
           <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-900">
             {tabs.map((tab) => (
