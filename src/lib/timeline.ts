@@ -144,4 +144,31 @@ export const timelineEvents: TimelineEvent[] = [
     },
     type: 'milestone',
   },
+  {
+    date: '2026-03-12',
+    title: { ko: 'PulseUp 프로젝트 착수', en: 'PulseUp Project Started' },
+    description: {
+      ko: '살아있는 익명 게시판 — 글에 생명력을 부여하는 TTL + 투표 메커니즘. PRD 승인 및 개발 착수',
+      en: 'Living anonymous board — TTL + voting mechanism giving life to posts. PRD approved and development started',
+    },
+    type: 'project' as const,
+  },
+  {
+    date: '2026-03-17',
+    title: { ko: 'PulseUp 결제 시스템 연동', en: 'PulseUp Payment System Integrated' },
+    description: {
+      ko: 'Lemon Squeezy 결제 연동 완료. SidequestLab 최초 결제 시스템 도입',
+      en: 'Lemon Squeezy payment integration completed. First payment system in SidequestLab',
+    },
+    type: 'milestone' as const,
+  },
+  {
+    date: '2026-03-19',
+    title: { ko: '하네스 SKILL 다이어트 완료', en: 'Harness SKILL Diet Completed' },
+    description: {
+      ko: '7개 에이전트 SKILL.md 경량화 + .claude/skills/ 경로 이전. 전사 에이전트 시스템 최적화',
+      en: '7 agent SKILL.md streamlined + migrated to .claude/skills/. Company-wide agent system optimized',
+    },
+    type: 'governance' as const,
+  },
 ];

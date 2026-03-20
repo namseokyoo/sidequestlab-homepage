@@ -149,6 +149,46 @@ export const projects: Project[] = [
     tags: ['professional-tool', 'display']
   },
   {
+    id: 'pulseup',
+    name: {
+      ko: '펄스업',
+      en: 'PulseUp'
+    },
+    description: {
+      ko: '살아있는 익명 게시판 — 글에 생명력을 부여하다',
+      en: 'Living anonymous board — Give life to your posts'
+    },
+    longDescription: {
+      ko: 'PulseUp은 글에 생명력을 부여하는 익명 게시판입니다. 모든 글은 6시간의 생명력을 갖고 태어나며, 좋아요(+10분)와 싫어요(-10분)로 생존이 결정됩니다. 매일 정오 무료 투표권 10개가 충전되고, Lemon Squeezy를 통한 유료 투표권 구매도 가능합니다.',
+      en: 'PulseUp is an anonymous board that gives life to posts. Every post is born with 6 hours of life, and its survival is determined by upvotes (+10min) and downvotes (-10min). 10 free votes recharge daily at noon, with paid vote purchases available via Lemon Squeezy.'
+    },
+    features: {
+      ko: [
+        '생명력 시스템 — 모든 글은 6시간의 TTL로 시작, 투표로 연장/단축',
+        '무료 투표권 — 매일 정오 10개 자동 충전',
+        '유료 투표권 — Lemon Squeezy 결제 연동 (10/50/100개 팩)',
+        '관리자 대시보드 — game_rules 실시간 조정, 통계 확인',
+        '댓글 & 대댓글 — 생존 중인 글에 토론 참여',
+      ],
+      en: [
+        'Life system — Every post starts with 6h TTL, extended/shortened by votes',
+        'Free votes — 10 votes auto-recharged daily at noon',
+        'Paid votes — Lemon Squeezy payment integration (10/50/100 packs)',
+        'Admin dashboard — Real-time game_rules adjustment and stats',
+        'Comments & replies — Join discussions on surviving posts',
+      ],
+    },
+    url: 'https://pulseup.cc',
+    github: 'https://github.com/namseokyoo/pulse',
+    techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'shadcn/ui', 'Supabase', 'Lemon Squeezy'],
+    featured: true,
+    status: 'in-progress' as const,
+    category: 'product' as const,
+    startDate: '2026-03-12',
+    gradient: 'from-rose-500 to-orange-400',
+    tags: ['community', 'anonymous', 'gamification']
+  },
+  {
     id: 'spectrum-visualizer',
     name: {
       ko: '스펙트럼 시각화기',
