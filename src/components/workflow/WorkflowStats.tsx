@@ -8,6 +8,7 @@
 import { useEffect, useRef, useState, type FC } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion, useInView } from 'framer-motion';
+import { DECISION_COUNT } from '@/lib/stats';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -123,7 +124,11 @@ const WorkflowStats: FC = () => {
       {STAT_ITEMS.map((item, index) => (
         <StatCard
           key={item.countKey}
-          countValue={t(item.countKey)}
+          countValue={
+            item.countKey === 'decisions_count'
+              ? `${DECISION_COUNT}+`
+              : t(item.countKey)
+          }
           label={t(item.labelKey)}
           index={index}
           isInView={isInView}
