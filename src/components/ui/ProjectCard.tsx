@@ -1,5 +1,6 @@
 'use client';
 
+import { track } from '@vercel/analytics';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import type { Project } from '@/lib/projects';
@@ -96,6 +97,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               href={project.showcase?.cta.href || project.url}
               target={project.showcase ? (project.showcase.cta.external ? '_blank' : undefined) : '_blank'}
               rel={project.showcase ? (project.showcase.cta.external ? 'noopener noreferrer' : undefined) : 'noopener noreferrer'}
+              onClick={() => track('project_outbound_click', {
+                project_id: project.id,
+                url: project.showcase?.cta.href || project.url,
+              })}
               className="ml-auto inline-flex items-center gap-1 rounded-lg bg-gray-900 px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
             >
               {project.showcase?.cta.label[locale] || t('visitSite')}

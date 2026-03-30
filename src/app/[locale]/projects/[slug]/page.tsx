@@ -46,6 +46,25 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
   return (
     <div className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: project.name[currentLocale],
+            description: project.description[currentLocale],
+            applicationCategory: 'WebApplication',
+            operatingSystem: 'Web',
+            url: project.url !== '#' ? project.url : undefined,
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'KRW',
+            },
+          }),
+        }}
+      />
       <div className="container mx-auto px-4">
         {/* Back link */}
         <div className="mb-8">

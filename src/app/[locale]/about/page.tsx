@@ -1,6 +1,7 @@
 import { useTranslations, useLocale } from 'next-intl';
 import { timelineEvents } from '@/lib/timeline';
 import Timeline from '@/components/ui/Timeline';
+import TrackedEmailLink from '@/components/ui/TrackedEmailLink';
 
 export default function AboutPage() {
   const t = useTranslations('about');
@@ -417,12 +418,10 @@ export default function AboutPage() {
                   d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 />
               </svg>
-              <a
-                href={`mailto:${t('contact.email')}`}
+              <TrackedEmailLink
+                email={t('contact.email')}
                 className="text-sm text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              >
-                {t('contact.email')}
-              </a>
+              />
             </div>
           </div>
         </div>

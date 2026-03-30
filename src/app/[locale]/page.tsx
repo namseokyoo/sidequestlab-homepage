@@ -6,6 +6,7 @@ import { TOTAL_PROJECT_COUNT, SERVICE_COUNT } from '@/lib/stats';
 import ProjectCard from '@/components/ui/ProjectCard';
 import BlogCard from '@/components/ui/BlogCard';
 import FeaturedShowcase from '@/components/ui/FeaturedShowcase';
+import HeroCTA from '@/components/ui/HeroCTA';
 
 export default async function HomePage() {
   const t = await getTranslations('home');
@@ -34,20 +35,10 @@ export default async function HomePage() {
           <p className="mx-auto mb-10 max-w-2xl text-lg text-gray-500 dark:text-gray-400">
             {t('hero.subtitle')}
           </p>
-          <div className="flex items-center justify-center gap-4">
-            <Link
-              href="/projects"
-              className="inline-flex items-center justify-center rounded-lg bg-gray-900 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
-            >
-              {t('hero.cta_projects')}
-            </Link>
-            <Link
-              href="/harness"
-              className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-transparent dark:text-gray-300 dark:hover:bg-gray-800"
-            >
-              {t('hero.cta_about')}
-            </Link>
-          </div>
+          <HeroCTA
+            projectsLabel={t('hero.cta_projects')}
+            harnessLabel={t('hero.cta_about')}
+          />
         </div>
       </section>
 

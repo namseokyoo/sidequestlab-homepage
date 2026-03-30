@@ -1,5 +1,6 @@
 'use client';
 
+import { track } from '@vercel/analytics';
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/routing';
 import { useTransition } from 'react';
@@ -11,6 +12,12 @@ export default function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition();
 
   const handleLocaleChange = (newLocale: string) => {
+    if (newLocale === locale) {
+      return;
+    }
+
+    track('locale_switch', { from: locale, to: newLocale });
+
     startTransition(() => {
       router.replace(pathname, { locale: newLocale });
     });

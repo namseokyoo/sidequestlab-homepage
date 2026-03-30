@@ -5,6 +5,8 @@ import { getBlogPosts } from '@/lib/blog';
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://sidequestlab-homepage.vercel.app';
   const locales = ['ko', 'en'];
+  const staticLastModified = new Date('2026-03-30');
+  const projectFallbackLastModified = new Date('2026-03-01');
 
   const staticPages = ['', '/projects', '/about', '/blog', '/workflow', '/harness'];
 
@@ -15,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     for (const page of staticPages) {
       entries.push({
         url: `${baseUrl}/${locale}${page}`,
-        lastModified: new Date(),
+        lastModified: staticLastModified,
         changeFrequency: page === '' ? 'weekly' : 'monthly',
         priority: page === '' ? 1.0 : 0.8,
       });
@@ -28,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       for (const locale of locales) {
         entries.push({
           url: `${baseUrl}/${locale}/projects/${project.id}`,
-          lastModified: new Date(),
+          lastModified: project.startDate ? new Date(project.startDate) : projectFallbackLastModified,
           changeFrequency: 'monthly',
           priority: 0.6,
         });
