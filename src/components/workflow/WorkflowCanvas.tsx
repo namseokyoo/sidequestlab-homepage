@@ -27,7 +27,6 @@ import { WorkflowNode, type WorkflowNodeData } from './WorkflowNode';
 import { WorkflowEdge } from './WorkflowEdge';
 import { WorkflowTooltip, type WorkflowTooltipData } from './WorkflowTooltip';
 import { WorkflowDetailPanel, type WorkflowDetailData } from './WorkflowDetailPanel';
-import { ROLE_COLORS } from './constants/nodeStyles';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -145,7 +144,6 @@ export const WorkflowCanvas: FC<WorkflowCanvasProps> = ({
   const miniMapNodeColor = useCallback((node: Node) => {
     const data = node.data as unknown as WorkflowNodeData | undefined;
     if (data?.role) {
-      const colors = ROLE_COLORS[data.role];
       // Return a simple hex for minimap
       const colorMap: Record<string, string> = {
         ceo: '#3b82f6',
