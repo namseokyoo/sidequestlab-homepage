@@ -37,7 +37,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -59,7 +59,7 @@ export default function Header() {
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <ThemeToggle />
           <LanguageSwitcher />
           <button
@@ -103,7 +103,7 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <nav className="border-t border-gray-100 bg-white/95 backdrop-blur-lg p-4 md:hidden dark:border-gray-800 dark:bg-gray-950/95">
+        <nav className="border-t border-gray-100 bg-white/95 backdrop-blur-lg p-4 lg:hidden dark:border-gray-800 dark:bg-gray-950/95">
           <div className="flex flex-col gap-1">
             {navItems.map((item) => (
               <Link
