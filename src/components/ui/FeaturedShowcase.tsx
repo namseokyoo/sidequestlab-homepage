@@ -1,5 +1,6 @@
 'use client';
 
+import { track } from '@vercel/analytics';
 import { useLocale, useTranslations } from 'next-intl';
 import type { Project } from '@/lib/projects';
 
@@ -76,6 +77,10 @@ export default function FeaturedShowcase({ projects, variant }: FeaturedShowcase
                   href={showcase.cta.href}
                   target={showcase.cta.external ? '_blank' : undefined}
                   rel={showcase.cta.external ? 'noopener noreferrer' : undefined}
+                  onClick={() => track('project_outbound_click', {
+                    project_id: project.id,
+                    url: showcase.cta.href,
+                  })}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100"
                 >
                   {showcase.cta.label[locale]}
@@ -133,6 +138,10 @@ export default function FeaturedShowcase({ projects, variant }: FeaturedShowcase
           href={showcase.cta.href}
           target={showcase.cta.external ? '_blank' : undefined}
           rel={showcase.cta.external ? 'noopener noreferrer' : undefined}
+          onClick={() => track('project_outbound_click', {
+            project_id: project.id,
+            url: showcase.cta.href,
+          })}
           className="inline-flex w-fit items-center gap-1.5 rounded-lg bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100"
         >
           {showcase.cta.label[locale]}

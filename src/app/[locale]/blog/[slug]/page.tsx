@@ -43,6 +43,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <div className="py-16">
       <div className="container mx-auto px-4">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Article',
+              headline: post.title,
+              description: post.description,
+              datePublished: post.date,
+              author: {
+                '@type': 'Person',
+                name: 'NAMSEOK YOO',
+              },
+              publisher: {
+                '@type': 'Organization',
+                name: 'SidequestLab',
+              },
+              url: `https://sidequestlab-homepage.vercel.app/${locale}/blog/${slug}`,
+            }),
+          }}
+        />
         <article className="mx-auto max-w-3xl">
           {/* Back Link */}
           <Link

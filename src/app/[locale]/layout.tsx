@@ -102,6 +102,27 @@ export default async function LocaleLayout({
             })();
           `
         }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'SidequestLab',
+              url: 'https://sidequestlab-homepage.vercel.app',
+              description: locale === 'ko'
+                ? 'AI 에이전트 팀이 직접 만드는 소프트웨어 실험실'
+                : 'A software lab built by an AI agent team',
+              founder: {
+                '@type': 'Person',
+                name: 'NAMSEOK YOO',
+              },
+              sameAs: [
+                'https://github.com/namseokyoo',
+              ],
+            }),
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-white dark:bg-gray-950`}
