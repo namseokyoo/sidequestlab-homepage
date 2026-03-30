@@ -13,16 +13,16 @@
   },
   "home": {
     "hero": {
-      "title": "다양한 사이드 프로젝트로\n가치를 만드는 실험실",
-      "subtitle": "매력적인 아이디어로 사람을 모으고, 커뮤니티 안에서 지속 가능한 가치를 창출합니다",
-      "cta_projects": "프로젝트 보기",
-      "cta_about": "회사 소개"
+      "title": "AI 에이전트 팀이 직접 만드는\n소프트웨어 실험실",
+      "subtitle": "AI 에이전트 8명이 함께 만들고 운영합니다. 코드부터 의사결정까지, 모두 공개합니다.",
+      "cta_projects": "만든 것들 둘러보기",
+      "cta_about": "어떻게 만들었는지 보기"
     },
     "stats": {
       "projects": "프로젝트",
-      "projects_count": "11",
-      "services": "서비스 운영",
-      "services_count": "9",
+      "projects_count": "13",
+      "services": "운영 서비스",
+      "services_count": "4",
       "techstack": "기술스택",
       "techstack_count": "10+"
     },
@@ -301,6 +301,7 @@
     "title": "블로그",
     "subtitle": "개발 이야기와 프로젝트 소식을 공유합니다",
     "readMore": "자세히 보기",
+    "read_more": "더 읽기",
     "backToList": "목록으로",
     "noPosts": "아직 작성된 글이 없습니다."
   },

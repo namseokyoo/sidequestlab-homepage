@@ -2,6 +2,7 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 import { getFeaturedProjects, getShowcaseProjects } from '@/lib/projects';
 import { getBlogPosts } from '@/lib/blog';
+import { TOTAL_PROJECT_COUNT, SERVICE_COUNT } from '@/lib/stats';
 import ProjectCard from '@/components/ui/ProjectCard';
 import BlogCard from '@/components/ui/BlogCard';
 import FeaturedShowcase from '@/components/ui/FeaturedShowcase';
@@ -10,8 +11,8 @@ export default async function HomePage() {
   const t = await getTranslations('home');
   const locale = await getLocale();
   const featuredProjects = getFeaturedProjects();
-  const showcaseProjects = getShowcaseProjects().slice(0, 1);
-  const otherFeatured = featuredProjects.filter(p => p.showcase?.rank !== 1);
+  const showcaseProjects = getShowcaseProjects().slice(0, 3);
+  const otherFeatured = featuredProjects.filter(p => !p.showcase || p.showcase.rank > 3);
   const recentPosts = getBlogPosts(locale).slice(0, 3);
 
   const heroTitle = t('hero.title');
@@ -41,7 +42,7 @@ export default async function HomePage() {
               {t('hero.cta_projects')}
             </Link>
             <Link
-              href="/about"
+              href="/harness"
               className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-transparent dark:text-gray-300 dark:hover:bg-gray-800"
             >
               {t('hero.cta_about')}
@@ -56,7 +57,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-3 divide-x divide-gray-200 dark:divide-gray-700">
             <div className="px-4 text-center">
               <div className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
-                {t('stats.projects_count')}
+                {TOTAL_PROJECT_COUNT}
               </div>
               <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 {t('stats.projects')}
@@ -64,7 +65,7 @@ export default async function HomePage() {
             </div>
             <div className="px-4 text-center">
               <div className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
-                {t('stats.services_count')}
+                {SERVICE_COUNT}
               </div>
               <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 {t('stats.services')}

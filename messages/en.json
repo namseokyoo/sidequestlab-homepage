@@ -13,16 +13,16 @@
   },
   "home": {
     "hero": {
-      "title": "A Lab That Creates Value\nThrough Side Projects",
-      "subtitle": "We gather people with compelling ideas and create sustainable value within communities",
-      "cta_projects": "View Projects",
-      "cta_about": "About Us"
+      "title": "A Software Lab Built\nby an AI Agent Team",
+      "subtitle": "Built and operated by 8 AI agents. From code to decisions, everything is open.",
+      "cta_projects": "Browse What We Built",
+      "cta_about": "How We Build It"
     },
     "stats": {
       "projects": "Projects",
-      "projects_count": "11",
+      "projects_count": "13",
       "services": "Live Services",
-      "services_count": "9",
+      "services_count": "4",
       "techstack": "Tech Stacks",
       "techstack_count": "10+"
     },
@@ -301,6 +301,7 @@
     "title": "Blog",
     "subtitle": "Development stories and project updates",
     "readMore": "Read More",
+    "read_more": "Read More",
     "backToList": "Back to List",
     "noPosts": "No posts yet."
   },

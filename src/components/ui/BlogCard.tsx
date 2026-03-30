@@ -1,4 +1,7 @@
+'use client';
+
 import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import type { BlogPost } from '@/lib/blog';
 
 interface BlogCardProps {
@@ -7,6 +10,8 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ post, locale = 'ko' }: BlogCardProps) {
+  const t = useTranslations('blog');
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const localeMap: Record<string, string> = {
@@ -42,7 +47,7 @@ export default function BlogCard({ post, locale = 'ko' }: BlogCardProps) {
         href={`/blog/${post.slug}`}
         className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
       >
-        <span>Read More</span>
+        <span>{t('read_more')}</span>
         <svg
           className="ml-1 h-4 w-4"
           fill="none"
