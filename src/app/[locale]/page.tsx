@@ -7,6 +7,7 @@ import ProjectCard from '@/components/ui/ProjectCard';
 import BlogCard from '@/components/ui/BlogCard';
 import FeaturedShowcase from '@/components/ui/FeaturedShowcase';
 import HeroCTA from '@/components/ui/HeroCTA';
+import { track } from '@vercel/analytics';
 
 export default async function HomePage() {
   const t = await getTranslations('home');
@@ -38,6 +39,7 @@ export default async function HomePage() {
           <HeroCTA
             projectsLabel={t('hero.cta_projects')}
             harnessLabel={t('hero.cta_about')}
+            aboutLabel={t('hero.cta_collaborate')}
           />
         </div>
       </section>
@@ -69,6 +71,88 @@ export default async function HomePage() {
               <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 {t('stats.techstack')}
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Audience Paths Section */}
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-6 md:grid-cols-3">
+            {/* 서비스 이용 */}
+            <div className="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:border-gray-300 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950">
+                <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+                {t('paths.use.title')}
+              </h3>
+              <p className="mb-4 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                {t('paths.use.desc')}
+              </p>
+              <Link
+                href="/projects"
+                onClick={() => track('path_card_click', { label: 'use' })}
+                className="inline-flex items-center gap-1 text-sm font-medium text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+              >
+                {t('paths.use.cta')}
+                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+
+            {/* 빌드 과정 */}
+            <div className="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:border-gray-300 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950">
+                <svg className="h-5 w-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+                {t('paths.build.title')}
+              </h3>
+              <p className="mb-4 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                {t('paths.build.desc')}
+              </p>
+              <Link
+                href="/harness"
+                onClick={() => track('path_card_click', { label: 'build' })}
+                className="inline-flex items-center gap-1 text-sm font-medium text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+              >
+                {t('paths.build.cta')}
+                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+
+            {/* 협업 알아보기 */}
+            <div className="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:border-gray-300 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-950">
+                <svg className="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+                {t('paths.collaborate.title')}
+              </h3>
+              <p className="mb-4 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                {t('paths.collaborate.desc')}
+              </p>
+              <Link
+                href="/about"
+                onClick={() => track('path_card_click', { label: 'collaborate' })}
+                className="inline-flex items-center gap-1 text-sm font-medium text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+              >
+                {t('paths.collaborate.cta')}
+                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
             </div>
           </div>
         </div>

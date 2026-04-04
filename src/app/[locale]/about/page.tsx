@@ -33,6 +33,29 @@ export default function AboutPage() {
 
   return (
     <div>
+      {/* Collaboration Header */}
+      <section className="bg-gray-50 py-16 dark:bg-gray-900">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h1 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
+              {t('collab_header.title')}
+            </h1>
+            <p className="mb-6 text-lg text-gray-500 dark:text-gray-400">
+              {t('collab_header.subtitle')}
+            </p>
+            <div className="flex items-center justify-center gap-2">
+              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <TrackedEmailLink
+                email={t('contact.email')}
+                className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Vision & Mission Section */}
       <section className="py-24 sm:py-32">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">

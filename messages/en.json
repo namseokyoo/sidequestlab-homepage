@@ -16,7 +16,8 @@
       "title": "A Software Lab That Ships\nSide Projects as Real Services",
       "subtitle": "9 AI agents handle code, design, QA, deploy, and decisions. 16 projects, fully transparent.",
       "cta_projects": "Browse Our Services",
-      "cta_about": "How We Build"
+      "cta_about": "How We Build",
+      "cta_collaborate": "Explore Collaboration"
     },
     "stats": {
       "projects": "Projects",
@@ -34,6 +35,23 @@
     "recent_blog": {
       "title": "Recent Blog Posts",
       "view_all": "View All Posts"
+    },
+    "paths": {
+      "use": {
+        "title": "Use Our Services",
+        "desc": "Display analysis, reading community, anonymous board — services ready to use right now",
+        "cta": "Browse Services"
+      },
+      "build": {
+        "title": "See How We Build",
+        "desc": "How 9 AI agents build software — our harness system and decision-making process, fully open",
+        "cta": "Harness Engineering"
+      },
+      "collaborate": {
+        "title": "Explore Collaboration",
+        "desc": "Vision, organization, project status. Find opportunities to build together",
+        "cta": "About Us"
+      }
     }
   },
   "projects": {
@@ -71,6 +89,10 @@
     "days_ago_updated": "Updated {days} days ago"
   },
   "about": {
+    "collab_header": {
+      "title": "SidequestLab",
+      "subtitle": "A software lab built by an AI agent team. For collaboration inquiries, reach out via email below."
+    },
     "vision": {
       "title": "Our Vision",
       "quote": "A lab that gathers people with compelling ideas and creates sustainable value within communities",
