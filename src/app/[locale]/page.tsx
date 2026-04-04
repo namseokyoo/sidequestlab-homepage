@@ -7,7 +7,6 @@ import ProjectCard from '@/components/ui/ProjectCard';
 import BlogCard from '@/components/ui/BlogCard';
 import FeaturedShowcase from '@/components/ui/FeaturedShowcase';
 import HeroCTA from '@/components/ui/HeroCTA';
-import { track } from '@vercel/analytics';
 
 export default async function HomePage() {
   const t = await getTranslations('home');
@@ -95,7 +94,6 @@ export default async function HomePage() {
               </p>
               <Link
                 href="/projects"
-                onClick={() => track('path_card_click', { label: 'use' })}
                 className="inline-flex items-center gap-1 text-sm font-medium text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
               >
                 {t('paths.use.cta')}
@@ -120,7 +118,6 @@ export default async function HomePage() {
               </p>
               <Link
                 href="/harness"
-                onClick={() => track('path_card_click', { label: 'build' })}
                 className="inline-flex items-center gap-1 text-sm font-medium text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
               >
                 {t('paths.build.cta')}
@@ -145,7 +142,6 @@ export default async function HomePage() {
               </p>
               <Link
                 href="/about"
-                onClick={() => track('path_card_click', { label: 'collaborate' })}
                 className="inline-flex items-center gap-1 text-sm font-medium text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
               >
                 {t('paths.collaborate.cta')}
