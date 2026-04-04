@@ -182,10 +182,10 @@ export const projects: Project[] = [
     startDate: '2026-02-20',
     gradient: 'from-violet-500 to-purple-400',
     showcase: {
-      rank: 3,
+      rank: 1,
       headline: {
-        ko: '브라우저에서 바로 쓰는 디스플레이 분석 도구',
-        en: 'Display analysis tools, right in your browser',
+        ko: '디스플레이 엔지니어를 위한 무료 웹 분석 플랫폼',
+        en: 'Free Web Analysis Platform for Display Engineers',
       },
       cta: {
         label: { ko: '분석 시작하기', en: 'Start Analyzing' },
@@ -235,7 +235,7 @@ export const projects: Project[] = [
     startDate: '2026-03-12',
     gradient: 'from-rose-500 to-orange-400',
     showcase: {
-      rank: 1,
+      rank: 3,
       headline: {
         ko: '6시간 후 사라지는 글, 투표로 살린다',
         en: 'Posts die in 6 hours. Vote to keep them alive',

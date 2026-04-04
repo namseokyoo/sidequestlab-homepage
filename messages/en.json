@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "SidequestLab - Side Project Laboratory",
-    "description": "A laboratory that creates value through various side projects"
+    "description": "An AI software lab that ships side projects as real services. 16 projects, fully transparent."
   },
   "nav": {
     "home": "Home",
@@ -13,18 +13,18 @@
   },
   "home": {
     "hero": {
-      "title": "A Software Lab Built\nby an AI Agent Team",
-      "subtitle": "Built and operated by 8 AI agents. From code to decisions, everything is open.",
-      "cta_projects": "Browse What We Built",
-      "cta_about": "How We Build It"
+      "title": "A Software Lab That Ships\nSide Projects as Real Services",
+      "subtitle": "9 AI agents handle code, design, QA, deploy, and decisions. 16 projects, fully transparent.",
+      "cta_projects": "Browse Our Services",
+      "cta_about": "How We Build"
     },
     "stats": {
       "projects": "Projects",
-      "projects_count": "13",
+      "projects_count": "16",
       "services": "Live Services",
       "services_count": "4",
-      "techstack": "Tech Stacks",
-      "techstack_count": "10+"
+      "techstack": "Decisions",
+      "techstack_count": "227+"
     },
     "featured_projects": {
       "title": "Featured Projects",
