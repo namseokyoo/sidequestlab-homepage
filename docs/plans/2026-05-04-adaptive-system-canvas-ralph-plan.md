@@ -1,0 +1,582 @@
+# Adaptive System Canvas Landing Implementation Plan
+
+> **For Hermes / OMX:** Use `ralph` to execute this plan to verified completion. Ralph must not reduce scope, must preserve public-claim safety, and must run lint/build before completion.
+
+**Goal:** Rebuild the SidequestLab homepage hero into an editorial portfolio landing page with a themeable right-side Living Systems Canvas, so a visitor understands the AI Operations Portfolio spine within 3 minutes.
+
+**Architecture:** Replace the current generic centered hero/stat-first homepage with a split editorial landing section. The left side communicates SidequestLab's positioning through editorial typography and proof-oriented CTAs; the right side is an interactive, themeable System Canvas implemented as React client components with CSS-variable theme tokens. Keep existing projects/blog sections, but reframe top-of-page proof flow and remove/avoid unsupported performance claims.
+
+**Tech Stack:** Next.js App Router, TypeScript, Tailwind CSS v4, next-intl, React client state, optional reuse of `@xyflow/react` only if it does not make the hero feel like a generic dashboard. Prefer custom SVG/HTML for the landing canvas MVP.
+
+---
+
+## Non-negotiables
+
+1. **Do not invent metrics.** Remove or avoid unsupported numbers such as fake improvement percentages, fake active experiment counts, fake revenue/users, or unverified performance metrics.
+2. **Do not invent URLs.** Use existing routes and `_company/PROJECTS.md` as source of truth for project links.
+3. **Do not delete the Claude Code / legacy proof story.** Preserve it as proof/history where relevant; do not present it as current live runtime if unavailable.
+4. **Right canvas must be themeable.** At minimum implement `graphite`, `paper`, and `frost`; structure must allow `blueprint` and `mono` later.
+5. **Dark canvas must not look like generic cyberpunk AI dashboard.** Avoid neon blue/purple, humanoids, world maps, brain spheres, fake command centers, and excessive glow.
+6. **Accessibility matters.** All node buttons, theme buttons, and CTAs need labels, focus states, and reduced-motion-safe behavior.
+7. **Verify before done.** `npm run lint` and `npm run build` must pass. If visual verification is possible, run local dev server and capture/inspect the hero.
+
+---
+
+## Target files
+
+Likely create/modify:
+
+- Modify: `src/app/[locale]/page.tsx`
+- Create: `src/components/home/PortfolioLanding.tsx`
+- Create: `src/components/home/EditorialHeroPanel.tsx`
+- Create: `src/components/home/ProofCaseStrip.tsx`
+- Create: `src/components/home/SystemCanvas/SystemCanvas.tsx`
+- Create: `src/components/home/SystemCanvas/CanvasNode.tsx`
+- Create: `src/components/home/SystemCanvas/CanvasEdgeLayer.tsx`
+- Create: `src/components/home/SystemCanvas/CanvasThemeSwitcher.tsx`
+- Create: `src/components/home/SystemCanvas/CanvasDetailPanel.tsx`
+- Create: `src/components/home/SystemCanvas/canvasData.ts`
+- Create: `src/components/home/SystemCanvas/canvasThemes.ts`
+- Modify: `src/app/globals.css`
+- Modify: `messages/ko.json`
+- Modify: `messages/en.json`
+
+Optional after inspection:
+
+- Create: `src/components/home/SystemCanvas/index.ts`
+- Create: `src/components/home/types.ts`
+
+---
+
+## Desired first-screen composition
+
+Desktop:
+
+```txt
+┌──────────────────────────────────────────────────────────────┐
+│ Header                                                       │
+├─────────────────────┬────────────────────────────────────────┤
+│ Editorial panel     │ Themeable Living Systems Canvas         │
+│ - SidequestLab      │ - node map                              │
+│ - AI Ops spine      │ - active route                          │
+│ - positioning       │ - detail/log panel                      │
+│ - 3 principles      │ - theme switcher                        │
+│ - latest proof log  │                                        │
+├─────────────────────┴────────────────────────────────────────┤
+│ Proof / Case strip: evidence, systems, QA, deployment, logs   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Mobile:
+
+```txt
+Hero headline
+CTA row
+Canvas summary card
+Horizontal node/story rail
+Proof case cards
+Existing featured projects/blog continuation
+```
+
+---
+
+## Public copy direction
+
+Korean hero copy:
+
+- Eyebrow: `AI Operations Portfolio`
+- Main: `운영을 디자인하는 AI 제품 실험실`
+- Body: `SidequestLab은 아이디어, 코드, QA, 배포, 회고를 하나의 운영 시스템으로 묶어 공개 가능한 증거와 함께 축적합니다.`
+- CTA primary: `프로젝트 증거 보기`
+- CTA secondary: `운영 방식 보기`
+
+English hero copy:
+
+- Eyebrow: `AI Operations Portfolio`
+- Main: `An AI product lab that designs operations.`
+- Body: `SidequestLab connects ideas, code, QA, deployment, and retrospectives into an operating system with public proof.`
+- CTA primary: `View project evidence`
+- CTA secondary: `See the operating system`
+
+Avoid:
+
+- `9 agents do everything` as the main hero claim if it over-focuses on org gimmick.
+- Unsupported `227+ decisions` in first-screen stats unless source is verified and it helps the visitor.
+- Any fake metric generated by the mockup.
+
+---
+
+## Canvas information architecture
+
+Canvas nodes should map to SidequestLab's public portfolio spine, not fake product analytics.
+
+Recommended nodes:
+
+1. `Intake` / `Problem Intake`
+   - Status badge: `documented`
+   - Meaning: idea/problem capture
+2. `Build Loop`
+   - Status badge: `in progress`
+   - Meaning: implementation loop
+3. `QA Gate`
+   - Status badge: `verified`
+   - Meaning: test/check before release
+4. `Deploy / Release`
+   - Status badge: `released`
+   - Meaning: public artifact or deployment handoff
+5. `Recovery / Monitoring`
+   - Status badge: `observed`
+   - Meaning: incidents, hooks, recovery, monitoring
+6. `Decision Log`
+   - Status badge: `recorded`
+   - Meaning: why choices were made
+7. `Proof Archive`
+   - Status badge: `public proof`
+   - Meaning: README, homepage, reports, screenshots, releases
+
+Node types:
+
+```ts
+export type CanvasNodeType =
+  | 'intake'
+  | 'build'
+  | 'qa'
+  | 'deploy'
+  | 'monitoring'
+  | 'decision'
+  | 'proof';
+
+export type CanvasNodeStatus =
+  | 'documented'
+  | 'in-progress'
+  | 'verified'
+  | 'released'
+  | 'observed'
+  | 'recorded'
+  | 'public-proof';
+```
+
+---
+
+## Canvas theme architecture
+
+Implement theme as a local component state, persisted to localStorage.
+
+```ts
+export type CanvasThemeId = 'graphite' | 'paper' | 'frost' | 'blueprint' | 'mono';
+```
+
+MVP must fully implement:
+
+1. `graphite`
+   - Warm charcoal, muted red, ivory text.
+   - Default if it feels closest to reference.
+2. `paper`
+   - Ivory background, ink lines, red active route.
+   - Best for reducing the dark block feeling.
+3. `frost`
+   - Soft gray, slate text, red/copper accent.
+   - Premium product-site fallback.
+
+Scaffold but do not over-polish:
+
+4. `blueprint`
+   - Muted navy/slate, cream lines, no neon.
+5. `mono`
+   - Minimal black/white/red editorial wireframe.
+
+Use CSS variables, not scattered Tailwind conditionals:
+
+```css
+[data-canvas-theme='graphite'] {
+  --canvas-bg: #151412;
+  --canvas-surface: rgba(255, 248, 235, 0.075);
+  --canvas-border: rgba(255, 248, 235, 0.16);
+  --canvas-grid: rgba(255, 248, 235, 0.075);
+  --canvas-line: rgba(255, 248, 235, 0.2);
+  --canvas-line-active: #c63a31;
+  --canvas-text: #f3eee5;
+  --canvas-muted: rgba(243, 238, 229, 0.62);
+  --canvas-accent: #c63a31;
+}
+
+[data-canvas-theme='paper'] {
+  --canvas-bg: #efe8dc;
+  --canvas-surface: rgba(255, 255, 255, 0.66);
+  --canvas-border: rgba(25, 22, 18, 0.16);
+  --canvas-grid: rgba(25, 22, 18, 0.08);
+  --canvas-line: rgba(25, 22, 18, 0.18);
+  --canvas-line-active: #a92b24;
+  --canvas-text: #171411;
+  --canvas-muted: rgba(23, 20, 17, 0.58);
+  --canvas-accent: #a92b24;
+}
+
+[data-canvas-theme='frost'] {
+  --canvas-bg: #e8e8e4;
+  --canvas-surface: rgba(255, 255, 255, 0.58);
+  --canvas-border: rgba(32, 35, 39, 0.14);
+  --canvas-grid: rgba(32, 35, 39, 0.075);
+  --canvas-line: rgba(32, 35, 39, 0.18);
+  --canvas-line-active: #9f332d;
+  --canvas-text: #16191d;
+  --canvas-muted: rgba(22, 25, 29, 0.56);
+  --canvas-accent: #9f332d;
+}
+```
+
+---
+
+## Implementation tasks
+
+### Task 1: Create a safe working branch and inspect current homepage state
+
+**Objective:** Make changes isolated and understand current state.
+
+**Commands:**
+
+```bash
+git status --short --branch
+git switch -c ralph/adaptive-system-canvas-landing || git switch ralph/adaptive-system-canvas-landing
+npm run lint
+```
+
+**Expected:** Existing unrelated `.omx`/runtime state changes may be present; do not commit them. Lint should either pass or reveal pre-existing issues to document.
+
+**Commit:** Do not commit yet.
+
+---
+
+### Task 2: Add global brand and canvas CSS variables
+
+**Objective:** Establish editorial + canvas theme tokens.
+
+**Files:**
+- Modify: `src/app/globals.css`
+
+**Steps:**
+1. Add SidequestLab brand variables under `:root`.
+2. Add `data-canvas-theme` variable blocks for `graphite`, `paper`, `frost`, `blueprint`, `mono`.
+3. Add utility CSS for canvas grain/grid if needed.
+4. Ensure existing body colors still work.
+
+**Verification:**
+
+```bash
+npm run lint
+```
+
+Expected: pass or no new lint errors.
+
+---
+
+### Task 3: Add SystemCanvas data and theme definitions
+
+**Objective:** Keep canvas content data-driven and claim-safe.
+
+**Files:**
+- Create: `src/components/home/SystemCanvas/canvasData.ts`
+- Create: `src/components/home/SystemCanvas/canvasThemes.ts`
+
+**Data rules:**
+- Use statuses, not fake metrics.
+- Use public proof labels, not revenue/user claims.
+- Include both Korean and English labels OR pass already localized strings from component. Simpler MVP: keep display copy in the component if existing i18n is cumbersome, but prefer message files for hero copy.
+
+**Verification:**
+
+```bash
+npx tsc --noEmit
+```
+
+Expected: no type errors.
+
+---
+
+### Task 4: Build CanvasEdgeLayer
+
+**Objective:** Draw calm, editorial system paths with SVG.
+
+**Files:**
+- Create: `src/components/home/SystemCanvas/CanvasEdgeLayer.tsx`
+
+**Requirements:**
+- SVG absolute inset layer.
+- Use cubic paths or polyline paths between node coordinates.
+- Inactive paths use `var(--canvas-line)`.
+- Active path uses `var(--canvas-line-active)`.
+- No excessive glow.
+- Add `aria-hidden="true"`.
+
+**Verification:** Typecheck.
+
+---
+
+### Task 5: Build CanvasNode
+
+**Objective:** Render accessible interactive node cards.
+
+**Files:**
+- Create: `src/components/home/SystemCanvas/CanvasNode.tsx`
+
+**Requirements:**
+- Render as `<button>`.
+- Absolute positioning is handled by parent.
+- States: inactive, hover, active.
+- Include node eyebrow/type, title, short description, status badge.
+- Focus-visible ring uses `var(--canvas-accent)`.
+- Do not use icons that imply robots/brains/humanoids.
+
+**Verification:** Typecheck and lint.
+
+---
+
+### Task 6: Build CanvasThemeSwitcher
+
+**Objective:** Let the right canvas change visual skin.
+
+**Files:**
+- Create: `src/components/home/SystemCanvas/CanvasThemeSwitcher.tsx`
+
+**Requirements:**
+- Five buttons: Graphite, Paper, Frost, Blueprint, Mono.
+- Compact pill/dot UI in canvas header or toolbar.
+- Accessible labels.
+- Active state clear.
+- `paper` and `frost` must visibly reduce the dark-canvas block.
+
+**Verification:** Typecheck and lint.
+
+---
+
+### Task 7: Build CanvasDetailPanel
+
+**Objective:** Node click changes the proof/decision context.
+
+**Files:**
+- Create: `src/components/home/SystemCanvas/CanvasDetailPanel.tsx`
+
+**Requirements:**
+- Shows selected node title.
+- Shows `What this proves` and `Public artifact` fields.
+- Use statuses like `documented`, `verified`, `released`.
+- Do not include invented metrics.
+
+**Verification:** Typecheck and lint.
+
+---
+
+### Task 8: Build SystemCanvas orchestrator component
+
+**Objective:** Combine nodes, edges, details, and theme switcher.
+
+**Files:**
+- Create: `src/components/home/SystemCanvas/SystemCanvas.tsx`
+- Optional Create: `src/components/home/SystemCanvas/index.ts`
+
+**Requirements:**
+- Client component.
+- State: `activeNodeId`, `theme`.
+- Theme persists to localStorage.
+- Container has `data-canvas-theme={theme}`.
+- Header: `Living Systems Canvas` / `AI Operations Map`.
+- Mini detail/log panel on right or bottom-right.
+- Mobile: convert to stacked/scrollable node cards; do not force unreadable full map.
+- Respect `prefers-reduced-motion` by using minimal transitions only.
+
+**Verification:** Typecheck and lint.
+
+---
+
+### Task 9: Build EditorialHeroPanel
+
+**Objective:** Create the left magazine/editorial panel matching the reference direction.
+
+**Files:**
+- Create: `src/components/home/EditorialHeroPanel.tsx`
+
+**Requirements:**
+- Eyebrow `AI Operations Portfolio`.
+- Korean/English copy via props or message files.
+- Big Korean headline with `break-keep` style if Korean.
+- Three principles: `Systems Thinking`, `Experimental Mindset`, `Operational Design`.
+- Latest log card uses claim-safe wording: `Portfolio spine updated`, `Proof archive整理`, `QA before publish` etc.
+- Decorative red circle/grid allowed.
+
+**Verification:** Typecheck and lint.
+
+---
+
+### Task 10: Build ProofCaseStrip
+
+**Objective:** Replace generic stats emphasis with evidence-oriented cards.
+
+**Files:**
+- Create: `src/components/home/ProofCaseStrip.tsx`
+
+**Requirements:**
+- 3 or 4 cards maximum.
+- Suggested cards:
+  1. `Public projects` → `/projects`
+  2. `Operating workflow` → `/workflow`
+  3. `Harness / QA` → `/harness`
+  4. `Company record` → `/about` or blog if appropriate
+- Use status/proof labels, not fake success metrics.
+- If using counts, only use existing `TOTAL_PROJECT_COUNT` / `SERVICE_COUNT` from code and label them modestly.
+
+**Verification:** Typecheck and lint.
+
+---
+
+### Task 11: Build PortfolioLanding and integrate homepage
+
+**Objective:** Replace current first hero/stats/paths flow with the new landing composition while preserving lower sections.
+
+**Files:**
+- Create: `src/components/home/PortfolioLanding.tsx`
+- Modify: `src/app/[locale]/page.tsx`
+
+**Requirements:**
+- Import and render `<PortfolioLanding />` above featured projects.
+- Remove or demote the current centered Hero + Stats + Audience Paths from the first screen.
+- Keep featured projects and recent blog sections after the proof strip.
+- Use `locale` to choose copy if not fully using next-intl inside client components.
+- Keep CTAs to existing routes.
+
+**Verification:**
+
+```bash
+npm run lint
+npm run build
+```
+
+Expected: both pass.
+
+---
+
+### Task 12: Update translations and metadata carefully
+
+**Objective:** Align public copy with AI Operations Portfolio spine.
+
+**Files:**
+- Modify: `messages/ko.json`
+- Modify: `messages/en.json`
+
+**Requirements:**
+- Update home hero copy away from generic “side projects as services” toward AI Operations Portfolio, but do not lose accessibility for visitors.
+- Do not overclaim current production scale.
+- Keep existing nav keys stable.
+
+**Verification:**
+
+```bash
+npm run build
+```
+
+Expected: no missing translation key errors.
+
+---
+
+### Task 13: Visual QA
+
+**Objective:** Confirm the result actually feels like the selected reference and the dark canvas no longer dominates.
+
+**Commands:**
+
+```bash
+npm run dev
+```
+
+Then inspect local page:
+
+- `/ko`
+- `/en`
+
+Check:
+
+- Desktop: split hero visible and coherent.
+- Right canvas default looks integrated, not cyberpunk.
+- Theme switcher works for Graphite/Paper/Frost.
+- Mobile: no overflow, readable order.
+- Browser console: no JS errors.
+
+If browser tool available, capture screenshots and inspect them. If not, document CLI build evidence plus manual run URL.
+
+---
+
+### Task 14: Final verification and commit
+
+**Objective:** Finish with clean evidence.
+
+**Commands:**
+
+```bash
+npm run lint
+npm run build
+git status --short
+git diff -- src/app/[locale]/page.tsx src/app/globals.css src/components/home messages/ko.json messages/en.json
+git add src/app/[locale]/page.tsx src/app/globals.css src/components/home messages/ko.json messages/en.json docs/plans/2026-05-04-adaptive-system-canvas-ralph-plan.md
+git commit -m "feat: add adaptive portfolio system canvas landing"
+```
+
+Do not commit `.omx`, `.claude/worktrees`, logs, or unrelated runtime files.
+
+---
+
+## Ralph completion checklist
+
+Ralph may only report complete when all are true:
+
+- [ ] New homepage first screen has editorial left + themeable system canvas right.
+- [ ] Canvas themes `graphite`, `paper`, `frost` are implemented and switchable.
+- [ ] `blueprint` and `mono` are scaffolded or implemented without breaking UI.
+- [ ] Unsupported metrics/claims are absent from the new first-screen UX.
+- [ ] Existing lower project/blog sections still render.
+- [ ] Korean and English routes build.
+- [ ] Mobile layout does not overflow.
+- [ ] `npm run lint` passes.
+- [ ] `npm run build` passes.
+- [ ] Git commit exists and excludes unrelated runtime files.
+- [ ] Final report includes changed files, verification commands, and any known limitations.
+
+---
+
+## Suggested Ralph prompt
+
+```txt
+$ralph
+Workdir: /Volumes/external/project/SidequestLab/projects/sidequestlab-homepage
+
+Execute docs/plans/2026-05-04-adaptive-system-canvas-ralph-plan.md to completion.
+
+Task: Rebuild the SidequestLab homepage first screen into an editorial AI Operations Portfolio landing page based on the selected reference: left ivory editorial hero + right Living Systems Canvas. The right canvas is the priority. It must be themeable so the current dark look can be softened or replaced.
+
+Must implement:
+1. Split editorial landing hero.
+2. Themeable SystemCanvas component with at least graphite, paper, frost themes; scaffold blueprint and mono if practical.
+3. Canvas node map for AI operations spine: intake, build, QA, deploy, monitoring/recovery, decision log, proof archive.
+4. Node click/hover active state and detail panel.
+5. Theme switcher persisted to localStorage.
+6. Proof/case strip below hero using evidence/status language, not unsupported performance claims.
+7. Responsive mobile fallback.
+8. Korean and English copy alignment.
+
+Constraints:
+- Do not invent revenue/users/performance metrics.
+- Do not invent URLs; use existing routes only.
+- Do not delete or rewrite unrelated sections beyond necessary homepage integration.
+- Do not commit unrelated .omx/.claude runtime state/log files.
+- Avoid generic AI dashboard/cyberpunk aesthetics: no neon blue/purple, humanoids, world maps, brain spheres, command-center screen gimmicks, excessive glow.
+
+Verification required before completion:
+- npm run lint
+- npm run build
+- Visual/browser inspection if possible for /ko and /en desktop/mobile.
+- Architect/critic verification that the right canvas feels integrated with the editorial layout and is not just a dark dashboard.
+
+Completion output must include:
+- Commit hash
+- Changed files
+- Verification command outputs
+- Short note on which canvas theme should be the default and why
+```
