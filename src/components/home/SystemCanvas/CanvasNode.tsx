@@ -1,68 +1,62 @@
-import type { CanvasLocale, CanvasNode as CanvasNodeType } from './canvasData';
-
-const iconByType: Record<CanvasNodeType['type'], string> = {
-  intake: '⌘',
-  build: '♙',
-  qa: '♢',
-  deploy: '⌁',
-  monitoring: '⌁',
-  decision: '▭',
-  proof: '•',
-};
-
-const widthBySize: Record<NonNullable<CanvasNodeType['size']>, string> = {
-  sm: 'w-full lg:w-32',
-  md: 'w-full lg:w-44',
-  lg: 'w-full lg:w-56',
-};
+import type { CanvasLocale, ProofStage, ProofStageId } from './canvasData';
 
 type CanvasNodeProps = {
-  node: CanvasNodeType;
+  stage: ProofStage;
   locale: CanvasLocale;
   active: boolean;
-  onSelect: (id: string) => void;
+  complete: boolean;
+  onSelect: (id: ProofStageId) => void;
 };
 
-export default function CanvasNode({ node, locale, active, onSelect }: CanvasNodeProps) {
-  const copy = node.copy[locale];
-  const width = widthBySize[node.size ?? 'md'];
+export default function CanvasNode({ stage, locale, active, complete, onSelect }: CanvasNodeProps) {
+  const copy = stage.copy[locale];
+  const selectedLabel = locale === 'ko' ? '선택됨' : 'Selected';
 
   return (
     <button
       type="button"
       aria-pressed={active}
-      aria-label={`${copy.eyebrow}: ${copy.title}`}
-      onClick={() => onSelect(node.id)}
-      className={`canvas-node group relative ${width} rounded-md border px-4 py-3 text-left shadow-2xl shadow-black/20 backdrop-blur-md transition duration-200 focus-visible:outline-none focus-visible:ring-2 ${
+      aria-label={`${stage.order}. ${copy.title}`}
+      onClick={() => onSelect(stage.id)}
+      className={`canvas-node group relative w-full rounded-md border px-4 py-3 text-left shadow-2xl shadow-black/20 backdrop-blur-md transition duration-200 focus-visible:outline-none focus-visible:ring-2 lg:w-40 xl:w-44 ${
         active ? 'canvas-node-active scale-[1.025]' : 'hover:-translate-y-0.5'
       }`}
     >
-      <span className="absolute -left-1.5 top-1/2 hidden h-3 w-3 -translate-y-1/2 rounded-full border border-[var(--canvas-accent)] bg-[var(--sql-charcoal)] shadow-[0_0_0_3px_rgba(198,58,49,0.18)] lg:block" />
-      <span className="absolute -right-1.5 top-1/2 hidden h-3 w-3 -translate-y-1/2 rounded-full border border-[var(--canvas-accent)] bg-[var(--sql-charcoal)] shadow-[0_0_0_3px_rgba(198,58,49,0.14)] lg:block" />
+      <span className="mb-3 flex items-center justify-between gap-3">
+        <span
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border font-mono text-[10px] font-bold ${
+            active
+              ? 'border-[var(--canvas-accent)] bg-[var(--canvas-accent)] text-white'
+              : complete
+                ? 'border-[rgba(209,44,36,0.65)] text-[var(--canvas-accent)]'
+                : 'border-[rgba(243,238,229,0.22)] text-[rgba(243,238,229,0.7)]'
+          }`}
+        >
+          {stage.order}
+        </span>
+        <span className="rounded-full border border-[rgba(243,238,229,0.14)] bg-[rgba(243,238,229,0.07)] px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-[rgba(243,238,229,0.82)]">
+          {copy.statusLabel}
+        </span>
+      </span>
 
-      <span className="mb-4 flex items-center gap-2 text-xs font-semibold text-[var(--canvas-text)]">
-        <span className="text-[var(--canvas-muted)]">{iconByType[node.type]}</span>
+      <span className="block font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-[rgba(243,238,229,0.78)]">
         {copy.eyebrow}
       </span>
-
-      <span className="block font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--canvas-text)]">
-        {copy.title}
+      <span className="mt-1 flex items-center justify-between gap-3 text-sm font-semibold leading-snug text-[var(--canvas-text)]">
+        <span>
+          <span className="hidden lg:inline">{copy.shortTitle}</span>
+          <span className="lg:hidden">{copy.mobileTitle}</span>
+        </span>
+        <span className="text-[rgba(243,238,229,0.55)] transition group-hover:translate-x-0.5 group-hover:text-[var(--canvas-accent)]" aria-hidden="true">→</span>
       </span>
-      <span className="mt-2 block text-[13px] leading-relaxed text-[rgba(243,238,229,0.88)]">
-        {copy.description}
-      </span>
-
-      {node.id === 'intake' && (
-        <span className="mt-4 block">
-          <span className="mb-2 flex items-center justify-between font-mono text-[10px] text-[rgba(243,238,229,0.82)]">
-            <span />
-            <span className="text-[var(--canvas-text)]">76%</span>
-          </span>
-          <span className="block h-1 overflow-hidden rounded-full bg-[rgba(243,238,229,0.14)]">
-            <span className="block h-full w-[76%] bg-[var(--canvas-accent)]" />
-          </span>
+      {active && (
+        <span className="mt-2 inline-flex rounded-full border border-[rgba(209,44,36,0.5)] bg-[rgba(209,44,36,0.16)] px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-[var(--canvas-text)]">
+          {selectedLabel}
         </span>
       )}
+      <span className="mt-2 block text-[12px] leading-relaxed text-[rgba(243,238,229,0.78)]">
+        {copy.description}
+      </span>
     </button>
   );
 }
