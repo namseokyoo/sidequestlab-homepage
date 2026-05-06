@@ -1,0 +1,177 @@
+[
+  {
+    "locale": "ko",
+    "viewport": "tablet-landscape",
+    "width": 2388,
+    "height": 1668,
+    "consoleMessages": [
+      "info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "log: [HMR] connected",
+      "error: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "log: %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "log: %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /ko}",
+      "log: %c[Vercel Web Analytics]%c [view] http://127.0.0.1:3132/ko color: rgb(120, 120, 120) color: inherit {o: http://127.0.0.1:3132/ko, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778053643508} /_vercel/insights/view"
+    ],
+    "stageButtonCount": 7,
+    "distinctDetailTitles": 7,
+    "activeLabelCounts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "overlapPairs": [],
+    "detailOverlapStage": false,
+    "overflowX": false,
+    "fakeStrings": [],
+    "screenshot": "docs/reports/system-map-proof-rail-no-overlap-evidence/ko-tablet-landscape.png"
+  },
+  {
+    "locale": "ko",
+    "viewport": "desktop",
+    "width": 1440,
+    "height": 1100,
+    "consoleMessages": [
+      "info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "log: [HMR] connected",
+      "log: %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "log: %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /ko}",
+      "log: %c[Vercel Web Analytics]%c [view] http://127.0.0.1:3132/ko color: rgb(120, 120, 120) color: inherit {o: http://127.0.0.1:3132/ko, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778053647868} /_vercel/insights/view"
+    ],
+    "stageButtonCount": 7,
+    "distinctDetailTitles": 7,
+    "activeLabelCounts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "overlapPairs": [],
+    "detailOverlapStage": false,
+    "overflowX": false,
+    "fakeStrings": [],
+    "screenshot": "docs/reports/system-map-proof-rail-no-overlap-evidence/ko-desktop.png"
+  },
+  {
+    "locale": "ko",
+    "viewport": "mobile",
+    "width": 390,
+    "height": 1100,
+    "consoleMessages": [
+      "info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "log: [HMR] connected",
+      "log: %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "log: %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /ko}",
+      "log: %c[Vercel Web Analytics]%c [view] http://127.0.0.1:3132/ko color: rgb(120, 120, 120) color: inherit {o: http://127.0.0.1:3132/ko, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778053650217} /_vercel/insights/view"
+    ],
+    "stageButtonCount": 7,
+    "distinctDetailTitles": 7,
+    "activeLabelCounts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "overlapPairs": [],
+    "detailOverlapStage": false,
+    "overflowX": false,
+    "fakeStrings": [],
+    "screenshot": "docs/reports/system-map-proof-rail-no-overlap-evidence/ko-mobile.png"
+  },
+  {
+    "locale": "en",
+    "viewport": "tablet-landscape",
+    "width": 2388,
+    "height": 1668,
+    "consoleMessages": [
+      "info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "log: [HMR] connected",
+      "log: %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "log: %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /en}",
+      "log: %c[Vercel Web Analytics]%c [view] http://127.0.0.1:3132/en color: rgb(120, 120, 120) color: inherit {o: http://127.0.0.1:3132/en, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778053652370} /_vercel/insights/view"
+    ],
+    "stageButtonCount": 7,
+    "distinctDetailTitles": 7,
+    "activeLabelCounts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "overlapPairs": [],
+    "detailOverlapStage": false,
+    "overflowX": false,
+    "fakeStrings": [],
+    "screenshot": "docs/reports/system-map-proof-rail-no-overlap-evidence/en-tablet-landscape.png"
+  },
+  {
+    "locale": "en",
+    "viewport": "desktop",
+    "width": 1440,
+    "height": 1100,
+    "consoleMessages": [
+      "info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "log: [HMR] connected",
+      "log: %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "log: %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /en}",
+      "log: %c[Vercel Web Analytics]%c [view] http://127.0.0.1:3132/en color: rgb(120, 120, 120) color: inherit {o: http://127.0.0.1:3132/en, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778053654663} /_vercel/insights/view"
+    ],
+    "stageButtonCount": 7,
+    "distinctDetailTitles": 7,
+    "activeLabelCounts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "overlapPairs": [],
+    "detailOverlapStage": false,
+    "overflowX": false,
+    "fakeStrings": [],
+    "screenshot": "docs/reports/system-map-proof-rail-no-overlap-evidence/en-desktop.png"
+  },
+  {
+    "locale": "en",
+    "viewport": "mobile",
+    "width": 390,
+    "height": 1100,
+    "consoleMessages": [
+      "info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "log: [HMR] connected",
+      "log: %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "log: %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /en}",
+      "log: %c[Vercel Web Analytics]%c [view] http://127.0.0.1:3132/en color: rgb(120, 120, 120) color: inherit {o: http://127.0.0.1:3132/en, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778053656794} /_vercel/insights/view"
+    ],
+    "stageButtonCount": 7,
+    "distinctDetailTitles": 7,
+    "activeLabelCounts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "overlapPairs": [],
+    "detailOverlapStage": false,
+    "overflowX": false,
+    "fakeStrings": [],
+    "screenshot": "docs/reports/system-map-proof-rail-no-overlap-evidence/en-mobile.png"
+  }
+]
