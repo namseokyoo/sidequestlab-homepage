@@ -1,0 +1,130 @@
+[
+  {
+    "locale": "ko",
+    "viewport": "desktop",
+    "consoleCount": 6,
+    "consoleMessages": [
+      {
+        "type": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+      },
+      {
+        "type": "log",
+        "text": "[HMR] connected"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /ko}"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c [view] http://localhost:3132/ko color: rgb(120, 120, 120) color: inherit {o: http://localhost:3132/ko, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778042266080} /_vercel/insights/view"
+      }
+    ],
+    "overflowX": false,
+    "proofText": 2,
+    "latestPost": 1,
+    "screenshot": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/portfolio-content-reinforcement-evidence/ko-desktop.png"
+  },
+  {
+    "locale": "ko",
+    "viewport": "mobile",
+    "consoleCount": 5,
+    "consoleMessages": [
+      {
+        "type": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+      },
+      {
+        "type": "log",
+        "text": "[HMR] connected"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /ko}"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c [view] http://localhost:3132/ko color: rgb(120, 120, 120) color: inherit {o: http://localhost:3132/ko, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778042268345} /_vercel/insights/view"
+      }
+    ],
+    "overflowX": false,
+    "proofText": 2,
+    "latestPost": 1,
+    "screenshot": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/portfolio-content-reinforcement-evidence/ko-mobile.png"
+  },
+  {
+    "locale": "en",
+    "viewport": "desktop",
+    "consoleCount": 5,
+    "consoleMessages": [
+      {
+        "type": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+      },
+      {
+        "type": "log",
+        "text": "[HMR] connected"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /en}"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c [view] http://localhost:3132/en color: rgb(120, 120, 120) color: inherit {o: http://localhost:3132/en, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778042269711} /_vercel/insights/view"
+      }
+    ],
+    "overflowX": false,
+    "proofText": 3,
+    "latestPost": 1,
+    "screenshot": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/portfolio-content-reinforcement-evidence/en-desktop.png"
+  },
+  {
+    "locale": "en",
+    "viewport": "mobile",
+    "consoleCount": 5,
+    "consoleMessages": [
+      {
+        "type": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+      },
+      {
+        "type": "log",
+        "text": "[HMR] connected"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /en}"
+      },
+      {
+        "type": "log",
+        "text": "%c[Vercel Web Analytics]%c [view] http://localhost:3132/en color: rgb(120, 120, 120) color: inherit {o: http://localhost:3132/en, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778042271197} /_vercel/insights/view"
+      }
+    ],
+    "overflowX": false,
+    "proofText": 3,
+    "latestPost": 1,
+    "screenshot": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/portfolio-content-reinforcement-evidence/en-mobile.png"
+  }
+]

@@ -34,7 +34,7 @@ export default function ProofCaseStrip({ locale }: ProofCaseStripProps) {
   return (
     <section className="reference-case-strip border-t border-[rgba(243,238,229,0.12)] bg-[var(--sql-charcoal)] px-7 pb-8 pt-5 text-[var(--canvas-text)]">
       <div className="flex items-center justify-between gap-5 font-mono text-[10px] uppercase tracking-[0.14em]">
-        <nav className="flex min-w-0 flex-1 flex-wrap items-center justify-start gap-x-5 gap-y-2 text-[rgba(243,238,229,0.66)] sm:flex-nowrap sm:justify-between sm:overflow-x-auto">
+        <nav className="flex min-w-0 flex-1 flex-wrap items-center justify-start gap-x-5 gap-y-2 text-[rgba(243,238,229,0.82)] sm:flex-nowrap sm:justify-between sm:overflow-x-auto">
           {text.tabs.map((tab, index) => (
             <span key={tab} className={`whitespace-nowrap ${index === 0 ? 'font-semibold text-[var(--canvas-text)]' : ''}`}>
               {index === 0 && <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[var(--canvas-accent)] align-middle" />}

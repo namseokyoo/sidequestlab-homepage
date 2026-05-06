@@ -37,8 +37,8 @@ export default function CanvasNode({ node, locale, active, onSelect }: CanvasNod
         active ? 'canvas-node-active scale-[1.025]' : 'hover:-translate-y-0.5'
       }`}
     >
-      <span className="absolute -left-1.5 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-[var(--canvas-accent)] bg-[var(--sql-charcoal)] shadow-[0_0_0_3px_rgba(198,58,49,0.18)]" />
-      <span className="absolute -right-1.5 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-[var(--canvas-accent)] bg-[var(--sql-charcoal)] shadow-[0_0_0_3px_rgba(198,58,49,0.14)]" />
+      <span className="absolute -left-1.5 top-1/2 hidden h-3 w-3 -translate-y-1/2 rounded-full border border-[var(--canvas-accent)] bg-[var(--sql-charcoal)] shadow-[0_0_0_3px_rgba(198,58,49,0.18)] lg:block" />
+      <span className="absolute -right-1.5 top-1/2 hidden h-3 w-3 -translate-y-1/2 rounded-full border border-[var(--canvas-accent)] bg-[var(--sql-charcoal)] shadow-[0_0_0_3px_rgba(198,58,49,0.14)] lg:block" />
 
       <span className="mb-4 flex items-center gap-2 text-xs font-semibold text-[var(--canvas-text)]">
         <span className="text-[var(--canvas-muted)]">{iconByType[node.type]}</span>
@@ -48,13 +48,13 @@ export default function CanvasNode({ node, locale, active, onSelect }: CanvasNod
       <span className="block font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--canvas-text)]">
         {copy.title}
       </span>
-      <span className="mt-2 block text-[13px] leading-relaxed text-[rgba(243,238,229,0.72)]">
+      <span className="mt-2 block text-[13px] leading-relaxed text-[rgba(243,238,229,0.88)]">
         {copy.description}
       </span>
 
       {node.id === 'intake' && (
         <span className="mt-4 block">
-          <span className="mb-2 flex items-center justify-between font-mono text-[10px] text-[rgba(243,238,229,0.68)]">
+          <span className="mb-2 flex items-center justify-between font-mono text-[10px] text-[rgba(243,238,229,0.82)]">
             <span />
             <span className="text-[var(--canvas-text)]">76%</span>
           </span>
