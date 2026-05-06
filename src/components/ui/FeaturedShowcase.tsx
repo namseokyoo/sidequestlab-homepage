@@ -99,7 +99,7 @@ export default function FeaturedShowcase({ projects, variant }: FeaturedShowcase
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-5 lg:grid-cols-3">
       {projects.map((project, index) => {
         const showcase = project.showcase!;
         const gradient = project.gradient || 'from-gray-500 to-gray-400';
@@ -113,12 +113,13 @@ export default function FeaturedShowcase({ projects, variant }: FeaturedShowcase
         return (
           <div
             key={project.id}
-            className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} h-56 sm:h-64 transition-transform duration-200 hover:-translate-y-1`}
+            className={`relative overflow-hidden rounded-[1.4rem] border border-[rgba(17,16,14,0.12)] bg-gradient-to-br ${gradient} ${index === 0 ? 'min-h-72 lg:col-span-3 lg:min-h-80' : 'min-h-60'} shadow-xl shadow-black/10 transition-transform duration-200 hover:-translate-y-1`}
             style={{
               animationDelay: `${index * 100}ms`,
             }}
           >
-            <div className="absolute inset-0 bg-black/35 dark:bg-black/45" />
+            <div className="absolute inset-0 bg-black/45" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(243,238,229,0.22),transparent_26rem)]" />
 
             {badge && (
               <div className="absolute top-3 right-3 z-10">
@@ -126,11 +127,11 @@ export default function FeaturedShowcase({ projects, variant }: FeaturedShowcase
               </div>
             )}
 
-            <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 z-10">
-              <p className="mb-1 text-xs font-medium text-white/70 sm:text-sm">
+            <div className="absolute bottom-0 left-0 right-0 z-10 p-5 sm:p-6">
+              <p className="mb-1 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-white/78">
                 {project.name[locale]}
               </p>
-              <h3 className="mb-4 text-xl font-bold leading-snug text-white sm:text-2xl">
+              <h3 className={`${index === 0 ? 'max-w-3xl text-3xl sm:text-4xl' : 'text-xl sm:text-2xl'} mb-4 break-keep font-black leading-tight tracking-[-0.035em] text-white`}>
                 {showcase.headline[locale]}
               </h3>
               <a
@@ -141,7 +142,7 @@ export default function FeaturedShowcase({ projects, variant }: FeaturedShowcase
                   project_id: project.id,
                   url: showcase.cta.href,
                 })}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[var(--sql-ivory)] px-4 py-2 text-sm font-bold text-[var(--sql-ink)] transition-colors hover:bg-white"
               >
                 {showcase.cta.label[locale]}
                 {showcase.cta.external && (

@@ -1,12 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import CanvasDetailPanel from './CanvasDetailPanel';
+import { useMemo, useState } from 'react';
 import CanvasEdgeLayer from './CanvasEdgeLayer';
 import CanvasNode from './CanvasNode';
-import CanvasThemeSwitcher from './CanvasThemeSwitcher';
 import { canvasNodes, getCanvasNode, type CanvasLocale } from './canvasData';
-import { defaultCanvasTheme, isCanvasThemeId, type CanvasThemeId } from './canvasThemes';
 
 type SystemCanvasProps = {
   locale: CanvasLocale;
@@ -14,117 +11,149 @@ type SystemCanvasProps = {
 
 const copy = {
   ko: {
-    eyebrow: 'Living Systems Canvas',
-    title: 'AI Operations Map',
-    subtitle: '아이디어가 공개 증거로 정리되기까지의 운영 경로를 탐색합니다.',
-    hint: '노드를 선택하면 증거 경로가 바뀝니다.',
+    eyebrow: 'LIVING SYSTEMS MAP',
+    instruction: 'DRAG NODES TO EXPLORE PATHWAYS',
+    aboutTitle: 'ABOUT THIS PATH',
+    about: 'This pathway represents the onboarding optimization loop from experiment to deployment and monitoring.',
+    decisionTitle: 'Decision Log',
+    decisionMeta: '#1247',
+    decisionEyebrow: 'MODEL EVAL UPDATE',
+    decisionBody: 'Switched ranking model based on offline eval results.',
+    decisionTime: 'MAY 20, 2025   11:42',
+    decisionOwner: 'J. KIM',
+    decisionCta: 'VIEW DETAILS',
+    tools: ['Select', 'Pan', 'Zoom', 'Frame'],
   },
   en: {
-    eyebrow: 'Living Systems Canvas',
-    title: 'AI Operations Map',
-    subtitle: 'Explore how ideas move through build, QA, release, recovery, and proof.',
-    hint: 'Select a node to inspect the proof path.',
+    eyebrow: 'LIVING SYSTEMS MAP',
+    instruction: 'DRAG NODES TO EXPLORE PATHWAYS',
+    aboutTitle: 'ABOUT THIS PATH',
+    about: 'This pathway represents the onboarding optimization loop from experiment to deployment and monitoring.',
+    decisionTitle: 'Decision Log',
+    decisionMeta: '#1247',
+    decisionEyebrow: 'MODEL EVAL UPDATE',
+    decisionBody: 'Switched ranking model based on offline eval results.',
+    decisionTime: 'MAY 20, 2025   11:42',
+    decisionOwner: 'J. KIM',
+    decisionCta: 'VIEW DETAILS',
+    tools: ['Select', 'Pan', 'Zoom', 'Frame'],
   },
 };
 
+const toolbarIcons = ['⌁', '☝', '⌕', '□'];
+
 export default function SystemCanvas({ locale }: SystemCanvasProps) {
   const [activeNodeId, setActiveNodeId] = useState('qa');
-  const [theme, setTheme] = useState<CanvasThemeId>(defaultCanvasTheme);
   const activeNode = useMemo(() => getCanvasNode(activeNodeId), [activeNodeId]);
   const text = copy[locale];
 
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      const saved = window.localStorage.getItem('sidequestlab.canvasTheme');
-      if (isCanvasThemeId(saved)) {
-        setTheme(saved);
-      }
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
-
-  const handleThemeChange = (nextTheme: CanvasThemeId) => {
-    setTheme(nextTheme);
-    window.localStorage.setItem('sidequestlab.canvasTheme', nextTheme);
-  };
-
   return (
     <section
-      data-canvas-theme={theme}
-      className="system-canvas-shell relative min-h-[680px] overflow-hidden rounded-[2rem] border shadow-2xl shadow-black/10"
-      aria-label={text.title}
+      data-canvas-theme="graphite"
+      className="system-canvas-shell reference-system-canvas relative min-h-[640px] flex-1 overflow-hidden border-b border-[rgba(243,238,229,0.12)]"
+      aria-label="Living Systems Map"
     >
       <div className="absolute inset-0 system-canvas-grid" aria-hidden="true" />
       <div className="absolute inset-0 system-canvas-grain" aria-hidden="true" />
-      <div className="relative z-10 flex min-h-[680px] flex-col p-5 sm:p-6 lg:p-7">
-        <header className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--canvas-accent)]">
-              {text.eyebrow}
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--canvas-text)] sm:text-3xl">
-              {text.title}
-            </h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--canvas-muted)]">
-              {text.subtitle}
-            </p>
+      <div className="absolute inset-0 reference-orbit-lines" aria-hidden="true" />
+
+      <header className="relative z-20 flex items-center gap-5 px-7 pt-8 font-mono text-[10px] uppercase tracking-[0.17em]">
+        <span className="inline-flex items-center gap-2 font-semibold text-[var(--canvas-text)]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--canvas-accent)]" />
+          {text.eyebrow}
+        </span>
+        <span className="text-[rgba(243,238,229,0.74)]">{text.instruction}</span>
+      </header>
+
+      <div className="relative z-10 min-h-[610px] px-7 pb-7 pt-2">
+        <div className="hidden lg:block">
+          <CanvasEdgeLayer activeNodeId={activeNodeId} />
+        </div>
+
+        <div className="hidden lg:block">
+          {canvasNodes.map((node) => (
+            <div
+              key={node.id}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${node.x}%`, top: `${node.y}%` }}
+            >
+              <CanvasNode
+                node={node}
+                locale={locale}
+                active={node.id === activeNodeId}
+                onSelect={setActiveNodeId}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-3 pt-8 lg:hidden">
+          {canvasNodes.map((node) => (
+            <CanvasNode
+              key={node.id}
+              node={node}
+              locale={locale}
+              active={node.id === activeNodeId}
+              onSelect={setActiveNodeId}
+            />
+          ))}
+        </div>
+
+        <aside className="absolute right-[13%] top-[14%] hidden w-52 rounded border border-[rgba(243,238,229,0.14)] bg-[rgba(28,27,25,0.86)] p-4 shadow-2xl shadow-black/30 backdrop-blur md:block">
+          <div className="flex items-center justify-between border-b border-[rgba(243,238,229,0.1)] pb-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-[var(--canvas-text)]">
+              <span className="text-[var(--canvas-muted)]">⌘</span>
+              {text.decisionTitle}
+            </div>
+            <span className="font-mono text-[10px] font-semibold text-[rgba(243,238,229,0.72)]">{text.decisionMeta}</span>
           </div>
-          <CanvasThemeSwitcher value={theme} onChange={handleThemeChange} />
-        </header>
-
-        <div className="mt-6 grid flex-1 gap-5 xl:grid-cols-[1fr_260px]">
-          <div className="system-canvas-map relative min-h-[470px] overflow-hidden rounded-[1.5rem] border">
-            <CanvasEdgeLayer activeNodeId={activeNodeId} />
-            <div className="hidden lg:block">
-              {canvasNodes.map((node) => (
-                <div
-                  key={node.id}
-                  className="absolute -translate-x-1/2 -translate-y-1/2"
-                  style={{ left: `${node.x}%`, top: `${node.y}%` }}
-                >
-                  <CanvasNode
-                    node={node}
-                    locale={locale}
-                    active={node.id === activeNodeId}
-                    onSelect={setActiveNodeId}
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div className="grid gap-3 p-4 lg:hidden">
-              {canvasNodes.map((node) => (
-                <CanvasNode
-                  key={node.id}
-                  node={node}
-                  locale={locale}
-                  active={node.id === activeNodeId}
-                  onSelect={setActiveNodeId}
-                />
-              ))}
-            </div>
-
-            <div className="absolute bottom-4 left-4 hidden rounded-full border border-[var(--canvas-border)] bg-[var(--canvas-surface)] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--canvas-muted)] backdrop-blur-sm md:block">
-              {text.hint}
-            </div>
+          <p className="mt-4 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--canvas-text)]">{text.decisionEyebrow}</p>
+          <p className="mt-2 text-xs leading-relaxed text-[var(--canvas-muted)]">{text.decisionBody}</p>
+          <div className="mt-4 border-y border-[rgba(243,238,229,0.12)] py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[rgba(243,238,229,0.74)]">
+            <p>{text.decisionTime}</p>
+            <p className="mt-1">{text.decisionOwner}</p>
           </div>
+          <button className="mt-3 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--canvas-accent)]">
+            {text.decisionCta} →
+          </button>
+        </aside>
 
-          <div className="space-y-4">
-            <CanvasDetailPanel node={activeNode} locale={locale} />
-            <div className="rounded-3xl border border-[var(--canvas-border)] bg-[var(--canvas-surface)] p-4 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--canvas-muted)]">
-              <div className="mb-3 flex items-center justify-between text-[var(--canvas-text)]">
-                <span>Route Check</span>
-                <span className="h-2 w-2 rounded-full bg-[var(--canvas-accent)]" />
-              </div>
-              <ol className="space-y-2 leading-relaxed">
-                <li>01 scope recorded</li>
-                <li>02 claim audit required</li>
-                <li>03 lint/build gate</li>
-                <li>04 public proof aligned</li>
-              </ol>
-            </div>
+        <aside className="absolute bottom-[24%] right-[4.2%] hidden w-56 rounded border border-[rgba(243,238,229,0.13)] bg-[rgba(28,27,25,0.72)] p-4 backdrop-blur md:block">
+          <div className="flex items-center justify-between">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[rgba(243,238,229,0.66)]">{text.aboutTitle}</p>
+            <span className="text-[rgba(243,238,229,0.68)]">×</span>
           </div>
+          <p className="mt-4 text-[13px] leading-relaxed text-[rgba(243,238,229,0.76)]">{text.about}</p>
+        </aside>
+
+        <div className="absolute right-5 top-[22%] hidden overflow-hidden rounded border border-[rgba(243,238,229,0.12)] bg-[rgba(28,27,25,0.72)] backdrop-blur md:block">
+          {toolbarIcons.map((icon, index) => (
+            <button
+              key={icon}
+              type="button"
+              aria-label={text.tools[index]}
+              className={`block h-10 w-10 border-b border-[rgba(243,238,229,0.08)] text-sm ${index === 0 ? 'text-[var(--canvas-accent)]' : 'text-[rgba(243,238,229,0.72)]'} last:border-b-0`}
+            >
+              {icon}
+            </button>
+          ))}
+        </div>
+
+        <div className="absolute bottom-8 right-7 hidden h-[4.2rem] w-[10.5rem] rounded border border-[rgba(243,238,229,0.12)] bg-[rgba(243,238,229,0.05)] p-2 md:block">
+          <div className="relative h-full w-full overflow-hidden rounded-sm bg-[rgba(10,10,9,0.58)]">
+            <div className="absolute inset-2 border border-[var(--canvas-accent)]" />
+            {Array.from({ length: 18 }).map((_, index) => (
+              <span
+                key={index}
+                className="absolute h-1.5 w-3 bg-[rgba(243,238,229,0.22)]"
+                style={{ left: `${8 + (index % 6) * 14}%`, top: `${15 + Math.floor(index / 6) * 26}%` }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="absolute bottom-[18%] left-[45%] hidden rounded-full border border-[rgba(243,238,229,0.2)] bg-[rgba(10,10,9,0.82)] px-3 py-1 font-mono text-[10px] font-semibold text-[rgba(243,238,229,0.72)] md:block">
+          {activeNode.copy[locale].eyebrow}
         </div>
       </div>
     </section>

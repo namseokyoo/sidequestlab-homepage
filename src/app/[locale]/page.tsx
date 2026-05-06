@@ -11,8 +11,8 @@ export default async function HomePage() {
   const t = await getTranslations('home');
   const locale = await getLocale();
   const featuredProjects = getFeaturedProjects();
-  const showcaseProjects = getShowcaseProjects().slice(0, 3);
-  const otherFeatured = featuredProjects.filter(p => !p.showcase || p.showcase.rank > 3);
+  const showcaseProjects = getShowcaseProjects().slice(0, 4);
+  const otherFeatured = featuredProjects.filter(p => !p.showcase || p.showcase.rank > 4);
   const recentPosts = getBlogPosts(locale).slice(0, 3);
 
   return (
@@ -20,13 +20,16 @@ export default async function HomePage() {
       <PortfolioLanding locale={locale} />
 
       {/* Featured Projects Section */}
-      <section className="py-20 sm:py-24">
+      <section className="bg-[var(--sql-ivory)] py-20 text-[var(--sql-ink)] sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-              {t('featured_projects.title')}
-            </h2>
-            <p className="mt-2 text-gray-500 dark:text-gray-400">
+          <div className="mb-12 flex flex-col gap-4 border-b border-[rgba(17,16,14,0.14)] pb-8 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--sql-red)]">Portfolio proof</p>
+              <h2 className="mt-3 text-3xl font-black tracking-[-0.045em] text-[var(--sql-ink)] sm:text-4xl">
+                {t('featured_projects.title')}
+              </h2>
+            </div>
+            <p className="max-w-xl break-keep text-sm leading-7 text-[rgba(17,16,14,0.68)] sm:text-base">
               {t('featured_projects.subtitle')}
             </p>
           </div>
@@ -37,11 +40,13 @@ export default async function HomePage() {
             </div>
           )}
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {otherFeatured.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
+          {otherFeatured.length > 0 && (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {otherFeatured.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          )}
 
           <div className="mt-12 text-center">
             <Link
@@ -69,10 +74,11 @@ export default async function HomePage() {
 
       {/* Recent Blog Posts Section */}
       {recentPosts.length > 0 && (
-        <section className="bg-gray-50 py-20 sm:py-24 dark:bg-gray-900">
+        <section data-canvas-theme="graphite" className="bg-[var(--sql-charcoal)] py-20 text-[var(--canvas-text)] sm:py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-12">
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <div className="mb-12 border-b border-[rgba(243,238,229,0.13)] pb-8">
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--canvas-accent)]">Operating notes</p>
+              <h2 className="mt-3 text-3xl font-black tracking-[-0.045em] text-[var(--canvas-text)]">
                 {t('recent_blog.title')}
               </h2>
             </div>
@@ -86,7 +92,7 @@ export default async function HomePage() {
             <div className="mt-12 text-center">
               <Link
                 href="/blog"
-                className="inline-flex items-center gap-1 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                className="inline-flex items-center gap-1 border-b border-[rgba(209,44,36,0.55)] pb-1 text-sm font-semibold text-[var(--canvas-text)] transition-colors hover:text-[var(--canvas-accent)]"
               >
                 {t('recent_blog.view_all')}
                 <svg

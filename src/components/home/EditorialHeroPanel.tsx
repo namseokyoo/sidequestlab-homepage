@@ -1,4 +1,3 @@
-import { Link } from '@/i18n/routing';
 import type { CanvasLocale } from './SystemCanvas/canvasData';
 
 type EditorialHeroPanelProps = {
@@ -7,34 +6,32 @@ type EditorialHeroPanelProps = {
 
 const copy = {
   ko: {
-    eyebrow: 'AI Operations Portfolio',
-    title: '운영을\n디자인하는\nAI 제품\n실험실',
-    body: 'SidequestLab은 아이디어, 코드, QA, 배포, 회고를 하나의 운영 시스템으로 묶어 공개 가능한 증거와 함께 축적합니다.',
-    primary: '프로젝트 증거 보기',
-    secondary: '운영 방식 보기',
+    eyebrow: 'AI PRODUCT STUDIO',
+    title: '운영을\n디자인하는\nAI 제품 실험실',
+    body: '사이드퀘스트랩은 AI 제품의 실험과 운영을 하나의 시스템으로 설계합니다.',
     principles: [
-      ['01', 'Systems Thinking', '제품보다 먼저 반복 가능한 운영 구조를 세웁니다.'],
-      ['02', 'Experimental Mindset', '가설, 변경, 검증, 회고가 한 경로에 남습니다.'],
-      ['03', 'Operational Design', 'QA와 배포, 복구를 포트폴리오의 일부로 공개합니다.'],
+      ['01', 'Systems Thinking'],
+      ['02', 'Experimental Mindset'],
+      ['03', 'Operational Design'],
     ],
-    logLabel: 'Latest proof log',
-    logTitle: 'Portfolio spine updated',
-    logBody: 'Homepage · README · public proof sections aligned for review.',
+    logLabel: 'LATEST LOG',
+    logTime: 'MAY 20, 2025   14:32',
+    logStatus: 'DEPLOYMENT COMPLETED',
+    logBody: 'Customer Onboarding v2.3.1',
   },
   en: {
-    eyebrow: 'AI Operations Portfolio',
+    eyebrow: 'AI PRODUCT STUDIO',
     title: 'An AI\nproduct lab\nthat designs\noperations',
-    body: 'SidequestLab connects ideas, code, QA, deployment, and retrospectives into an operating system with public proof.',
-    primary: 'View project evidence',
-    secondary: 'See operating system',
+    body: 'SidequestLab designs AI product experiments and operations as a single system.',
     principles: [
-      ['01', 'Systems Thinking', 'Reusable operating structure comes before product expansion.'],
-      ['02', 'Experimental Mindset', 'Hypotheses, changes, checks, and retrospectives stay on one path.'],
-      ['03', 'Operational Design', 'QA, deployment, and recovery become part of the portfolio proof.'],
+      ['01', 'Systems Thinking'],
+      ['02', 'Experimental Mindset'],
+      ['03', 'Operational Design'],
     ],
-    logLabel: 'Latest proof log',
-    logTitle: 'Portfolio spine updated',
-    logBody: 'Homepage · README · public proof sections aligned for review.',
+    logLabel: 'LATEST LOG',
+    logTime: 'MAY 20, 2025   14:32',
+    logStatus: 'DEPLOYMENT COMPLETED',
+    logBody: 'Customer Onboarding v2.3.1',
   },
 };
 
@@ -42,58 +39,43 @@ export default function EditorialHeroPanel({ locale }: EditorialHeroPanelProps) 
   const text = copy[locale];
 
   return (
-    <aside className="portfolio-editorial-panel relative overflow-hidden rounded-[2rem] border p-6 shadow-xl shadow-black/5 sm:p-8 lg:min-h-[680px]">
-      <div className="absolute -bottom-24 -right-20 h-64 w-64 rounded-full border-[34px] border-[var(--sql-red)] opacity-95" aria-hidden="true" />
-      <div className="absolute bottom-0 right-0 h-72 w-72 editorial-dot-grid opacity-45" aria-hidden="true" />
+    <aside className="portfolio-editorial-panel relative isolate min-h-[760px] overflow-hidden border-r border-[rgba(17,16,14,0.16)] px-8 py-10 sm:px-11 lg:min-h-[calc(100vh-5rem)]">
       <div className="relative z-10 flex min-h-full flex-col">
-        <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--sql-red-muted)]">
+        <p className="mt-8 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--sql-red)]">
           {text.eyebrow}
         </p>
-        <h1 className="mt-8 whitespace-pre-line text-5xl font-black leading-[0.92] tracking-[-0.07em] text-[var(--sql-ink)] sm:text-6xl lg:text-7xl">
+
+        <h1 className="relative z-10 mt-9 whitespace-pre-line break-keep text-[clamp(3.25rem,7.4vw,6.75rem)] font-black leading-[1.04] tracking-[-0.095em] text-[var(--sql-ink)] [word-break:keep-all]">
           {text.title}
         </h1>
-        <p className="mt-7 max-w-md text-base leading-relaxed text-[rgba(17,16,14,0.7)]">
+
+        <p className="relative z-10 mt-8 max-w-[25rem] break-keep text-base leading-[1.85] text-[rgba(17,16,14,0.72)]">
           {text.body}
         </p>
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-          <Link
-            href="/projects"
-            className="portfolio-cta-primary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold"
-          >
-            {text.primary}
-          </Link>
-          <Link
-            href="/workflow"
-            className="portfolio-cta-secondary inline-flex items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold"
-          >
-            {text.secondary}
-          </Link>
-        </div>
-
-        <div className="mt-10 divide-y divide-[rgba(17,16,14,0.14)] border-y border-[rgba(17,16,14,0.14)]">
-          {text.principles.map(([number, title, description]) => (
-            <details key={number} className="group py-4" open={number === '01'}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold">
-                <span className="font-mono text-xs tracking-[0.22em] text-[var(--sql-red-muted)]">{number}</span>
-                <span className="flex-1">{title}</span>
-                <span className="text-lg leading-none transition group-open:rotate-45">+</span>
-              </summary>
-              <p className="mt-3 pl-12 text-sm leading-relaxed text-[rgba(17,16,14,0.62)]">
-                {description}
-              </p>
-            </details>
+        <div className="relative z-10 mt-11 max-w-[15rem] divide-y divide-[rgba(17,16,14,0.18)] border-y border-[rgba(17,16,14,0.18)] bg-[rgba(243,238,229,0.72)] backdrop-blur-[1px] sm:bg-transparent sm:backdrop-blur-none">
+          {text.principles.map(([number, title]) => (
+            <div key={number} className="flex items-center gap-5 py-4 text-[13px] text-[var(--sql-ink)]">
+              <span className="font-mono text-[10px] tracking-[0.18em] text-[rgba(17,16,14,0.62)]">{number}</span>
+              <span className="flex-1 font-medium">{title}</span>
+              <span className="text-xl leading-none">+</span>
+            </div>
           ))}
         </div>
 
-        <div className="relative z-10 mt-auto pt-10">
-          <div className="rounded-3xl border border-[rgba(17,16,14,0.14)] bg-white/50 p-4 backdrop-blur-sm">
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--sql-red-muted)]">
-              {text.logLabel}
-            </p>
-            <h2 className="mt-2 text-lg font-semibold tracking-tight">{text.logTitle}</h2>
-            <p className="mt-1 text-sm leading-relaxed text-[rgba(17,16,14,0.62)]">{text.logBody}</p>
-          </div>
+        <div className="pointer-events-none absolute bottom-[2.4rem] right-[-14.8rem] z-0 h-[22rem] w-[22rem] rounded-full bg-[var(--sql-red)] sm:bottom-[7.2rem] sm:right-[-10.8rem] sm:h-[25rem] sm:w-[25rem]" aria-hidden="true" />
+        <div className="pointer-events-none absolute bottom-[9.8rem] right-[5.3rem] h-px w-[17.5rem] bg-[rgba(201,32,25,0.58)]" aria-hidden="true" />
+        <div className="pointer-events-none absolute bottom-[4.1rem] right-[1.1rem] h-[23rem] w-px bg-[rgba(17,16,14,0.18)]" aria-hidden="true" />
+        <div className="pointer-events-none absolute bottom-[4.1rem] right-[5.3rem] h-[23rem] w-px bg-[rgba(17,16,14,0.18)]" aria-hidden="true" />
+        <div className="pointer-events-none absolute bottom-[9.42rem] right-[5.05rem] h-3 w-3 rounded-full border border-[var(--sql-ink)] bg-[var(--sql-ink)] shadow-[0_0_0_1.4rem_rgba(201,32,25,0.14),0_0_0_2.9rem_rgba(201,32,25,0.1)]" aria-hidden="true" />
+
+        <div className="relative z-10 mt-auto max-w-xs pt-16 text-[11px] uppercase tracking-[0.08em] text-[rgba(17,16,14,0.68)]">
+          <p className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[rgba(17,16,14,0.56)]">{text.logLabel}</p>
+          <p className="mt-4 font-mono font-bold text-[var(--sql-ink)]">
+            {text.logTime} <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--sql-red)] align-middle" />
+          </p>
+          <p className="mt-3 font-mono text-[10px] font-semibold tracking-[0.14em] text-[rgba(17,16,14,0.62)]">{text.logStatus}</p>
+          <p className="mt-2 normal-case tracking-normal text-[13px] font-medium text-[rgba(17,16,14,0.82)]">{text.logBody}</p>
         </div>
       </div>
     </aside>

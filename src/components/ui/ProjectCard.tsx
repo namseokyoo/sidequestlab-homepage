@@ -30,7 +30,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const gradientClasses = project.gradient || defaultGradient;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+    <div className="group flex flex-col overflow-hidden rounded-[1.2rem] border border-[rgba(17,16,14,0.13)] bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-gray-700 dark:bg-gray-900">
       {/* Gradient Header */}
       <div className={`relative h-32 bg-gradient-to-r ${gradientClasses}`}>
         <div className="absolute inset-0 flex items-end p-5">
@@ -53,13 +53,13 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {/* Status */}
         <div className="mb-3 flex items-center gap-1.5">
           <span className={`inline-block h-2 w-2 rounded-full ${getStatusDot(project.status)}`} />
-          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+          <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">
             {t(`status.${project.status}`)}
           </span>
         </div>
 
         {/* Description */}
-        <p className="mb-4 flex-grow text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+        <p className="mb-4 flex-grow text-sm leading-relaxed text-gray-700 dark:text-gray-300">
           {project.description[locale]}
         </p>
 
@@ -69,7 +69,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             {project.techStack.slice(0, 4).map((tech) => (
               <span
                 key={tech}
-                className="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                className="rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300"
               >
                 {tech}
               </span>
@@ -87,7 +87,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           {project.longDescription && (
             <Link
               href={`/projects/${project.id}`}
-              className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              className="text-sm font-semibold text-gray-700 transition-colors hover:text-gray-950 dark:text-gray-300 dark:hover:text-white"
             >
               {t('viewDetails')}
             </Link>
