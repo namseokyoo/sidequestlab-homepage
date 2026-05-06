@@ -1,18 +1,50 @@
+import { Link } from '@/i18n/routing';
 import type { CanvasLocale } from './SystemCanvas/canvasData';
 
 type EditorialHeroPanelProps = {
   locale: CanvasLocale;
 };
 
-const copy = {
+type ProofPillar = {
+  number: string;
+  title: string;
+  description: string;
+  href: '/projects' | '/harness' | '/workflow';
+};
+
+const copy: Record<CanvasLocale, {
+  eyebrow: string;
+  title: string;
+  body: string;
+  principles: ProofPillar[];
+  logLabel: string;
+  logTime: string;
+  logStatus: string;
+  logBody: string;
+}> = {
   ko: {
     eyebrow: 'AI PRODUCT STUDIO',
     title: '운영을\n디자인하는\nAI 제품 실험실',
     body: '사이드퀘스트랩은 실제 서비스와 운영 하네스를 함께 공개하는 AI 제품 포트폴리오입니다.',
     principles: [
-      ['01', 'Live Product Proof'],
-      ['02', 'Harnessed QA'],
-      ['03', 'Operational Memory'],
+      {
+        number: '01',
+        title: '실제 서비스 증거',
+        description: '방문자가 바로 열어볼 수 있는 프로젝트',
+        href: '/projects',
+      },
+      {
+        number: '02',
+        title: '검증 하네스',
+        description: '완료 주장을 막는 QA·증거 기준',
+        href: '/harness',
+      },
+      {
+        number: '03',
+        title: '운영 기억',
+        description: '요청, 회고, 다음 개선으로 이어지는 방식',
+        href: '/workflow',
+      },
     ],
     logLabel: 'LATEST PROOF',
     logTime: 'MAY 06, 2026   15:20',
@@ -24,9 +56,24 @@ const copy = {
     title: 'An AI\nproduct lab\nthat designs\noperations',
     body: 'SidequestLab is an AI product portfolio that publishes live services together with the operating harness behind them.',
     principles: [
-      ['01', 'Live Product Proof'],
-      ['02', 'Harnessed QA'],
-      ['03', 'Operational Memory'],
+      {
+        number: '01',
+        title: 'Live service proof',
+        description: 'Projects visitors can open and inspect',
+        href: '/projects',
+      },
+      {
+        number: '02',
+        title: 'Verification harness',
+        description: 'QA and evidence gates behind completion claims',
+        href: '/harness',
+      },
+      {
+        number: '03',
+        title: 'Operating memory',
+        description: 'How requests and retrospectives feed the next cycle',
+        href: '/workflow',
+      },
     ],
     logLabel: 'LATEST PROOF',
     logTime: 'MAY 06, 2026   15:20',
@@ -53,15 +100,31 @@ export default function EditorialHeroPanel({ locale }: EditorialHeroPanelProps) 
           {text.body}
         </p>
 
-        <div className="relative z-10 mt-11 max-w-[15rem] divide-y divide-[rgba(17,16,14,0.18)] border-y border-[rgba(17,16,14,0.18)] bg-[rgba(243,238,229,0.72)] backdrop-blur-[1px] sm:bg-transparent sm:backdrop-blur-none">
-          {text.principles.map(([number, title]) => (
-            <div key={number} className="flex items-center gap-5 py-4 text-[13px] text-[var(--sql-ink)]">
-              <span className="font-mono text-[10px] tracking-[0.18em] text-[rgba(17,16,14,0.62)]">{number}</span>
-              <span className="flex-1 font-medium">{title}</span>
-              <span className="text-xl leading-none">+</span>
-            </div>
+        <nav
+          aria-label={locale === 'ko' ? '포트폴리오 증거 축' : 'Portfolio proof pillars'}
+          className="relative z-10 mt-11 max-w-[19rem] divide-y divide-[rgba(17,16,14,0.18)] border-y border-[rgba(17,16,14,0.18)] bg-[rgba(243,238,229,0.78)] backdrop-blur-[1px] sm:bg-transparent sm:backdrop-blur-none"
+        >
+          {text.principles.map((item) => (
+            <Link
+              key={item.number}
+              href={item.href}
+              className="group flex items-center gap-4 py-4 text-[13px] text-[var(--sql-ink)] transition-colors hover:text-[var(--sql-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sql-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sql-ivory)]"
+            >
+              <span className="font-mono text-[10px] tracking-[0.18em] text-[rgba(17,16,14,0.62)] group-hover:text-[var(--sql-red)]">
+                {item.number}
+              </span>
+              <span className="flex-1">
+                <span className="block font-semibold leading-snug">{item.title}</span>
+                <span className="mt-1 block text-[11px] leading-relaxed text-[rgba(17,16,14,0.62)] group-hover:text-[rgba(201,32,25,0.76)]">
+                  {item.description}
+                </span>
+              </span>
+              <span className="font-mono text-lg leading-none text-[rgba(17,16,14,0.42)] transition group-hover:translate-x-0.5 group-hover:text-[var(--sql-red)]" aria-hidden="true">
+                →
+              </span>
+            </Link>
           ))}
-        </div>
+        </nav>
 
         <div className="pointer-events-none absolute bottom-[2.4rem] right-[-14.8rem] z-0 h-[22rem] w-[22rem] rounded-full bg-[var(--sql-red)] sm:bottom-[7.2rem] sm:right-[-10.8rem] sm:h-[25rem] sm:w-[25rem]" aria-hidden="true" />
         <div className="pointer-events-none absolute bottom-[9.8rem] right-[5.3rem] h-px w-[17.5rem] bg-[rgba(201,32,25,0.58)]" aria-hidden="true" />
