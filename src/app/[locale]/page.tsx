@@ -6,6 +6,7 @@ import ProjectCard from '@/components/ui/ProjectCard';
 import BlogCard from '@/components/ui/BlogCard';
 import FeaturedShowcase from '@/components/ui/FeaturedShowcase';
 import PortfolioLanding from '@/components/home/PortfolioLanding';
+import OperatingProofSection from '@/components/home/OperatingProofSection';
 
 export default async function HomePage() {
   const t = await getTranslations('home');
@@ -18,6 +19,7 @@ export default async function HomePage() {
   return (
     <div>
       <PortfolioLanding locale={locale} />
+      <OperatingProofSection locale={locale as 'ko' | 'en'} />
 
       {/* Featured Projects Section */}
       <section className="bg-[var(--sql-ivory)] py-20 text-[var(--sql-ink)] sm:py-24">

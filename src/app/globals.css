@@ -297,7 +297,7 @@ a, button {
   --canvas-line: rgba(255, 248, 235, 0.14);
   --canvas-line-active: #cf3027;
   --canvas-text: #f3eee5;
-  --canvas-muted: rgba(243, 238, 229, 0.72);
+  --canvas-muted: rgba(243, 238, 229, 0.82);
   --canvas-accent: #d12c24;
   --canvas-grain-opacity: 0.18;
 }

@@ -28,7 +28,7 @@ export default function BlogCard({ post, locale = 'ko' }: BlogCardProps) {
   return (
     <article className="group flex flex-col rounded-[1.2rem] border border-[rgba(243,238,229,0.13)] bg-[rgba(243,238,229,0.045)] p-6 shadow-sm transition-all hover:border-[rgba(209,44,36,0.45)] hover:bg-[rgba(243,238,229,0.065)]">
       <div className="mb-2">
-        <time className="font-mono text-xs font-semibold uppercase tracking-[0.12em] text-[rgba(243,238,229,0.74)]">
+        <time className="font-mono text-xs font-semibold uppercase tracking-[0.12em] text-[rgba(243,238,229,0.86)]">
           {formatDate(post.date)}
         </time>
       </div>
@@ -39,7 +39,7 @@ export default function BlogCard({ post, locale = 'ko' }: BlogCardProps) {
         </Link>
       </h3>
 
-      <p className="mb-5 flex-grow text-sm leading-7 text-[rgba(243,238,229,0.82)]">
+      <p className="mb-5 flex-grow text-sm leading-7 text-[rgba(243,238,229,0.9)]">
         {post.description}
       </p>
 

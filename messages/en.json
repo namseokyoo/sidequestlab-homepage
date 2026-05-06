@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "SidequestLab - AI Operations Portfolio",
-    "description": "An AI product lab that connects ideas, code, QA, deployment, and retrospectives into an operating system with public proof."
+    "description": "An AI product lab that packages live services, AI operating systems, QA harnesses, and retrospectives into a public proof portfolio."
   },
   "nav": {
     "home": "Home",
@@ -14,7 +14,7 @@
   "home": {
     "hero": {
       "title": "An AI product lab\nthat designs operations",
-      "subtitle": "Ideas, code, QA, deployment, and retrospectives connected into one operating system with public proof.",
+      "subtitle": "Live services, AI operations, QA harnesses, deployment retrospectives, and public proof in one portfolio.",
       "cta_projects": "View project evidence",
       "cta_about": "See the operating system",
       "cta_collaborate": "Explore Collaboration"
@@ -29,7 +29,7 @@
     },
     "featured_projects": {
       "title": "Featured Projects",
-      "subtitle": "Our key projects currently in operation",
+      "subtitle": "Representative projects connected to service URLs, repositories, operating harnesses, and retrospectives",
       "view_all": "View All Projects"
     },
     "recent_blog": {

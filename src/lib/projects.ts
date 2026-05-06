@@ -45,8 +45,8 @@ export const projects: Project[] = [
       en: 'N-Bang Calculator'
     },
     description: {
-      ko: '모임 비용을 쉽고 공정하게 나누는 스마트 정산 앱',
-      en: 'Smart bill splitting app for fair and easy group expense sharing'
+      ko: '모임 비용을 차수별로 정리하고 최소 송금 경로까지 제안하는 생활형 정산 서비스',
+      en: 'A practical settlement service that handles multi-round expenses and suggests minimal transfer paths'
     },
     longDescription: {
       ko: '엔빵 계산기는 회식이나 모임 후 복잡한 정산을 간편하게 해결해주는 서비스입니다. 1차, 2차, 3차 각각 다른 인원이 참여했을 때도 정확하게 계산하고, 최소한의 송금 횟수로 정산을 완료할 수 있습니다.',
@@ -97,8 +97,8 @@ export const projects: Project[] = [
       en: 'BookSalon'
     },
     description: {
-      ko: '책 중심 지식 공유 및 토론 커뮤니티 플랫폼',
-      en: 'Book-centered knowledge sharing and discussion community platform'
+      ko: '책 기록, 토론, 커뮤니티 운영을 한 제품 안에서 검증하는 독서 플랫폼',
+      en: 'A reading platform that validates book records, discussion, and community operations in one product'
     },
     longDescription: {
       ko: '북살롱은 책을 중심으로 지식을 공유하고 토론하는 커뮤니티 플랫폼입니다. 독서 기록을 관리하고, 책에 대한 의견을 나누며, 같은 관심사를 가진 독서가들과 연결될 수 있습니다. Firebase에서 Supabase로 전면 마이그레이션하며 거버넌스 체계를 대폭 강화했습니다.',
@@ -148,8 +148,8 @@ export const projects: Project[] = [
       en: 'Display Lab'
     },
     description: {
-      ko: '디스플레이 엔지니어를 위한 전문 분석 플랫폼',
-      en: 'Professional analysis platform for display engineers'
+      ko: '색역·시야각·HDR 분석을 웹에서 실행하는 디스플레이 엔지니어링 도구',
+      en: 'A web-based display engineering tool for color gamut, viewing angle, and HDR analysis'
     },
     longDescription: {
       ko: 'Display Lab은 디스플레이 엔지니어를 위한 전문 분석 플랫폼입니다. 색역 분석, 시야각 측정, HDR 성능 평가 등 8개 모듈을 제공하며, 다국어를 지원합니다. 연구 데이터를 시각적으로 분석하고 보고서를 생성할 수 있습니다.',
@@ -203,8 +203,8 @@ export const projects: Project[] = [
       en: 'PulseUp'
     },
     description: {
-      ko: '살아있는 익명 게시판 — 글에 생명력을 부여하다',
-      en: 'Living anonymous board — Give life to your posts'
+      ko: '익명 게시판에 TTL과 투표 경제를 결합한 커뮤니티 실험 서비스',
+      en: 'A community experiment that combines anonymous posting with TTL and voting economy'
     },
     longDescription: {
       ko: 'PulseUp은 글에 생명력을 부여하는 익명 게시판입니다. 모든 글은 6시간의 생명력을 갖고 태어나며, 좋아요(+10분)와 싫어요(-10분)로 생존이 결정됩니다. 매일 정오 무료 투표권 10개가 충전되고, Lemon Squeezy를 통한 유료 투표권 구매도 가능합니다.',

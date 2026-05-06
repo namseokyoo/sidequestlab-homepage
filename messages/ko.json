@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "SidequestLab - AI Operations Portfolio",
-    "description": "아이디어, 코드, QA, 배포, 회고를 하나의 운영 시스템으로 묶어 공개 가능한 증거로 축적하는 AI 제품 실험실."
+    "description": "실제 서비스, AI 운영 시스템, QA 하네스, 회고 기록을 하나의 공개 포트폴리오로 축적하는 AI 제품 실험실."
   },
   "nav": {
     "home": "홈",
@@ -14,7 +14,7 @@
   "home": {
     "hero": {
       "title": "운영을 디자인하는\nAI 제품 실험실",
-      "subtitle": "아이디어, 코드, QA, 배포, 회고를 하나의 운영 시스템으로 묶어 공개 가능한 증거와 함께 축적합니다.",
+      "subtitle": "실제 서비스, AI 운영 시스템, QA 하네스, 배포 회고를 한 화면에서 확인 가능한 증거로 엮습니다.",
       "cta_projects": "프로젝트 증거 보기",
       "cta_about": "운영 방식 보기",
       "cta_collaborate": "협업 알아보기"
@@ -29,7 +29,7 @@
     },
     "featured_projects": {
       "title": "주요 프로젝트",
-      "subtitle": "현재 운영 중인 핵심 프로젝트들",
+      "subtitle": "서비스 링크, 저장소, 운영 하네스, 회고 기록이 연결된 대표 프로젝트들",
       "view_all": "전체 프로젝트 보기"
     },
     "recent_blog": {
