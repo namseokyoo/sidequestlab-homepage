@@ -1,0 +1,160 @@
+[
+  {
+    "locale": "ko",
+    "viewport": "desktop",
+    "width": 1440,
+    "height": 1200,
+    "file": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/homepage-visual-polish-evidence/ko-desktop.png",
+    "console": [
+      "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "checks": {
+      "heroText": "운영을\n디자인하는\nAI 제품 실험실",
+      "heroRect": {
+        "width": 415,
+        "height": 469
+      },
+      "hasPortfolioProof": true,
+      "hasOperatingNotes": true,
+      "projectCardLikeHeadings": [
+        "Intelligent Onboarding",
+        "Pricing Optimization",
+        "Content Generation Pipeline",
+        "Support Automation"
+      ],
+      "documentWidth": 1440,
+      "viewportWidth": 1440,
+      "overflowX": false
+    }
+  },
+  {
+    "locale": "ko",
+    "viewport": "tablet",
+    "width": 900,
+    "height": 1200,
+    "file": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/homepage-visual-polish-evidence/ko-tablet.png",
+    "console": [],
+    "checks": {
+      "heroText": "운영을\n디자인하는\nAI 제품 실험실",
+      "heroRect": {
+        "width": 811,
+        "height": 220
+      },
+      "hasPortfolioProof": true,
+      "hasOperatingNotes": true,
+      "projectCardLikeHeadings": [
+        "Intelligent Onboarding",
+        "Pricing Optimization",
+        "Content Generation Pipeline",
+        "Support Automation"
+      ],
+      "documentWidth": 900,
+      "viewportWidth": 900,
+      "overflowX": false
+    }
+  },
+  {
+    "locale": "ko",
+    "viewport": "mobile",
+    "width": 390,
+    "height": 1400,
+    "file": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/homepage-visual-polish-evidence/ko-mobile.png",
+    "console": [],
+    "checks": {
+      "heroText": "운영을\n디자인하는\nAI 제품 실험실",
+      "heroRect": {
+        "width": 325,
+        "height": 172
+      },
+      "hasPortfolioProof": true,
+      "hasOperatingNotes": true,
+      "projectCardLikeHeadings": [
+        "Intelligent Onboarding",
+        "Pricing Optimization",
+        "Content Generation Pipeline",
+        "Support Automation"
+      ],
+      "documentWidth": 390,
+      "viewportWidth": 390,
+      "overflowX": false
+    }
+  },
+  {
+    "locale": "en",
+    "viewport": "desktop",
+    "width": 1440,
+    "height": 1200,
+    "file": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/homepage-visual-polish-evidence/en-desktop.png",
+    "console": [],
+    "checks": {
+      "heroText": "An AI\nproduct lab\nthat designs\noperations",
+      "heroRect": {
+        "width": 415,
+        "height": 703
+      },
+      "hasPortfolioProof": true,
+      "hasOperatingNotes": true,
+      "projectCardLikeHeadings": [
+        "Intelligent Onboarding",
+        "Pricing Optimization",
+        "Content Generation Pipeline",
+        "Support Automation"
+      ],
+      "documentWidth": 1440,
+      "viewportWidth": 1440,
+      "overflowX": false
+    }
+  },
+  {
+    "locale": "en",
+    "viewport": "tablet",
+    "width": 900,
+    "height": 1200,
+    "file": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/homepage-visual-polish-evidence/en-tablet.png",
+    "console": [],
+    "checks": {
+      "heroText": "An AI\nproduct lab\nthat designs\noperations",
+      "heroRect": {
+        "width": 811,
+        "height": 293
+      },
+      "hasPortfolioProof": true,
+      "hasOperatingNotes": true,
+      "projectCardLikeHeadings": [
+        "Intelligent Onboarding",
+        "Pricing Optimization",
+        "Content Generation Pipeline",
+        "Support Automation"
+      ],
+      "documentWidth": 900,
+      "viewportWidth": 900,
+      "overflowX": false
+    }
+  },
+  {
+    "locale": "en",
+    "viewport": "mobile",
+    "width": 390,
+    "height": 1400,
+    "file": "/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/docs/reports/homepage-visual-polish-evidence/en-mobile.png",
+    "console": [],
+    "checks": {
+      "heroText": "An AI\nproduct lab\nthat designs\noperations",
+      "heroRect": {
+        "width": 325,
+        "height": 229
+      },
+      "hasPortfolioProof": true,
+      "hasOperatingNotes": true,
+      "projectCardLikeHeadings": [
+        "Intelligent Onboarding",
+        "Pricing Optimization",
+        "Content Generation Pipeline",
+        "Support Automation"
+      ],
+      "documentWidth": 390,
+      "viewportWidth": 390,
+      "overflowX": false
+    }
+  }
+]

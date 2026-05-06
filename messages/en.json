@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "SidequestLab - Side Project Laboratory",
-    "description": "An AI software lab that ships side projects as real services. 16 projects, fully transparent."
+    "title": "SidequestLab - AI Operations Portfolio",
+    "description": "An AI product lab that connects ideas, code, QA, deployment, and retrospectives into an operating system with public proof."
   },
   "nav": {
     "home": "Home",
@@ -13,10 +13,10 @@
   },
   "home": {
     "hero": {
-      "title": "A Software Lab That Ships\nSide Projects as Real Services",
-      "subtitle": "9 AI agents handle code, design, QA, deploy, and decisions. 16 projects, fully transparent.",
-      "cta_projects": "Browse Our Services",
-      "cta_about": "How We Build",
+      "title": "An AI product lab\nthat designs operations",
+      "subtitle": "Ideas, code, QA, deployment, and retrospectives connected into one operating system with public proof.",
+      "cta_projects": "View project evidence",
+      "cta_about": "See the operating system",
       "cta_collaborate": "Explore Collaboration"
     },
     "stats": {

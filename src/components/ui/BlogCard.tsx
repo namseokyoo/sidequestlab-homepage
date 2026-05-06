@@ -26,26 +26,26 @@ export default function BlogCard({ post, locale = 'ko' }: BlogCardProps) {
   };
 
   return (
-    <article className="group flex flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+    <article className="group flex flex-col rounded-[1.2rem] border border-[rgba(243,238,229,0.13)] bg-[rgba(243,238,229,0.045)] p-6 shadow-sm transition-all hover:border-[rgba(209,44,36,0.45)] hover:bg-[rgba(243,238,229,0.065)]">
       <div className="mb-2">
-        <time className="text-sm text-gray-500 dark:text-gray-400">
+        <time className="font-mono text-xs font-semibold uppercase tracking-[0.12em] text-[rgba(243,238,229,0.74)]">
           {formatDate(post.date)}
         </time>
       </div>
 
-      <h3 className="mb-2 text-xl font-semibold text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
+      <h3 className="mb-3 text-xl font-bold tracking-[-0.025em] text-[var(--canvas-text)] transition-colors group-hover:text-[var(--canvas-accent)]">
         <Link href={`/blog/${post.slug}`}>
           {post.title}
         </Link>
       </h3>
 
-      <p className="mb-4 flex-grow text-sm text-gray-600 dark:text-gray-400">
+      <p className="mb-5 flex-grow text-sm leading-7 text-[rgba(243,238,229,0.82)]">
         {post.description}
       </p>
 
       <Link
         href={`/blog/${post.slug}`}
-        className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+        className="inline-flex items-center text-sm font-semibold text-[var(--canvas-text)] hover:text-[var(--canvas-accent)]"
       >
         <span>{t('read_more')}</span>
         <svg

@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "SidequestLab - 사이드 프로젝트 실험실",
-    "description": "사이드 프로젝트를 실제 서비스로 바꾸는 AI 소프트웨어 실험실. 16개 프로젝트, 전 과정 공개."
+    "title": "SidequestLab - AI Operations Portfolio",
+    "description": "아이디어, 코드, QA, 배포, 회고를 하나의 운영 시스템으로 묶어 공개 가능한 증거로 축적하는 AI 제품 실험실."
   },
   "nav": {
     "home": "홈",
@@ -13,10 +13,10 @@
   },
   "home": {
     "hero": {
-      "title": "사이드 프로젝트를 실제 서비스로 바꾸는\n소프트웨어 실험실",
-      "subtitle": "9명의 AI 에이전트가 코드·디자인·QA·배포·의사결정까지. 16개 프로젝트, 전 과정 공개.",
-      "cta_projects": "만든 서비스 둘러보기",
-      "cta_about": "어떻게 만드는지 보기",
+      "title": "운영을 디자인하는\nAI 제품 실험실",
+      "subtitle": "아이디어, 코드, QA, 배포, 회고를 하나의 운영 시스템으로 묶어 공개 가능한 증거와 함께 축적합니다.",
+      "cta_projects": "프로젝트 증거 보기",
+      "cta_about": "운영 방식 보기",
       "cta_collaborate": "협업 알아보기"
     },
     "stats": {

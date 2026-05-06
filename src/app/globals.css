@@ -144,3 +144,274 @@ a, button {
 .dark .prose a:hover {
   color: #93bbfd;
 }
+
+/* SidequestLab editorial portfolio landing */
+:root {
+  --sql-ivory: #f3eee5;
+  --sql-paper: #ebe4d8;
+  --sql-ink: #11100e;
+  --sql-charcoal: #151412;
+  --sql-charcoal-soft: #1d1b18;
+  --sql-red: #c92019;
+  --sql-red-muted: #8f221e;
+}
+
+.portfolio-landing {
+  background: var(--sql-paper);
+  color: var(--sql-ink);
+}
+
+.portfolio-reference-stage {
+  background: linear-gradient(90deg, var(--sql-ivory) 0, var(--sql-ivory) 31.5rem, var(--sql-charcoal) 31.5rem, var(--sql-charcoal) 100%);
+}
+
+.portfolio-editorial-panel {
+  background:
+    radial-gradient(circle at 100% 72%, rgba(201, 32, 25, 0.05), transparent 19rem),
+    var(--sql-ivory);
+  border-color: rgba(24, 20, 17, 0.14);
+  color: var(--sql-ink);
+}
+
+.portfolio-cta-primary {
+  background: var(--sql-ink);
+  color: var(--sql-ivory);
+}
+
+.portfolio-cta-primary:hover {
+  background: var(--sql-red-muted);
+}
+
+.portfolio-cta-secondary {
+  border-color: rgba(17, 16, 14, 0.22);
+  color: var(--sql-ink);
+}
+
+.portfolio-cta-secondary:hover {
+  border-color: var(--sql-red-muted);
+  color: var(--sql-red-muted);
+}
+
+.system-canvas-shell {
+  background: var(--canvas-bg);
+  border-color: var(--canvas-border);
+  color: var(--canvas-text);
+}
+
+.system-canvas-map {
+  background: var(--canvas-map-bg);
+  border-color: var(--canvas-border);
+}
+
+.canvas-node {
+  background: linear-gradient(180deg, rgba(243, 238, 229, 0.09), rgba(243, 238, 229, 0.045));
+  border-color: rgba(243, 238, 229, 0.16);
+  color: var(--canvas-text);
+}
+
+.canvas-node:hover,
+.canvas-node-active {
+  background: var(--canvas-node-hover);
+  border-color: var(--canvas-accent);
+}
+
+.canvas-node-active {
+  background: var(--canvas-node-active);
+}
+
+.canvas-card {
+  background: var(--canvas-surface-strong);
+  border-color: var(--canvas-border);
+  color: var(--canvas-text);
+}
+
+.canvas-theme-switcher {
+  background: var(--canvas-surface);
+  border-color: var(--canvas-border);
+}
+
+.canvas-theme-button {
+  color: var(--canvas-muted);
+}
+
+.canvas-theme-button:hover {
+  background: var(--canvas-node-hover);
+  color: var(--canvas-text);
+}
+
+.canvas-theme-button:focus-visible {
+  --tw-ring-color: var(--canvas-accent);
+}
+
+.canvas-theme-button-active {
+  background: var(--canvas-accent);
+  color: #fff;
+}
+
+.editorial-page-texture {
+  background:
+    radial-gradient(circle at 20% 8%, rgba(201, 32, 25, 0.08), transparent 28rem),
+    linear-gradient(rgba(17, 16, 14, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 16, 14, 0.035) 1px, transparent 1px);
+  background-size: auto, 48px 48px, 48px 48px;
+}
+
+.editorial-dot-grid {
+  background-image: radial-gradient(rgba(17, 16, 14, 0.35) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+.system-canvas-grid {
+  background-image:
+    radial-gradient(circle at 52% 47%, rgba(243, 238, 229, 0.09) 0 1px, transparent 1px),
+    linear-gradient(var(--canvas-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--canvas-grid) 1px, transparent 1px);
+  background-size: 34px 34px, 54px 54px, 54px 54px;
+  mask-image: radial-gradient(circle at 50% 48%, black, transparent 82%);
+}
+
+.reference-orbit-lines {
+  background:
+    radial-gradient(ellipse at 47% 46%, transparent 0 24%, rgba(243, 238, 229, 0.09) 24.15% 24.35%, transparent 24.5% 100%),
+    radial-gradient(ellipse at 52% 51%, transparent 0 36%, rgba(243, 238, 229, 0.06) 36.15% 36.35%, transparent 36.5% 100%),
+    radial-gradient(ellipse at 44% 53%, transparent 0 50%, rgba(243, 238, 229, 0.04) 50.15% 50.35%, transparent 50.5% 100%);
+  opacity: 0.8;
+}
+
+.system-canvas-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 0.5px, transparent 0.5px);
+  background-size: 6px 6px;
+  opacity: var(--canvas-grain-opacity, 0.2);
+  mix-blend-mode: soft-light;
+}
+
+[data-canvas-theme='graphite'] {
+  --canvas-bg: #10100f;
+  --canvas-map-bg: rgba(255, 248, 235, 0.025);
+  --canvas-surface: rgba(255, 248, 235, 0.075);
+  --canvas-surface-strong: rgba(255, 248, 235, 0.105);
+  --canvas-node-active: rgba(198, 58, 49, 0.16);
+  --canvas-node-hover: rgba(255, 248, 235, 0.11);
+  --canvas-border: rgba(255, 248, 235, 0.16);
+  --canvas-grid: rgba(255, 248, 235, 0.055);
+  --canvas-line: rgba(255, 248, 235, 0.14);
+  --canvas-line-active: #cf3027;
+  --canvas-text: #f3eee5;
+  --canvas-muted: rgba(243, 238, 229, 0.72);
+  --canvas-accent: #d12c24;
+  --canvas-grain-opacity: 0.18;
+}
+
+[data-canvas-theme='paper'] {
+  --canvas-bg: #efe8dc;
+  --canvas-map-bg: rgba(255, 255, 255, 0.28);
+  --canvas-surface: rgba(255, 255, 255, 0.66);
+  --canvas-surface-strong: rgba(255, 255, 255, 0.78);
+  --canvas-node-active: rgba(169, 43, 36, 0.12);
+  --canvas-node-hover: rgba(255, 255, 255, 0.86);
+  --canvas-border: rgba(25, 22, 18, 0.16);
+  --canvas-grid: rgba(25, 22, 18, 0.08);
+  --canvas-line: rgba(25, 22, 18, 0.18);
+  --canvas-line-active: #a92b24;
+  --canvas-text: #171411;
+  --canvas-muted: rgba(23, 20, 17, 0.58);
+  --canvas-accent: #a92b24;
+  --canvas-grain-opacity: 0.08;
+}
+
+[data-canvas-theme='frost'] {
+  --canvas-bg: #e8e8e4;
+  --canvas-map-bg: rgba(255, 255, 255, 0.22);
+  --canvas-surface: rgba(255, 255, 255, 0.58);
+  --canvas-surface-strong: rgba(255, 255, 255, 0.74);
+  --canvas-node-active: rgba(159, 51, 45, 0.12);
+  --canvas-node-hover: rgba(255, 255, 255, 0.82);
+  --canvas-border: rgba(32, 35, 39, 0.14);
+  --canvas-grid: rgba(32, 35, 39, 0.075);
+  --canvas-line: rgba(32, 35, 39, 0.18);
+  --canvas-line-active: #9f332d;
+  --canvas-text: #16191d;
+  --canvas-muted: rgba(22, 25, 29, 0.56);
+  --canvas-accent: #9f332d;
+  --canvas-grain-opacity: 0.09;
+}
+
+[data-canvas-theme='blueprint'] {
+  --canvas-bg: #172027;
+  --canvas-map-bg: rgba(228, 220, 205, 0.035);
+  --canvas-surface: rgba(228, 220, 205, 0.08);
+  --canvas-surface-strong: rgba(228, 220, 205, 0.11);
+  --canvas-node-active: rgba(191, 86, 68, 0.15);
+  --canvas-node-hover: rgba(228, 220, 205, 0.12);
+  --canvas-border: rgba(228, 220, 205, 0.17);
+  --canvas-grid: rgba(228, 220, 205, 0.07);
+  --canvas-line: rgba(228, 220, 205, 0.18);
+  --canvas-line-active: #bf5644;
+  --canvas-text: #f0eadf;
+  --canvas-muted: rgba(240, 234, 223, 0.6);
+  --canvas-accent: #bf5644;
+  --canvas-grain-opacity: 0.14;
+}
+
+[data-canvas-theme='mono'] {
+  --canvas-bg: #f5f1e8;
+  --canvas-map-bg: rgba(17, 16, 14, 0.025);
+  --canvas-surface: rgba(255, 255, 255, 0.52);
+  --canvas-surface-strong: rgba(255, 255, 255, 0.72);
+  --canvas-node-active: rgba(17, 16, 14, 0.08);
+  --canvas-node-hover: rgba(255, 255, 255, 0.78);
+  --canvas-border: rgba(17, 16, 14, 0.18);
+  --canvas-grid: rgba(17, 16, 14, 0.08);
+  --canvas-line: rgba(17, 16, 14, 0.2);
+  --canvas-line-active: #11100e;
+  --canvas-text: #11100e;
+  --canvas-muted: rgba(17, 16, 14, 0.55);
+  --canvas-accent: #11100e;
+  --canvas-grain-opacity: 0.07;
+}
+
+.case-study-visual {
+  min-height: 7.8rem;
+  background-color: rgba(243, 238, 229, 0.08);
+  background-blend-mode: screen;
+}
+
+.case-study-visual-0 {
+  background:
+    radial-gradient(circle at 0 100%, var(--canvas-accent) 0 24%, transparent 24.5%),
+    linear-gradient(135deg, rgba(243, 238, 229, 0.82) 0 39%, rgba(243, 238, 229, 0.15) 39.5% 100%),
+    repeating-linear-gradient(90deg, rgba(17, 16, 14, 0.12) 0 1px, transparent 1px 5px);
+}
+
+.case-study-visual-1 {
+  background:
+    linear-gradient(90deg, rgba(243, 238, 229, 0.09), rgba(243, 238, 229, 0.34), rgba(243, 238, 229, 0.08)),
+    repeating-linear-gradient(90deg, rgba(243, 238, 229, 0.18) 0 1px, transparent 1px 9px),
+    linear-gradient(135deg, #242321, #0f0f0e);
+}
+
+.case-study-visual-2 {
+  background:
+    radial-gradient(circle at 65% 40%, rgba(209, 44, 36, 0.78) 0 3%, transparent 3.4%),
+    linear-gradient(135deg, transparent 0 55%, rgba(243, 238, 229, 0.24) 55.5% 56.5%, transparent 57%),
+    repeating-radial-gradient(circle at 58% 50%, rgba(243, 238, 229, 0.28) 0 4px, transparent 5px 23px),
+    linear-gradient(135deg, #20201e, #121211);
+}
+
+.case-study-visual-3 {
+  background:
+    radial-gradient(ellipse at 55% 58%, rgba(243, 238, 229, 0.48), transparent 48%),
+    radial-gradient(circle, rgba(243, 238, 229, 0.48) 0 1px, transparent 1.2px);
+  background-size: auto, 8px 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
