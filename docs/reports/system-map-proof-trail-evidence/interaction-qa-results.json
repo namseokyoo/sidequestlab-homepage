@@ -1,0 +1,129 @@
+[
+  {
+    "locale": "ko",
+    "viewport": "desktop",
+    "consoleMessages": [
+      "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "[HMR] connected",
+      "[Fast Refresh] rebuilding",
+      "[Fast Refresh] done in 109ms",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "%c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "%c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /ko}",
+      "%c[Vercel Web Analytics]%c [view] http://localhost:3132/ko color: rgb(120, 120, 120) color: inherit {o: http://localhost:3132/ko, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778049579931} /_vercel/insights/view",
+      "[Fast Refresh] rebuilding",
+      "[Fast Refresh] done in 127ms",
+      "[Fast Refresh] rebuilding",
+      "[Fast Refresh] done in 115ms"
+    ],
+    "overflowX": false,
+    "visibleButtons": 7,
+    "distinctDetailTitles": 7,
+    "activeProofTexts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "fakeStrings": [],
+    "linkStatuses": {
+      "/ko/workflow": 200,
+      "/ko/harness": 200,
+      "/ko/blog/portfolio-content-proof-loop": 200,
+      "/ko/projects": 200
+    }
+  },
+  {
+    "locale": "ko",
+    "viewport": "mobile",
+    "consoleMessages": [
+      "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "[HMR] connected",
+      "%c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "%c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /ko}",
+      "%c[Vercel Web Analytics]%c [view] http://localhost:3132/ko color: rgb(120, 120, 120) color: inherit {o: http://localhost:3132/ko, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778049585167} /_vercel/insights/view"
+    ],
+    "overflowX": false,
+    "visibleButtons": 7,
+    "distinctDetailTitles": 7,
+    "activeProofTexts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "fakeStrings": [],
+    "linkStatuses": {
+      "/ko/workflow": 200,
+      "/ko/harness": 200,
+      "/ko/blog/portfolio-content-proof-loop": 200,
+      "/ko/projects": 200
+    }
+  },
+  {
+    "locale": "en",
+    "viewport": "desktop",
+    "consoleMessages": [
+      "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "[HMR] connected",
+      "%c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "%c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /en}",
+      "%c[Vercel Web Analytics]%c [view] http://localhost:3132/en color: rgb(120, 120, 120) color: inherit {o: http://localhost:3132/en, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778049589334} /_vercel/insights/view"
+    ],
+    "overflowX": false,
+    "visibleButtons": 7,
+    "distinctDetailTitles": 7,
+    "activeProofTexts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "fakeStrings": [],
+    "linkStatuses": {
+      "/en/workflow": 200,
+      "/en/harness": 200,
+      "/en/blog/portfolio-content-proof-loop": 200,
+      "/en/projects": 200
+    }
+  },
+  {
+    "locale": "en",
+    "viewport": "mobile",
+    "consoleMessages": [
+      "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+      "[HMR] connected",
+      "%c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit",
+      "%c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {route: /[locale], path: /en}",
+      "%c[Vercel Web Analytics]%c [view] http://localhost:3132/en color: rgb(120, 120, 120) color: inherit {o: http://localhost:3132/en, sv: 0.1.3, sdkn: @vercel/analytics/next, sdkv: 2.0.1, ts: 1778049594649} /_vercel/insights/view"
+    ],
+    "overflowX": false,
+    "visibleButtons": 7,
+    "distinctDetailTitles": 7,
+    "activeProofTexts": [
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "fakeStrings": [],
+    "linkStatuses": {
+      "/en/workflow": 200,
+      "/en/harness": 200,
+      "/en/blog/portfolio-content-proof-loop": 200,
+      "/en/projects": 200
+    }
+  }
+]

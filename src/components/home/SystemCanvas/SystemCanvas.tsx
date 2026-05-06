@@ -1,160 +1,145 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { Link } from '@/i18n/routing';
 import CanvasEdgeLayer from './CanvasEdgeLayer';
 import CanvasNode from './CanvasNode';
-import { canvasNodes, getCanvasNode, type CanvasLocale } from './canvasData';
+import { getProofStage, proofStages, type CanvasLocale, type ProofStageId } from './canvasData';
 
 type SystemCanvasProps = {
   locale: CanvasLocale;
+  activeStageId: ProofStageId;
+  onStageSelect: (id: ProofStageId) => void;
 };
 
 const copy = {
   ko: {
-    eyebrow: 'LIVING SYSTEMS MAP',
-    instruction: 'DRAG NODES TO EXPLORE PATHWAYS',
-    aboutTitle: 'ABOUT THIS PATH',
-    about: 'This pathway represents the onboarding optimization loop from experiment to deployment and monitoring.',
-    decisionTitle: 'Decision Log',
-    decisionMeta: '#1247',
-    decisionEyebrow: 'MODEL EVAL UPDATE',
-    decisionBody: 'Switched ranking model based on offline eval results.',
-    decisionTime: 'MAY 20, 2025   11:42',
-    decisionOwner: 'J. KIM',
-    decisionCta: 'VIEW DETAILS',
-    tools: ['Select', 'Pan', 'Zoom', 'Frame'],
+    eyebrow: 'OPERATING PROOF TRAIL',
+    desktopInstruction: '증거 경로의 단계를 선택하세요',
+    mobileInstruction: '증거 경로를 탭해서 확인하세요',
+    detailEyebrow: '선택된 단계',
+    proofLabel: '증명하는 것',
+    artifactLabel: '연결된 산출물',
+    pathLabel: 'Brief -> Harness -> Build -> QA -> Deploy -> Monitor -> Public Proof',
   },
   en: {
-    eyebrow: 'LIVING SYSTEMS MAP',
-    instruction: 'DRAG NODES TO EXPLORE PATHWAYS',
-    aboutTitle: 'ABOUT THIS PATH',
-    about: 'This pathway represents the onboarding optimization loop from experiment to deployment and monitoring.',
-    decisionTitle: 'Decision Log',
-    decisionMeta: '#1247',
-    decisionEyebrow: 'MODEL EVAL UPDATE',
-    decisionBody: 'Switched ranking model based on offline eval results.',
-    decisionTime: 'MAY 20, 2025   11:42',
-    decisionOwner: 'J. KIM',
-    decisionCta: 'VIEW DETAILS',
-    tools: ['Select', 'Pan', 'Zoom', 'Frame'],
+    eyebrow: 'OPERATING PROOF TRAIL',
+    desktopInstruction: 'Select a stage to trace the evidence path',
+    mobileInstruction: 'Tap through the proof trail',
+    detailEyebrow: 'Selected stage',
+    proofLabel: 'What this proves',
+    artifactLabel: 'Linked artifact',
+    pathLabel: 'Brief -> Harness -> Build -> QA -> Deploy -> Monitor -> Public Proof',
   },
 };
 
-const toolbarIcons = ['⌁', '☝', '⌕', '□'];
-
-export default function SystemCanvas({ locale }: SystemCanvasProps) {
-  const [activeNodeId, setActiveNodeId] = useState('qa');
-  const activeNode = useMemo(() => getCanvasNode(activeNodeId), [activeNodeId]);
+export default function SystemCanvas({ locale, activeStageId, onStageSelect }: SystemCanvasProps) {
+  const activeStage = getProofStage(activeStageId);
+  const activeCopy = activeStage.copy[locale];
   const text = copy[locale];
 
   return (
     <section
       data-canvas-theme="graphite"
       className="system-canvas-shell reference-system-canvas relative min-h-[640px] flex-1 overflow-hidden border-b border-[rgba(243,238,229,0.12)]"
-      aria-label="Living Systems Map"
+      aria-label="Operating Proof Trail"
     >
       <div className="absolute inset-0 system-canvas-grid" aria-hidden="true" />
       <div className="absolute inset-0 system-canvas-grain" aria-hidden="true" />
-      <div className="absolute inset-0 reference-orbit-lines" aria-hidden="true" />
 
-      <header className="relative z-20 flex items-center gap-5 px-7 pt-8 font-mono text-[10px] uppercase tracking-[0.17em]">
-        <span className="inline-flex items-center gap-2 font-semibold text-[var(--canvas-text)]">
+      <header className="relative z-20 flex flex-col gap-2 px-5 pt-7 sm:px-7 lg:flex-row lg:items-center lg:gap-5">
+        <span className="inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.17em] text-[var(--canvas-text)]">
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--canvas-accent)]" />
           {text.eyebrow}
         </span>
-        <span className="text-[rgba(243,238,229,0.74)]">{text.instruction}</span>
+        <span className="hidden font-mono text-[10px] uppercase tracking-[0.17em] text-[rgba(243,238,229,0.74)] lg:inline">
+          {text.desktopInstruction}
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.17em] text-[rgba(243,238,229,0.74)] lg:hidden">
+          {text.mobileInstruction}
+        </span>
       </header>
 
-      <div className="relative z-10 min-h-[610px] px-7 pb-7 pt-2">
-        <div className="hidden lg:block">
-          <CanvasEdgeLayer activeNodeId={activeNodeId} />
-        </div>
+      <div className="relative z-10 px-5 pb-6 pt-5 sm:px-7 lg:min-h-[590px] lg:pt-2">
+        <p className="sr-only">{text.pathLabel}</p>
 
         <div className="hidden lg:block">
-          {canvasNodes.map((node) => (
+          <CanvasEdgeLayer activeStageId={activeStageId} />
+          {proofStages.map((stage) => (
             <div
-              key={node.id}
+              key={stage.id}
               className="absolute -translate-x-1/2 -translate-y-1/2"
-              style={{ left: `${node.x}%`, top: `${node.y}%` }}
+              style={{ left: `${stage.x}%`, top: `${stage.y}%` }}
             >
               <CanvasNode
-                node={node}
+                stage={stage}
                 locale={locale}
-                active={node.id === activeNodeId}
-                onSelect={setActiveNodeId}
+                active={stage.id === activeStageId}
+                complete={stage.order <= activeStage.order}
+                onSelect={onStageSelect}
               />
             </div>
           ))}
         </div>
 
-        <div className="grid gap-3 pt-8 lg:hidden">
-          {canvasNodes.map((node) => (
-            <CanvasNode
-              key={node.id}
-              node={node}
-              locale={locale}
-              active={node.id === activeNodeId}
-              onSelect={setActiveNodeId}
-            />
-          ))}
-        </div>
-
-        <aside className="absolute right-[13%] top-[14%] hidden w-52 rounded border border-[rgba(243,238,229,0.14)] bg-[rgba(28,27,25,0.86)] p-4 shadow-2xl shadow-black/30 backdrop-blur md:block">
-          <div className="flex items-center justify-between border-b border-[rgba(243,238,229,0.1)] pb-3">
-            <div className="flex items-center gap-2 text-sm font-semibold text-[var(--canvas-text)]">
-              <span className="text-[var(--canvas-muted)]">⌘</span>
-              {text.decisionTitle}
-            </div>
-            <span className="font-mono text-[10px] font-semibold text-[rgba(243,238,229,0.72)]">{text.decisionMeta}</span>
-          </div>
-          <p className="mt-4 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--canvas-text)]">{text.decisionEyebrow}</p>
-          <p className="mt-2 text-xs leading-relaxed text-[var(--canvas-muted)]">{text.decisionBody}</p>
-          <div className="mt-4 border-y border-[rgba(243,238,229,0.12)] py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[rgba(243,238,229,0.74)]">
-            <p>{text.decisionTime}</p>
-            <p className="mt-1">{text.decisionOwner}</p>
-          </div>
-          <button className="mt-3 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--canvas-accent)]">
-            {text.decisionCta} →
-          </button>
-        </aside>
-
-        <aside className="absolute bottom-[24%] right-[4.2%] hidden w-56 rounded border border-[rgba(243,238,229,0.13)] bg-[rgba(28,27,25,0.72)] p-4 backdrop-blur md:block">
-          <div className="flex items-center justify-between">
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[rgba(243,238,229,0.66)]">{text.aboutTitle}</p>
-            <span className="text-[rgba(243,238,229,0.68)]">×</span>
-          </div>
-          <p className="mt-4 text-[13px] leading-relaxed text-[rgba(243,238,229,0.76)]">{text.about}</p>
-        </aside>
-
-        <div className="absolute right-5 top-[22%] hidden overflow-hidden rounded border border-[rgba(243,238,229,0.12)] bg-[rgba(28,27,25,0.72)] backdrop-blur md:block">
-          {toolbarIcons.map((icon, index) => (
-            <button
-              key={icon}
-              type="button"
-              aria-label={text.tools[index]}
-              className={`block h-10 w-10 border-b border-[rgba(243,238,229,0.08)] text-sm ${index === 0 ? 'text-[var(--canvas-accent)]' : 'text-[rgba(243,238,229,0.72)]'} last:border-b-0`}
-            >
-              {icon}
-            </button>
-          ))}
-        </div>
-
-        <div className="absolute bottom-8 right-7 hidden h-[4.2rem] w-[10.5rem] rounded border border-[rgba(243,238,229,0.12)] bg-[rgba(243,238,229,0.05)] p-2 md:block">
-          <div className="relative h-full w-full overflow-hidden rounded-sm bg-[rgba(10,10,9,0.58)]">
-            <div className="absolute inset-2 border border-[var(--canvas-accent)]" />
-            {Array.from({ length: 18 }).map((_, index) => (
-              <span
-                key={index}
-                className="absolute h-1.5 w-3 bg-[rgba(243,238,229,0.22)]"
-                style={{ left: `${8 + (index % 6) * 14}%`, top: `${15 + Math.floor(index / 6) * 26}%` }}
+        <div className="grid gap-3 lg:hidden">
+          {proofStages.map((stage) => (
+            <div key={stage.id} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3">
+              <div className="flex flex-col items-center">
+                <span
+                  className={`mt-3 h-2.5 w-2.5 rounded-full ${
+                    stage.order <= activeStage.order ? 'bg-[var(--canvas-accent)]' : 'bg-[rgba(243,238,229,0.24)]'
+                  }`}
+                />
+                {stage.order < proofStages.length && (
+                  <span
+                    className={`mt-1 h-full min-h-12 w-px ${
+                      stage.order < activeStage.order ? 'bg-[rgba(209,44,36,0.7)]' : 'bg-[rgba(243,238,229,0.16)]'
+                    }`}
+                  />
+                )}
+              </div>
+              <CanvasNode
+                stage={stage}
+                locale={locale}
+                active={stage.id === activeStageId}
+                complete={stage.order <= activeStage.order}
+                onSelect={onStageSelect}
               />
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
-        <div className="absolute bottom-[18%] left-[45%] hidden rounded-full border border-[rgba(243,238,229,0.2)] bg-[rgba(10,10,9,0.82)] px-3 py-1 font-mono text-[10px] font-semibold text-[rgba(243,238,229,0.72)] md:block">
-          {activeNode.copy[locale].eyebrow}
-        </div>
+        <aside className="canvas-card pointer-events-none mt-5 rounded-md border p-5 shadow-2xl shadow-black/20 backdrop-blur-md lg:absolute lg:bottom-8 lg:left-7 lg:mt-0 lg:w-[min(31rem,48%)]">
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[rgba(243,238,229,0.66)]">
+            {text.detailEyebrow} / {String(activeStage.order).padStart(2, '0')}
+          </p>
+          <h3 className="mt-2 text-xl font-semibold tracking-tight text-[var(--canvas-text)]">
+            {activeCopy.title}
+          </h3>
+          <p className="mt-3 text-sm leading-relaxed text-[rgba(243,238,229,0.78)]">
+            {activeCopy.description}
+          </p>
+          <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2">
+            <div>
+              <dt className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[rgba(243,238,229,0.58)]">
+                {text.proofLabel}
+              </dt>
+              <dd className="mt-1 leading-relaxed text-[var(--canvas-text)]">{activeCopy.proof}</dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[rgba(243,238,229,0.58)]">
+                {text.artifactLabel}
+              </dt>
+              <dd className="mt-1 leading-relaxed text-[rgba(243,238,229,0.78)]">{activeCopy.artifact}</dd>
+            </div>
+          </dl>
+          <Link
+            href={activeCopy.href}
+            className="pointer-events-auto mt-5 inline-flex items-center border-b border-[rgba(209,44,36,0.7)] pb-1 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--canvas-text)] hover:text-[var(--canvas-accent)]"
+          >
+            {activeCopy.ctaLabel} →
+          </Link>
+        </aside>
       </div>
     </section>
   );
