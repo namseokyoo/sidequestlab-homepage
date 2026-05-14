@@ -444,6 +444,48 @@ export const projects: Project[] = [
     tags: ['website']
   },
   {
+    id: 'fdtd-lab-mcp',
+    name: {
+      ko: 'FDTD Lab MCP',
+      en: 'FDTD Lab MCP'
+    },
+    description: {
+      ko: 'AI 에이전트가 Lumerical FDTD 워크플로우를 안전하게 다루도록 돕는 연구 자동화 MCP 서버',
+      en: 'A research automation MCP server that lets AI agents safely operate Lumerical FDTD workflows'
+    },
+    longDescription: {
+      ko: 'FDTD Lab MCP는 AI 에이전트가 Ansys Lumerical FDTD 워크플로우를 안전하게 다룰 수 있도록 만든 MCP 서버입니다. .fsp 프로젝트 inspect, object/property 조회와 수정, 원본 보호용 run directory 생성, parameter sweep, simulation 실행, monitor result 조회, CSV export를 하나의 자동화 흐름으로 연결합니다. 현재는 fake adapter 기반 테스트와 실제 Lumerical adapter의 startup/timeout 안정화를 병행하며, 로컬·내부망 연구 환경에서의 AI-assisted simulation workflow를 목표로 개발 중입니다.',
+      en: 'FDTD Lab MCP is an MCP server that enables AI agents to safely operate Ansys Lumerical FDTD workflows. It connects .fsp inspection, object/property access, protected run-directory creation, parameter sweeps, simulation execution, monitor result retrieval, and CSV export into one automation flow. The project is currently stabilizing real-adapter startup and timeout behavior while maintaining a fake adapter for development and CI.'
+    },
+    features: {
+      ko: [
+        '.fsp inspect - FDTD 프로젝트를 열고 object/region/monitor 구조를 요약',
+        'Property automation - object property 조회와 수정 흐름을 MCP tool로 제공',
+        'Protected run directory - 원본 파일을 보존하며 실험별 실행 디렉터리 생성',
+        'Parameter sweep - sweep plan 제안, 검증, simulation 실행, 결과 수집',
+        'Adapter split - fake, ansys-lumerical-core, lumapi fallback 경로를 분리해 개발/실환경 안정성 확보',
+        'Reliability work - real adapter startup 지연과 timeout handling을 안정화 중'
+      ],
+      en: [
+        '.fsp inspection - Open FDTD projects and summarize object, region, and monitor structure',
+        'Property automation - Expose object property reads and edits as MCP tools',
+        'Protected run directories - Preserve source files while creating experiment-specific run folders',
+        'Parameter sweeps - Propose, validate, run, and collect sweep results',
+        'Adapter split - Separate fake, ansys-lumerical-core, and lumapi fallback paths for development and real environments',
+        'Reliability work - Stabilizing real-adapter startup latency and timeout handling'
+      ]
+    },
+    url: '#',
+    github: 'https://github.com/namseokyoo/fdtd-lab-mcp',
+    techStack: ['Python', 'MCP', 'Ansys Lumerical FDTD', 'ansys-lumerical-core', 'lumapi', 'pytest'],
+    featured: false,
+    status: 'in-progress',
+    category: 'internal',
+    startDate: '2026-05-14',
+    gradient: 'from-cyan-600 to-blue-500',
+    tags: ['mcp', 'ai-agent', 'fdtd', 'research-automation', 'internal-tool']
+  },
+  {
     id: 'n8n-automation',
     name: {
       ko: 'n8n 자동화',
