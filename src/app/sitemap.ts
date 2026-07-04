@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticLastModified = new Date('2026-03-30');
   const projectFallbackLastModified = new Date('2026-03-01');
 
-  const staticPages = ['', '/projects', '/about', '/blog', '/workflow', '/harness'];
+  const staticPages = ['', '/projects', '/about', '/blog', '/workflow', '/harness', '/ai-ops-audit'];
 
   const entries: MetadataRoute.Sitemap = [];
 

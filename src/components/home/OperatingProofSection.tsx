@@ -31,6 +31,9 @@ const copy = {
     loop: ['아이디어', 'MVP', 'QA', '배포', '회고', '하네스 강화'],
     ctaPrimary: '하네스 보기',
     ctaSecondary: '작업 방식 보기',
+    auditBridgeTitle: 'AI Ops Audit / Setup',
+    auditBridgeBody: 'AI 에이전트 작업을 믿기 어렵다면, SidequestLab의 운영 증거를 intake, routing, evidence gate, reporting 진단·세팅으로 가져갈 수 있습니다.',
+    auditBridgeCta: '진단 페이지 보기',
   },
   en: {
     eyebrow: 'CONTENT PROOF',
@@ -57,6 +60,9 @@ const copy = {
     loop: ['Idea', 'MVP', 'QA', 'Deploy', 'Retro', 'Harness'],
     ctaPrimary: 'View harness',
     ctaSecondary: 'See workflow',
+    auditBridgeTitle: 'AI Ops Audit / Setup',
+    auditBridgeBody: 'If AI-agent work is hard to trust, SidequestLab can turn its operating proof into an audit/setup pass for intake, routing, evidence gates, and reporting.',
+    auditBridgeCta: 'View audit page',
   },
 };
 
@@ -128,6 +134,25 @@ export default function OperatingProofSection({ locale }: OperatingProofSectionP
                   </span>
                 ))}
               </div>
+            </div>
+          </div>
+
+          <div className="rounded-[1.35rem] border border-[rgba(201,32,25,0.22)] bg-[rgba(255,255,255,0.62)] p-5 shadow-sm shadow-black/5 sm:p-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[rgba(201,32,25,0.86)]">
+                  {text.auditBridgeTitle}
+                </p>
+                <p className="mt-3 max-w-2xl break-keep text-sm leading-7 text-[rgba(17,16,14,0.72)]">
+                  {text.auditBridgeBody}
+                </p>
+              </div>
+              <Link
+                href="/ai-ops-audit"
+                className="inline-flex shrink-0 rounded-full bg-[var(--sql-red)] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[var(--sql-red-muted)]"
+              >
+                {text.auditBridgeCta}
+              </Link>
             </div>
           </div>
         </div>

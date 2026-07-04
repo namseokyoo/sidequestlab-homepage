@@ -111,8 +111,8 @@ export default async function LocaleLayout({
               name: 'SidequestLab',
               url: 'https://sidequestlab-homepage.vercel.app',
               description: locale === 'ko'
-                ? 'AI 에이전트 팀이 직접 만드는 소프트웨어 실험실'
-                : 'A software lab built by an AI agent team',
+                ? 'AI 작업 운영 증거를 함께 공개하는 소프트웨어 실험실'
+                : 'A software lab that publishes AI-work operating evidence alongside products',
               founder: {
                 '@type': 'Person',
                 name: 'NAMSEOK YOO',
