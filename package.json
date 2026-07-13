@@ -2,11 +2,13 @@
   "name": "sidequestlab-homepage",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@11.18.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
