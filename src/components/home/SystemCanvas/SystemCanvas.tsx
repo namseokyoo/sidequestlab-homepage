@@ -91,7 +91,7 @@ export default function SystemCanvas({ locale, activeStageId, onStageSelect }: S
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[rgba(243,238,229,0.66)]">
               {text.detailEyebrow} / {String(activeStage.order).padStart(2, '0')}
             </p>
-            <h3 className="mt-3 max-w-2xl text-2xl font-semibold tracking-tight text-[var(--canvas-text)] sm:text-3xl lg:text-4xl">
+            <h3 className="mt-3 max-w-2xl break-keep text-2xl font-semibold tracking-tight text-[var(--canvas-text)] sm:text-3xl lg:text-4xl">
               {activeCopy.title}
             </h3>
             <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[rgba(243,238,229,0.82)] sm:text-base lg:text-lg">
@@ -113,7 +113,7 @@ export default function SystemCanvas({ locale, activeStageId, onStageSelect }: S
             </dl>
             <Link
               href={activeCopy.href}
-              className="mt-7 inline-flex items-center border-b border-[rgba(209,44,36,0.7)] pb-1 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--canvas-text)] hover:text-[var(--canvas-accent)]"
+              className="mt-7 inline-flex items-center border-b border-[rgba(209,44,36,0.7)] pb-1 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--canvas-text)] hover:text-[var(--canvas-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--canvas-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--canvas-bg)]"
             >
               {activeCopy.ctaLabel} →
             </Link>

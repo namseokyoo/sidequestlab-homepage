@@ -8,13 +8,13 @@ type OperatingProofSectionProps = {
 const copy = {
   ko: {
     eyebrow: 'CONTENT PROOF',
-    title: '포트폴리오가 보여줘야 할 것은 “예쁜 화면”이 아니라 운영 증거입니다.',
-    body: 'SidequestLab은 아이디어를 제품으로 만들고, 배포 이후의 QA·회고·하네스까지 함께 공개합니다. 방문자는 서비스, 작업 방식, 검증 기록을 한 흐름으로 확인할 수 있어야 합니다.',
+    title: '포트폴리오가 보여줘야 할 것은 “예쁜 화면”이 아니라 검증 범위입니다.',
+    body: '이번 홈페이지는 Display Lab을 현재 검증된 증거 패키지로 다루고, 나머지 후보는 별도 리뷰 게이트가 끝날 때까지 대기열로 분리합니다.',
     pillars: [
       {
-        label: 'Live services',
-        title: '지금 열어볼 수 있는 제품',
-        body: 'Display Lab, BookSalon, PulseUp, N-Bang처럼 실제 URL과 저장소가 연결된 프로젝트를 앞에 배치합니다.',
+        label: 'Verified proof',
+        title: 'Display Lab 단일 증거',
+        body: '색역, 시야각, 스펙트럼, HDR, light-quality 분석 흐름을 브라우저 기반 디스플레이 엔지니어링 도구로 소개합니다.',
       },
       {
         label: 'Operating system',
@@ -24,7 +24,7 @@ const copy = {
       {
         label: 'Public evidence',
         title: '검증 가능한 기록',
-        body: '블로그, 리포트, PR, 스크린샷 증거를 연결해 “했다”가 아니라 “검증됐다”를 보여줍니다.',
+        body: '로컬 lint, type-check, 자동 테스트, build, 화면 캡처 기록을 바탕으로 “했다”가 아니라 “검증됐다”를 보여줍니다.',
       },
     ],
     loopTitle: '운영 루프',
@@ -37,13 +37,13 @@ const copy = {
   },
   en: {
     eyebrow: 'CONTENT PROOF',
-    title: 'This portfolio should prove operations, not just show a polished screen.',
-    body: 'SidequestLab turns ideas into products and publishes the operating layer around them: QA, deployment, retrospectives, and harness evidence. A visitor should see services, workflow, and verification in one narrative.',
+    title: 'This portfolio should show verification scope, not just a polished screen.',
+    body: 'This homepage treats Display Lab as the current verified proof package and keeps other candidates in a separate review queue until their gates close.',
     pillars: [
       {
-        label: 'Live services',
-        title: 'Products you can open now',
-        body: 'Projects such as Display Lab, BookSalon, PulseUp, and N-Bang are presented with real URLs and repositories.',
+        label: 'Verified proof',
+        title: 'Display Lab only',
+        body: 'Browser-based display engineering tools for gamut, viewing angle, spectrum, HDR, and light-quality analysis.',
       },
       {
         label: 'Operating system',
@@ -53,7 +53,7 @@ const copy = {
       {
         label: 'Public evidence',
         title: 'Records that can be checked',
-        body: 'Posts, reports, PRs, and screenshot evidence turn “we did it” into “it was verified.”',
+        body: 'Local lint, type-check, automated tests, build, and screenshot records turn “we did it” into “it was verified.”',
       },
     ],
     loopTitle: 'Operating loop',
@@ -85,13 +85,13 @@ export default function OperatingProofSection({ locale }: OperatingProofSectionP
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/harness"
-              className="inline-flex rounded-full bg-[var(--sql-red)] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[var(--sql-red-dark)]"
+              className="inline-flex rounded-full bg-[var(--sql-red)] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[var(--sql-red-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sql-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sql-ivory)]"
             >
               {text.ctaPrimary}
             </Link>
             <Link
               href="/workflow"
-              className="inline-flex rounded-full border border-[rgba(17,16,14,0.2)] px-5 py-2.5 text-sm font-bold text-[var(--sql-ink)] transition-colors hover:border-[var(--sql-red)] hover:text-[var(--sql-red)]"
+              className="inline-flex rounded-full border border-[rgba(17,16,14,0.2)] px-5 py-2.5 text-sm font-bold text-[var(--sql-ink)] transition-colors hover:border-[var(--sql-red)] hover:text-[var(--sql-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sql-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sql-ivory)]"
             >
               {text.ctaSecondary}
             </Link>
@@ -149,7 +149,7 @@ export default function OperatingProofSection({ locale }: OperatingProofSectionP
               </div>
               <Link
                 href="/ai-ops-audit"
-                className="inline-flex shrink-0 rounded-full bg-[var(--sql-red)] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[var(--sql-red-muted)]"
+                className="inline-flex shrink-0 rounded-full bg-[var(--sql-red)] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[var(--sql-red-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sql-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sql-ivory)]"
               >
                 {text.auditBridgeCta}
               </Link>

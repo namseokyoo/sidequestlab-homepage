@@ -142,7 +142,7 @@ export const proofStages: ProofStage[] = [
     copy: {
       ko: {
         eyebrow: 'QA 게이트',
-        title: '린트와 시각 검증으로 통과 확인',
+        title: '린트와 화면 검증 통과',
         shortTitle: 'QA',
         mobileTitle: 'QA 게이트',
         description: '실행 가능한 검사와 화면 확인으로 완료 주장을 뒷받침합니다.',

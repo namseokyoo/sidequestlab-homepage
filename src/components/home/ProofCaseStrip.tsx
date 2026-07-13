@@ -90,8 +90,8 @@ const cards: ProofCard[] = [
       },
       en: {
         label: 'Public Projects',
-        title: 'Display Lab and service proof',
-        description: 'Connects verified work to project surfaces visitors can inspect.',
+        title: 'Display Lab proof package',
+        description: 'Connects the current verified Display Lab work to project surfaces visitors can inspect.',
       },
     },
   },
@@ -116,7 +116,7 @@ export default function ProofCaseStrip({ locale, activeStageId }: ProofCaseStrip
             {text.title}
           </h2>
         </div>
-        <Link href="/projects" className="hidden shrink-0 whitespace-nowrap font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--canvas-text)] hover:text-[var(--canvas-accent)] sm:inline-flex">
+        <Link href="/projects" className="hidden shrink-0 whitespace-nowrap font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--canvas-text)] hover:text-[var(--canvas-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--canvas-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--canvas-bg)] sm:inline-flex">
           {text.viewAll} →
         </Link>
       </div>
@@ -130,7 +130,7 @@ export default function ProofCaseStrip({ locale, activeStageId }: ProofCaseStrip
             <Link
               key={card.href}
               href={card.href}
-              className={`group overflow-hidden rounded-md border bg-[rgba(243,238,229,0.045)] shadow-lg shadow-black/20 transition hover:-translate-y-1 hover:border-[rgba(201,58,49,0.65)] ${
+              className={`group overflow-hidden rounded-md border bg-[rgba(243,238,229,0.045)] shadow-lg shadow-black/20 transition hover:-translate-y-1 hover:border-[rgba(201,58,49,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--canvas-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--canvas-bg)] ${
                 active ? 'border-[rgba(209,44,36,0.78)] shadow-[0_0_0_1px_rgba(209,44,36,0.22)]' : 'border-[rgba(243,238,229,0.11)]'
               }`}
             >

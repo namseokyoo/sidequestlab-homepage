@@ -40,7 +40,7 @@ export async function generateMetadata({
     },
     description: metadata.description,
     icons: {
-      icon: '/favicon.ico',
+      icon: '/icon.svg',
     },
     openGraph: {
       title: metadata.title || 'SidequestLab',

@@ -25,12 +25,12 @@ const copy: Record<CanvasLocale, {
   ko: {
     eyebrow: 'AI PRODUCT STUDIO',
     title: '운영을\n디자인하는\nAI 제품 실험실',
-    body: '사이드퀘스트랩은 실제 서비스와 운영 하네스를 함께 공개하는 AI 제품 포트폴리오입니다.',
+    body: '사이드퀘스트랩은 검증된 제품 증거와 운영 하네스를 함께 공개하는 AI 제품 포트폴리오입니다. 현재 홈페이지 증거 패키지는 Display Lab입니다.',
     principles: [
       {
         number: '01',
-        title: '실제 서비스 증거',
-        description: '방문자가 바로 열어볼 수 있는 프로젝트',
+        title: 'Display Lab 증거',
+        description: '검증된 로컬 QA와 화면 증거가 있는 현재 증거 패키지',
         href: '/projects',
       },
       {
@@ -47,19 +47,19 @@ const copy: Record<CanvasLocale, {
       },
     ],
     logLabel: 'LATEST PROOF',
-    logTime: 'MAY 06, 2026   15:20',
-    logStatus: 'HARNESS GATE PASSED',
-    logBody: 'Homepage visual + content proof loop',
+    logTime: 'JUL 13, 2026   07:39',
+    logStatus: 'PRODUCTION RELEASE VERIFIED',
+    logBody: 'Display Lab release and responsive QA evidence',
   },
   en: {
     eyebrow: 'AI PRODUCT STUDIO',
     title: 'An AI\nproduct lab\nthat designs\noperations',
-    body: 'SidequestLab is an AI product portfolio that publishes live services together with the operating harness behind them.',
+    body: 'SidequestLab is an AI product portfolio that publishes verified product evidence together with the operating harness behind it. Display Lab is the current verified proof package.',
     principles: [
       {
         number: '01',
-        title: 'Live service proof',
-        description: 'Projects visitors can open and inspect',
+        title: 'Display Lab proof',
+        description: 'Current proof package with local QA and screen evidence',
         href: '/projects',
       },
       {
@@ -76,9 +76,9 @@ const copy: Record<CanvasLocale, {
       },
     ],
     logLabel: 'LATEST PROOF',
-    logTime: 'MAY 06, 2026   15:20',
-    logStatus: 'HARNESS GATE PASSED',
-    logBody: 'Homepage visual + content proof loop',
+    logTime: 'JUL 13, 2026   07:39',
+    logStatus: 'PRODUCTION RELEASE VERIFIED',
+    logBody: 'Display Lab release and responsive QA evidence',
   },
 };
 
