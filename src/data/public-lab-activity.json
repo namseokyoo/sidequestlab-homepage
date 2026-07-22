@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0",
+  "snapshotVersion": 1,
+  "updatedOn": "2026-07-15",
+  "reviewAfter": "2026-08-15",
+  "publishedDefaultProjectId": "displaylab",
+  "projects": [
+    {
+      "projectId": "displaylab",
+      "stage": "qa",
+      "activityMode": "reviewing",
+      "update": {
+        "ko": "반응형 화면 흐름과 공개 설명을 차분히 점검하고 있어요.",
+        "en": "Reviewing responsive flows and the public-facing explanation."
+      }
+    },
+    {
+      "projectId": "booksalon",
+      "stage": "build",
+      "activityMode": "working",
+      "update": {
+        "ko": "읽기와 대화가 자연스럽게 이어지는 경험을 다듬고 있어요.",
+        "en": "Refining how reading flows naturally into conversation."
+      }
+    },
+    {
+      "projectId": "nbbang",
+      "stage": "observe",
+      "activityMode": "observing",
+      "update": {
+        "ko": "여러 차수의 정산 흐름이 실제로 어떻게 쓰이는지 살펴보고 있어요.",
+        "en": "Observing how multi-round settlement flows are used in practice."
+      }
+    }
+  ],
+  "notes": [
+    {
+      "id": "displaylab-responsive-review",
+      "projectId": "displaylab",
+      "date": "2026-07-15",
+      "kind": "review",
+      "text": {
+        "ko": "Display Lab의 홈페이지 연결 화면과 반응형 흐름을 다시 살폈습니다.",
+        "en": "Reviewed Display Lab's homepage handoff and responsive flow."
+      }
+    },
+    {
+      "id": "booksalon-reading-flow",
+      "projectId": "booksalon",
+      "date": "2026-07-14",
+      "kind": "progress",
+      "text": {
+        "ko": "읽기 기록에서 대화로 이어지는 핵심 경험을 정리했습니다.",
+        "en": "Refined the core journey from reading records into conversation."
+      }
+    },
+    {
+      "id": "nbbang-settlement-observation",
+      "projectId": "nbbang",
+      "date": "2026-07-13",
+      "kind": "observed",
+      "text": {
+        "ko": "여러 차수 정산에서 헷갈리는 지점을 공개 관찰 항목으로 정리했습니다.",
+        "en": "Captured public observation points for confusing multi-round settlements."
+      }
+    }
+  ]
+}

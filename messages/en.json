@@ -12,6 +12,50 @@
     "harness": "Harness Engineering"
   },
   "home": {
+    "living_portfolio": {
+      "eyebrow": "SIDEQUESTLAB · LIVING PORTFOLIO",
+      "title": "An AI product lab\nthat designs operations",
+      "body": "Projects and recent public activity, presented as one shared workshop.",
+      "workshop_label": "LAB NOW",
+      "updated": "As of {date}",
+      "disclosure": "A symbolic reconstruction of public activity, not a real-time work log.",
+      "selector_label": "Choose a project to view at the workbench",
+      "animation_on": "Animation on",
+      "animation_off": "Animation off",
+      "turn_animation_on": "Turn animation on",
+      "turn_animation_off": "Turn animation off",
+      "project_details": "View project details",
+      "view_all_projects": "View all projects",
+      "selected_context": "Project {current} of {total}",
+      "stage_coordinate": "Current coordinate",
+      "lab_notes": "LAB NOTES",
+      "selected": "Selected",
+      "scene_status": "{project} · {stage}",
+      "fresh": "Public snapshot",
+      "stale": "Earlier snapshot",
+      "empty_snapshot": "Preparing the next public scene",
+      "invalid_snapshot": "Public status unavailable",
+      "empty_title": "The workbench is being reset",
+      "empty_body": "We are preparing the next public project scene. The project archive remains available.",
+      "invalid_title": "The public scene is resting",
+      "invalid_body": "We switched to a static workbench rather than show information that has not been checked.",
+      "stale_notice": "Showing the latest public snapshot as a static scene.",
+      "stages": {
+        "brief": "Brief",
+        "plan": "Plan",
+        "build": "Build",
+        "qa": "Review",
+        "release": "Release",
+        "observe": "Observe",
+        "proof": "Proof"
+      },
+      "activity_modes": {
+        "working": "Working",
+        "reviewing": "Reviewing",
+        "observing": "Observing",
+        "resting": "Resting"
+      }
+    },
     "hero": {
       "title": "An AI product lab\nthat designs operations",
       "subtitle": "Live services, AI operations, QA harnesses, deployment retrospectives, and public proof in one portfolio.",

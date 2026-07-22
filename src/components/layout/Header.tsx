@@ -28,10 +28,10 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-lg dark:border-gray-800 dark:bg-gray-950/80">
+    <header className="sticky top-0 z-50 w-full border-b border-[#d8d0c4] bg-[#f7f3ed]/95 text-[#171716] backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+          <span className="text-xl font-bold tracking-[-0.04em] text-[#171716]">
             SidequestLab
           </span>
         </Link>
@@ -42,15 +42,15 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative text-sm font-medium transition-colors hover:text-gray-900 dark:hover:text-white ${
+              className={`relative text-sm font-medium transition-colors hover:text-[#171716] ${
                 isActive(item.href)
-                  ? 'text-gray-900 dark:text-white'
-                  : 'text-gray-500 dark:text-gray-400'
+                  ? 'text-[#171716]'
+                  : 'text-[#777168]'
               }`}
             >
               {item.label}
               {isActive(item.href) && (
-                <span className="absolute -bottom-[1.19rem] left-0 right-0 h-[1px] bg-gray-900 dark:bg-white" />
+                <span className="absolute -bottom-[1.19rem] left-0 right-0 h-[2px] bg-[#ef6f51]" />
               )}
             </Link>
           ))}
@@ -59,18 +59,16 @@ export default function Header() {
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="flex items-center gap-2 lg:hidden">
-          <ThemeToggle />
-          <LanguageSwitcher />
+        <div className="flex items-center lg:hidden">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            className="grid h-11 w-11 place-items-center text-[#292724] hover:text-[#ef6f51]"
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? (
               <svg
-                className="h-5 w-5"
+                className="h-7 w-7"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -84,7 +82,7 @@ export default function Header() {
               </svg>
             ) : (
               <svg
-                className="h-5 w-5"
+                className="h-7 w-7"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -103,7 +101,11 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <nav className="border-t border-gray-100 bg-white/95 backdrop-blur-lg p-4 lg:hidden dark:border-gray-800 dark:bg-gray-950/95">
+        <nav className="border-t border-[#d8d0c4] bg-[#f7f3ed]/98 p-4 backdrop-blur-lg lg:hidden">
+          <div className="mb-3 flex items-center justify-end gap-3 border-b border-[#ded7cd] pb-3">
+            <ThemeToggle />
+            <LanguageSwitcher />
+          </div>
           <div className="flex flex-col gap-1">
             {navItems.map((item) => (
               <Link
@@ -112,8 +114,8 @@ export default function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive(item.href)
-                    ? 'bg-gray-50 text-gray-900 dark:bg-gray-800 dark:text-white'
-                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white'
+                  ? 'bg-[#ebe4da] text-[#171716]'
+                    : 'text-[#6f6a62] hover:bg-[#eee8df] hover:text-[#171716]'
                 }`}
               >
                 {item.label}

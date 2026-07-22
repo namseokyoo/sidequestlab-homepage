@@ -5,18 +5,22 @@ import BlogCard from '@/components/ui/BlogCard';
 import PortfolioLanding from '@/components/home/PortfolioLanding';
 import OperatingProofSection from '@/components/home/OperatingProofSection';
 import DisplayLabProofSection from '@/components/home/DisplayLabProofSection';
+import { getLivingPortfolioViewModel } from '@/lib/living-workshop/server';
+
+export const revalidate = 3600;
 
 export default async function HomePage() {
   const t = await getTranslations('home');
   const locale = await getLocale();
   const recentPosts = getBlogPosts(locale).slice(0, 3);
   const normalizedLocale = locale === 'en' ? 'en' : 'ko';
+  const livingPortfolio = getLivingPortfolioViewModel(normalizedLocale);
 
   return (
     <div>
-      <PortfolioLanding locale={locale} />
-      <OperatingProofSection locale={normalizedLocale} />
+      <PortfolioLanding locale={normalizedLocale} model={livingPortfolio} />
       <DisplayLabProofSection locale={normalizedLocale} />
+      <OperatingProofSection locale={normalizedLocale} />
 
       {/* Recent Blog Posts Section */}
       {recentPosts.length > 0 && (

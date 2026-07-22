@@ -12,6 +12,50 @@
     "harness": "하네스 엔지니어링"
   },
   "home": {
+    "living_portfolio": {
+      "eyebrow": "SIDEQUESTLAB · LIVING PORTFOLIO",
+      "title": "운영을 디자인하는\nAI 제품 실험실",
+      "body": "프로젝트와 최근 공개 활동을 하나의 작업장으로 보여줍니다.",
+      "workshop_label": "LAB NOW",
+      "updated": "{date} 기준",
+      "disclosure": "실시간 작업 로그가 아닌, 공개 가능한 상태를 상징적으로 재구성한 장면입니다.",
+      "selector_label": "작업대에서 볼 프로젝트 선택",
+      "animation_on": "애니메이션 켜짐",
+      "animation_off": "애니메이션 꺼짐",
+      "turn_animation_on": "애니메이션 켜기",
+      "turn_animation_off": "애니메이션 끄기",
+      "project_details": "프로젝트 자세히 보기",
+      "view_all_projects": "전체 프로젝트 보기",
+      "selected_context": "{current}/{total} 프로젝트",
+      "stage_coordinate": "현재 좌표",
+      "lab_notes": "LAB NOTES",
+      "selected": "선택됨",
+      "scene_status": "{project} · {stage}",
+      "fresh": "공개 스냅샷",
+      "stale": "지난 스냅샷",
+      "empty_snapshot": "다음 공개 장면 준비 중",
+      "invalid_snapshot": "공개 상태 확인 불가",
+      "empty_title": "작업대를 정리하고 있어요",
+      "empty_body": "새로 공개할 프로젝트 장면을 준비 중입니다. 프로젝트 목록은 그대로 둘러볼 수 있어요.",
+      "invalid_title": "공개 장면을 잠시 쉬게 했어요",
+      "invalid_body": "확인되지 않은 정보를 보여주지 않도록 정적 작업대로 전환했습니다.",
+      "stale_notice": "마지막 공개 스냅샷을 정적으로 보여주고 있어요.",
+      "stages": {
+        "brief": "브리프",
+        "plan": "설계",
+        "build": "제작",
+        "qa": "점검",
+        "release": "공개",
+        "observe": "관찰",
+        "proof": "증거"
+      },
+      "activity_modes": {
+        "working": "작업 중",
+        "reviewing": "검토 중",
+        "observing": "관찰 중",
+        "resting": "정리 중"
+      }
+    },
     "hero": {
       "title": "운영을 디자인하는\nAI 제품 실험실",
       "subtitle": "실제 서비스, AI 운영 시스템, QA 하네스, 배포 회고를 한 화면에서 확인 가능한 증거로 엮습니다.",

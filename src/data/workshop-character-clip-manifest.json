@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "1.0",
+  "rigVersion": "segmented-svg-v2",
+  "renderer": "segmented-svg",
+  "canonicalPose": "static",
+  "contactEnvelope": "workbench-upper-surface",
+  "parts": [
+    "root",
+    "hips",
+    "torso",
+    "head",
+    "leftUpperArm",
+    "leftForearm",
+    "leftHand",
+    "rightUpperArm",
+    "rightForearm",
+    "rightHand",
+    "leftThigh",
+    "leftShin",
+    "leftFoot",
+    "rightThigh",
+    "rightShin",
+    "rightFoot"
+  ],
+  "sockets": {
+    "tool": "rightHand",
+    "prop": "hips"
+  },
+  "envelopes": {
+    "desktop": [0.04, 0.3, 0.46, 0.96],
+    "compact": [0.03, 0.34, 0.52, 0.96],
+    "rootDesktopCssPx": { "xMin": 0, "xMax": 64, "yMin": -10, "yMax": 4, "rotationDeg": 10 },
+    "rootCompactCssPx": { "xMin": 0, "xMax": 40, "yMin": -6, "yMax": 2, "rotationDeg": 7 },
+    "labelClearanceCssPx": 8
+  },
+  "clips": {
+    "idle": {
+      "durationMs": 2400,
+      "easing": "ease-in-out",
+      "rootEnvelopeCssPx": [0, -1, 0, 1],
+      "activeSockets": [],
+      "samples": { "start": 0, "anticipation": 0.2, "actionExtreme": 0.5, "recovery": 0.8, "end": 1 },
+      "contacts": ["leftFoot", "rightFoot"],
+      "recovery": { "pose": "static", "maxPositionErrorCssPx": 2, "maxRotationErrorDeg": 1 },
+      "mobile": { "amplitudeScale": 0.65, "timingScale": 1 }
+    },
+    "approach": {
+      "durationMs": 600,
+      "easing": "cubic-bezier(0.4,0,0.2,1)",
+      "rootEnvelopeCssPx": [0, -3, 12, 1],
+      "activeSockets": [],
+      "samples": { "start": 0, "anticipation": 0.12, "leftPlant": 0.34, "actionExtreme": 0.5, "rightPlant": 0.72, "recovery": 0.88, "end": 1 },
+      "contacts": ["leftFoot", "rightFoot"],
+      "recovery": { "pose": "approach-ready", "maxPositionErrorCssPx": 3, "maxRotationErrorDeg": 2 },
+      "mobile": { "amplitudeScale": 0.62, "timingScale": 1 }
+    },
+    "assemble": {
+      "durationMs": 1600,
+      "easing": "cubic-bezier(0.55,0.05,0.25,1)",
+      "rootEnvelopeCssPx": [0, -2, 4, 1],
+      "activeSockets": ["tool"],
+      "samples": { "start": 0, "anticipation": 0.18, "actionExtreme": 0.48, "contact": 0.58, "recovery": 0.78, "end": 1 },
+      "contacts": ["rightHand", "tool", "workbench"],
+      "recovery": { "pose": "approach-ready", "maxPositionErrorCssPx": 3, "maxRotationErrorDeg": 2 },
+      "mobile": { "amplitudeScale": 0.72, "timingScale": 1 }
+    },
+    "inspect": {
+      "durationMs": 1600,
+      "easing": "ease-in-out",
+      "rootEnvelopeCssPx": [0, -2, 3, 1],
+      "activeSockets": ["tool"],
+      "samples": { "start": 0, "anticipation": 0.18, "actionExtreme": 0.46, "contact": 0.56, "recovery": 0.8, "end": 1 },
+      "contacts": ["rightHand", "lens"],
+      "recovery": { "pose": "approach-ready", "maxPositionErrorCssPx": 3, "maxRotationErrorDeg": 2 },
+      "mobile": { "amplitudeScale": 0.7, "timingScale": 1 }
+    },
+    "carry": {
+      "durationMs": 1600,
+      "easing": "ease-in-out",
+      "rootEnvelopeCssPx": [0, -4, 20, 2],
+      "activeSockets": ["prop"],
+      "samples": { "start": 0, "anticipation": 0.12, "leftPlant": 0.3, "actionExtreme": 0.5, "rightPlant": 0.7, "recovery": 0.86, "end": 1 },
+      "contacts": ["leftFoot", "rightFoot", "prop"],
+      "recovery": { "pose": "approach-ready", "maxPositionErrorCssPx": 4, "maxRotationErrorDeg": 2 },
+      "mobile": { "amplitudeScale": 0.6, "timingScale": 1 }
+    },
+    "observe": {
+      "durationMs": 1600,
+      "easing": "ease-in-out",
+      "rootEnvelopeCssPx": [0, -1, 2, 1],
+      "activeSockets": [],
+      "samples": { "start": 0, "anticipation": 0.2, "actionExtreme": 0.5, "contact": 0.62, "recovery": 0.82, "end": 1 },
+      "contacts": ["leftFoot", "rightFoot"],
+      "recovery": { "pose": "approach-ready", "maxPositionErrorCssPx": 2, "maxRotationErrorDeg": 1 },
+      "mobile": { "amplitudeScale": 0.68, "timingScale": 1 }
+    },
+    "return": {
+      "durationMs": 1000,
+      "easing": "cubic-bezier(0.4,0,0.2,1)",
+      "rootEnvelopeCssPx": [0, -2, 12, 1],
+      "activeSockets": [],
+      "samples": { "start": 0, "anticipation": 0.14, "rightPlant": 0.32, "actionExtreme": 0.5, "leftPlant": 0.68, "recovery": 0.88, "end": 1 },
+      "contacts": ["rightFoot", "leftFoot"],
+      "recovery": { "pose": "static", "maxPositionErrorCssPx": 4, "maxRotationErrorDeg": 2 },
+      "mobile": { "amplitudeScale": 0.62, "timingScale": 1 }
+    }
+  },
+  "commands": {
+    "assemble": { "durationMs": 3200, "sequence": ["approach", "assemble", "return"] },
+    "inspect": { "durationMs": 3200, "sequence": ["approach", "inspect", "return"] },
+    "carry": { "durationMs": 3200, "sequence": ["approach", "carry", "return"] },
+    "observe": { "durationMs": 3200, "sequence": ["approach", "observe", "return"] },
+    "static": { "durationMs": 0, "sequence": [] }
+  }
+}
