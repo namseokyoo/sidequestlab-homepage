@@ -13,6 +13,14 @@
 # testing
 /coverage
 
+# local agent and browser artifacts
+/.codex/
+/.hermes/
+/.omo/
+/.playwright-cli/
+/output/
+/tmp/
+
 # next.js
 /.next/
 /out/
