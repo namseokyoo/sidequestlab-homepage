@@ -1,0 +1,13 @@
+.dialog { position: fixed; width: min(calc(100% - 32px), 540px); max-height: min(680px, calc(100dvh - 32px)); margin: auto; overflow-y: auto; overscroll-behavior: contain; padding: 30px; border: 1px solid rgb(37 126 131 / 25%); border-radius: 22px; color: var(--arch-ink); background: var(--arch-paper); box-shadow: 0 30px 100px rgb(23 52 58 / 35%); }
+.dialog::backdrop { background: rgb(18 55 59 / 58%); backdrop-filter: blur(5px); }
+.dialog h2 { margin: 0 42px 12px 0; font-size: clamp(1.55rem, 4vw, 2.2rem); letter-spacing: -.04em; }
+.roleToken { display: inline-block; }
+.dialog > p:not(:first-of-type) { color: #47676c; line-height: 1.65; }
+.close { position: absolute; width: 44px; height: 44px; top: 13px; right: 13px; border: 0; border-radius: 50%; color: #17343a; background: #e8f3ed; font-size: 1.55rem; cursor: pointer; }
+.context { display: grid; gap: 0; margin: 20px 0; }
+.context div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; padding: 11px 0; border-top: 1px solid rgb(37 126 131 / 15%); }
+.context dt { color: var(--arch-muted); font-size: .75rem; }
+.context dd { margin: 0; font-size: .78rem; font-weight: 750; line-height: 1.45; text-transform: capitalize; }
+.done { min-height: 46px; padding: 0 20px; border: 0; border-radius: 12px; color: var(--arch-ink); background: var(--arch-coral); font: inherit; font-weight: 800; cursor: pointer; }
+.dialog button:focus-visible { outline: 3px solid var(--arch-gold); outline-offset: 3px; }
+@media (max-width: 520px) { .dialog { padding: 25px 18px 20px; } .context div { grid-template-columns: 92px minmax(0, 1fr); } }

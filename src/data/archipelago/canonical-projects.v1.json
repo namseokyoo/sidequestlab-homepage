@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0",
+  "projects": [
+    {
+      "id": "displaylab",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "디스플레이랩",
+        "en": "DisplayLab"
+      },
+      "summary": {
+        "ko": "색역, 시야각, HDR 분석을 웹에서 실행하는 디스플레이 엔지니어링 도구",
+        "en": "A web-based display engineering tool for color gamut, viewing angle, and HDR analysis."
+      }
+    },
+    {
+      "id": "booksalon",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "북살롱",
+        "en": "BookSalon"
+      },
+      "summary": {
+        "ko": "책 기록, 토론, 커뮤니티 운영을 한 제품 안에서 검증하는 독서 플랫폼",
+        "en": "A reading platform for book records, discussion, and community operations."
+      }
+    },
+    {
+      "id": "nbbang",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "엔빵 계산기",
+        "en": "N-Bang"
+      },
+      "summary": {
+        "ko": "여러 차수의 모임 비용과 최소 송금 경로를 정리하는 정산 서비스",
+        "en": "A settlement service for multi-round expenses and minimal transfer routes."
+      }
+    }
+  ]
+}

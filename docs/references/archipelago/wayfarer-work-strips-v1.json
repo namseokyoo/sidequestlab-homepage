@@ -1,0 +1,1787 @@
+{
+  "schemaVersion": 1,
+  "kind": "wayfarer-work-strips",
+  "taskId": "living-archipelago-uiux-recovery-20260721",
+  "approvedReference": {
+    "path": "docs/references/archipelago/approved-visual-v1.png",
+    "sha256": "108ca8b0200bc7cb983b8e50d2dcb50ffb5dc554b3fad9d6a78052f8023dfe88"
+  },
+  "pipeline": {
+    "version": "1.0.0",
+    "node": "v22.22.2",
+    "sharp": "0.34.5",
+    "vips": "8.17.3"
+  },
+  "rejectedCandidates": [
+    {
+      "for": "code-engineer-work-v1",
+      "provider": "Codex Image Generation",
+      "outputId": "exec-a29abc24-5481-4ad3-9f74-a9d7441788bc",
+      "sha256": "534aadc3f8dcd728afe26cc1026569359eecfe013dfea1b44bf5c278bb61542e",
+      "historicalRawPath": "tmp/archipelago-recovery/historical-rejected/chroma/code-engineer-work-v1.raw.png",
+      "historicalOutputPath": "tmp/archipelago-recovery/historical-rejected/chroma/code-engineer-work-v1.png",
+      "reason": "Independent technical-art review rejected source-cell bound contact and detached boundary fragments."
+    },
+    {
+      "for": "qa-navigator-test-v1",
+      "provider": "Codex Image Generation",
+      "outputId": "exec-f2888eb7-589e-43a4-b243-bcba8f91bc6f",
+      "sha256": "7e40a1439836cb29aaae2606f2dd4a2577bf2cd8ec7d9391a6d4e26c9da7c499",
+      "historicalRawPath": "tmp/archipelago-recovery/historical-rejected/chroma/qa-navigator-test-v1.raw.png",
+      "historicalOutputPath": "tmp/archipelago-recovery/historical-rejected/chroma/qa-navigator-test-v1.png",
+      "reason": "Independent technical-art review rejected source-cell bound contact and detached boundary fragments."
+    }
+  ],
+  "strips": [
+    {
+      "id": "code-engineer-work-v1",
+      "prompt": {
+        "path": "docs/references/archipelago/prompts/code-engineer-assemble-v1.md",
+        "sha256": "5cd0ddc63d6f5066a47f086be44a2851d5ad1a0c7a9797a7abef4f20e630546d"
+      },
+      "provider": {
+        "name": "Codex Image Generation",
+        "model": null,
+        "modelUnavailable": true,
+        "outputId": "exec-bd3cc762-1262-47c6-b7cb-e1a3bfcfc6fb"
+      },
+      "source": {
+        "rawPath": "tmp/archipelago-recovery/raw/code-engineer-work-v1.raw.png",
+        "sha256": "af18df0ff7fd4cfcf1317f32d35d1963629fa529e70aed2b3f93b434fff7e653",
+        "width": 1536,
+        "height": 1024,
+        "grid": {
+          "columns": 4,
+          "rows": 2
+        }
+      },
+      "output": {
+        "path": "public/images/wayfarers/code-engineer-work-v1.png",
+        "cellSize": 256,
+        "width": 2048,
+        "height": 256,
+        "status": "mechanically-prepared",
+        "sha256": "9ceb4e8704f21803a907e5f1a03d67dddda3c5d2817d32f4dbbd27dbfb62433c",
+        "bytes": 691003,
+        "hasAlpha": true
+      },
+      "processing": {
+        "padding": 12,
+        "targetPivot": [
+          128,
+          240
+        ],
+        "key": {
+          "mode": "checker-flood",
+          "maxChroma": 34,
+          "minLightness": 108,
+          "edgeChroma": 46,
+          "edgeLightness": 82
+        },
+        "anchors": {
+          "equipment": {
+            "name": "workbench-left-ground",
+            "target": [
+              88,
+              240
+            ]
+          },
+          "plantedFoot": {
+            "name": "rightmost-planted-foot",
+            "target": [
+              184,
+              234
+            ]
+          },
+          "maxDeviationPx": 2
+        },
+        "validationPadding": 4,
+        "reportPath": "tmp/archipelago-recovery/processing/code-engineer-work-v1.pack.json",
+        "reportSha256": "e507f7e8f0a72e2a4c637ef8eb88a86e9e5c8a50f597c0d8e47bc386828b6fc2",
+        "commonScale": 0.5390070921985816,
+        "frames": [
+          {
+            "index": 0,
+            "sourceBounds": {
+              "minX": 37,
+              "minY": 47,
+              "maxX": 310,
+              "maxY": 469,
+              "width": 274,
+              "height": 423,
+              "pixels": 64697
+            },
+            "placedBounds": {
+              "minX": 24,
+              "minY": 12,
+              "maxX": 227,
+              "maxY": 239,
+              "width": 204,
+              "height": 228
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "workbench-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  184,
+                  234
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  128,
+                  470
+                ],
+                "plantedFoot": [
+                  248,
+                  456
+                ],
+                "groups": [
+                  {
+                    "minX": 84,
+                    "maxX": 171,
+                    "centerX": 128,
+                    "bottomY": 470
+                  },
+                  {
+                    "minX": 229,
+                    "maxX": 267,
+                    "centerX": 248,
+                    "bottomY": 456
+                  }
+                ]
+              },
+              "scale": [
+                0.7445255474452555,
+                0.5390070921985816
+              ],
+              "baselineShearPx": 1
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 131501,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 410
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 1,
+            "sourceBounds": {
+              "minX": 20,
+              "minY": 68,
+              "maxX": 277,
+              "maxY": 469,
+              "width": 258,
+              "height": 402,
+              "pixels": 64402
+            },
+            "placedBounds": {
+              "minX": 33,
+              "minY": 23,
+              "maxX": 202,
+              "maxY": 239,
+              "width": 170,
+              "height": 217
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "workbench-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  185,
+                  234
+                ],
+                "deviation": [
+                  1,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  110,
+                  470
+                ],
+                "plantedFoot": [
+                  247,
+                  458
+                ],
+                "groups": [
+                  {
+                    "minX": 65,
+                    "maxX": 154,
+                    "centerX": 110,
+                    "bottomY": 470
+                  },
+                  {
+                    "minX": 225,
+                    "maxX": 269,
+                    "centerX": 247,
+                    "bottomY": 458
+                  }
+                ]
+              },
+              "scale": [
+                0.6589147286821705,
+                0.5390070921985816
+              ],
+              "baselineShearPx": 0
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 131785,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 421
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 2,
+            "sourceBounds": {
+              "minX": 44,
+              "minY": 70,
+              "maxX": 281,
+              "maxY": 469,
+              "width": 238,
+              "height": 400,
+              "pixels": 62484
+            },
+            "placedBounds": {
+              "minX": 26,
+              "minY": 24,
+              "maxX": 203,
+              "maxY": 239,
+              "width": 178,
+              "height": 216
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "workbench-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  184,
+                  234
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  132,
+                  470
+                ],
+                "plantedFoot": [
+                  253,
+                  458
+                ],
+                "groups": [
+                  {
+                    "minX": 87,
+                    "maxX": 177,
+                    "centerX": 132,
+                    "bottomY": 470
+                  },
+                  {
+                    "minX": 192,
+                    "maxX": 195,
+                    "centerX": 194,
+                    "bottomY": 453
+                  },
+                  {
+                    "minX": 231,
+                    "maxX": 274,
+                    "centerX": 253,
+                    "bottomY": 458
+                  }
+                ]
+              },
+              "scale": [
+                0.7478991596638656,
+                0.5390070921985816
+              ],
+              "baselineShearPx": 0
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 133741,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 383
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 3,
+            "sourceBounds": {
+              "minX": 31,
+              "minY": 69,
+              "maxX": 270,
+              "maxY": 469,
+              "width": 240,
+              "height": 401,
+              "pixels": 63591
+            },
+            "placedBounds": {
+              "minX": 26,
+              "minY": 24,
+              "maxX": 201,
+              "maxY": 239,
+              "width": 176,
+              "height": 216
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "workbench-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  183,
+                  234
+                ],
+                "deviation": [
+                  1,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  121,
+                  470
+                ],
+                "plantedFoot": [
+                  243,
+                  458
+                ],
+                "groups": [
+                  {
+                    "minX": 75,
+                    "maxX": 167,
+                    "centerX": 121,
+                    "bottomY": 470
+                  },
+                  {
+                    "minX": 179,
+                    "maxX": 183,
+                    "centerX": 181,
+                    "bottomY": 453
+                  },
+                  {
+                    "minX": 221,
+                    "maxX": 264,
+                    "centerX": 243,
+                    "bottomY": 458
+                  }
+                ]
+              },
+              "scale": [
+                0.7333333333333333,
+                0.5390070921985816
+              ],
+              "baselineShearPx": 0
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 132668,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 349
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 4,
+            "sourceBounds": {
+              "minX": 60,
+              "minY": 20,
+              "maxX": 311,
+              "maxY": 420,
+              "width": 252,
+              "height": 401,
+              "pixels": 66827
+            },
+            "placedBounds": {
+              "minX": 25,
+              "minY": 24,
+              "maxX": 201,
+              "maxY": 239,
+              "width": 177,
+              "height": 216
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "workbench-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  182,
+                  234
+                ],
+                "deviation": [
+                  2,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  151,
+                  421
+                ],
+                "plantedFoot": [
+                  281,
+                  408
+                ],
+                "groups": [
+                  {
+                    "minX": 104,
+                    "maxX": 198,
+                    "centerX": 151,
+                    "bottomY": 421
+                  },
+                  {
+                    "minX": 213,
+                    "maxX": 215,
+                    "centerX": 214,
+                    "bottomY": 404
+                  },
+                  {
+                    "minX": 259,
+                    "maxX": 303,
+                    "centerX": 281,
+                    "bottomY": 408
+                  }
+                ]
+              },
+              "scale": [
+                0.7023809523809523,
+                0.5390070921985816
+              ],
+              "baselineShearPx": 1
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 129357,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 424
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 5,
+            "sourceBounds": {
+              "minX": 21,
+              "minY": 33,
+              "maxX": 277,
+              "maxY": 420,
+              "width": 257,
+              "height": 388,
+              "pixels": 65478
+            },
+            "placedBounds": {
+              "minX": 29,
+              "minY": 31,
+              "maxX": 202,
+              "maxY": 239,
+              "width": 174,
+              "height": 209
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "workbench-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  183,
+                  234
+                ],
+                "deviation": [
+                  1,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  111,
+                  421
+                ],
+                "plantedFoot": [
+                  247,
+                  409
+                ],
+                "groups": [
+                  {
+                    "minX": 66,
+                    "maxX": 156,
+                    "centerX": 111,
+                    "bottomY": 421
+                  },
+                  {
+                    "minX": 225,
+                    "maxX": 269,
+                    "centerX": 247,
+                    "bottomY": 409
+                  }
+                ]
+              },
+              "scale": [
+                0.6770428015564203,
+                0.5390070921985816
+              ],
+              "baselineShearPx": 0
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 130690,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 440
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 6,
+            "sourceBounds": {
+              "minX": 35,
+              "minY": 18,
+              "maxX": 255,
+              "maxY": 420,
+              "width": 221,
+              "height": 403,
+              "pixels": 60605
+            },
+            "placedBounds": {
+              "minX": 14,
+              "minY": 24,
+              "maxX": 205,
+              "maxY": 240,
+              "width": 192,
+              "height": 217
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 236,
+            "pivotDeviationPx": 2,
+            "anchors": {
+              "equipment": {
+                "name": "workbench-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  184,
+                  236
+                ],
+                "deviation": [
+                  0,
+                  2
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  126,
+                  421
+                ],
+                "plantedFoot": [
+                  231,
+                  419
+                ],
+                "groups": [
+                  {
+                    "minX": 80,
+                    "maxX": 172,
+                    "centerX": 126,
+                    "bottomY": 421
+                  },
+                  {
+                    "minX": 207,
+                    "maxX": 254,
+                    "centerX": 231,
+                    "bottomY": 419
+                  }
+                ]
+              },
+              "scale": [
+                0.8687782805429864,
+                0.5390070921985816
+              ],
+              "baselineShearPx": -5
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 121842,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 337
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 7,
+            "sourceBounds": {
+              "minX": 4,
+              "minY": 14,
+              "maxX": 330,
+              "maxY": 426,
+              "width": 327,
+              "height": 413,
+              "pixels": 72912
+            },
+            "placedBounds": {
+              "minX": 12,
+              "minY": 17,
+              "maxX": 226,
+              "maxY": 239,
+              "width": 215,
+              "height": 223
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 235,
+            "pivotDeviationPx": 1,
+            "anchors": {
+              "equipment": {
+                "name": "workbench-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  184,
+                  235
+                ],
+                "deviation": [
+                  0,
+                  1
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  95,
+                  426
+                ],
+                "plantedFoot": [
+                  266,
+                  427
+                ],
+                "groups": [
+                  {
+                    "minX": 50,
+                    "maxX": 139,
+                    "centerX": 95,
+                    "bottomY": 426
+                  },
+                  {
+                    "minX": 152,
+                    "maxX": 156,
+                    "centerX": 154,
+                    "bottomY": 410
+                  },
+                  {
+                    "minX": 242,
+                    "maxX": 289,
+                    "centerX": 266,
+                    "bottomY": 427
+                  }
+                ]
+              },
+              "scale": [
+                0.6574923547400612,
+                0.5390070921985816
+              ],
+              "baselineShearPx": -6
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 137094,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 426
+            },
+            "sourceBoundContact": false
+          }
+        ]
+      },
+      "visualContract": {
+        "frameCount": 8,
+        "action": "assemble",
+        "identity": "Code Engineer Wayfarer",
+        "identityReference": {
+          "path": "public/images/wayfarers/code-engineer-v1-poses.png",
+          "sha256": "c34783b5f2e53f5fb35742fe2ec18afb4b6e56c37ff59c0b45efb407ed36c5e1"
+        },
+        "readableText": false
+      }
+    },
+    {
+      "id": "qa-navigator-test-v1",
+      "prompt": {
+        "path": "docs/references/archipelago/prompts/qa-navigator-inspect-v1.md",
+        "sha256": "88d5581a164ac542bd6622a05b6aa2764488da17a6467e4f8e3dd9cd55648895"
+      },
+      "provider": {
+        "name": "Codex Image Generation",
+        "model": null,
+        "modelUnavailable": true,
+        "outputId": "exec-b96a7949-3d48-45f0-a66e-be69715d8d2a"
+      },
+      "source": {
+        "rawPath": "tmp/archipelago-recovery/raw/qa-navigator-test-v1.raw.png",
+        "sha256": "6040e20fb884ff14f7940c3d8492048dc1566fed8361a2b6850570a009b83ccb",
+        "width": 1536,
+        "height": 1024,
+        "grid": {
+          "columns": 4,
+          "rows": 2
+        }
+      },
+      "output": {
+        "path": "public/images/wayfarers/qa-navigator-test-v1.png",
+        "cellSize": 256,
+        "width": 2048,
+        "height": 256,
+        "status": "mechanically-prepared",
+        "sha256": "a1652103b7a4cc82e84742c5b74b194c62a2c8fcbac65872f0e5feb41dea26d7",
+        "bytes": 493734,
+        "hasAlpha": true
+      },
+      "processing": {
+        "padding": 12,
+        "targetPivot": [
+          128,
+          240
+        ],
+        "key": {
+          "mode": "checker-flood",
+          "maxChroma": 34,
+          "minLightness": 108,
+          "edgeChroma": 46,
+          "edgeLightness": 82
+        },
+        "anchors": {
+          "equipment": {
+            "name": "test-pedestal-left-ground",
+            "target": [
+              88,
+              240
+            ]
+          },
+          "plantedFoot": {
+            "name": "rightmost-planted-foot",
+            "target": [
+              184,
+              234
+            ]
+          },
+          "maxDeviationPx": 2
+        },
+        "validationPadding": 4,
+        "reportPath": "tmp/archipelago-recovery/processing/qa-navigator-test-v1.pack.json",
+        "reportSha256": "21f55aff7fb4811b79290e917d70edbb4f120f4836ebfdd8bf30756aae2f7b5b",
+        "commonScale": 0.5217391304347826,
+        "frames": [
+          {
+            "index": 0,
+            "sourceBounds": {
+              "minX": 92,
+              "minY": 27,
+              "maxX": 324,
+              "maxY": 463,
+              "width": 233,
+              "height": 437,
+              "pixels": 56291
+            },
+            "placedBounds": {
+              "minX": 38,
+              "minY": 12,
+              "maxX": 206,
+              "maxY": 239,
+              "width": 169,
+              "height": 228
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 235,
+            "pivotDeviationPx": 1,
+            "anchors": {
+              "equipment": {
+                "name": "test-pedestal-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  183,
+                  235
+                ],
+                "deviation": [
+                  1,
+                  1
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  161,
+                  464
+                ],
+                "plantedFoot": [
+                  293,
+                  464
+                ],
+                "groups": [
+                  {
+                    "minX": 92,
+                    "maxX": 229,
+                    "centerX": 161,
+                    "bottomY": 464
+                  },
+                  {
+                    "minX": 272,
+                    "maxX": 313,
+                    "centerX": 293,
+                    "bottomY": 464
+                  }
+                ]
+              },
+              "scale": [
+                0.7272727272727273,
+                0.5217391304347826
+              ],
+              "baselineShearPx": -6
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 137841,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 556
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 1,
+            "sourceBounds": {
+              "minX": 43,
+              "minY": 30,
+              "maxX": 282,
+              "maxY": 463,
+              "width": 240,
+              "height": 434,
+              "pixels": 60986
+            },
+            "placedBounds": {
+              "minX": 37,
+              "minY": 14,
+              "maxX": 207,
+              "maxY": 239,
+              "width": 171,
+              "height": 226
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 235,
+            "pivotDeviationPx": 1,
+            "anchors": {
+              "equipment": {
+                "name": "test-pedestal-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  183,
+                  235
+                ],
+                "deviation": [
+                  1,
+                  1
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  114,
+                  464
+                ],
+                "plantedFoot": [
+                  249,
+                  463
+                ],
+                "groups": [
+                  {
+                    "minX": 43,
+                    "maxX": 184,
+                    "centerX": 114,
+                    "bottomY": 464
+                  },
+                  {
+                    "minX": 228,
+                    "maxX": 269,
+                    "centerX": 249,
+                    "bottomY": 463
+                  }
+                ]
+              },
+              "scale": [
+                0.7111111111111111,
+                0.5217391304347826
+              ],
+              "baselineShearPx": -6
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 129678,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 475
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 2,
+            "sourceBounds": {
+              "minX": 4,
+              "minY": 45,
+              "maxX": 263,
+              "maxY": 463,
+              "width": 260,
+              "height": 419,
+              "pixels": 57938
+            },
+            "placedBounds": {
+              "minX": 70,
+              "minY": 21,
+              "maxX": 193,
+              "maxY": 239,
+              "width": 124,
+              "height": 219
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "test-pedestal-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  183,
+                  234
+                ],
+                "deviation": [
+                  1,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  42,
+                  464
+                ],
+                "plantedFoot": [
+                  243,
+                  462
+                ],
+                "groups": [
+                  {
+                    "minX": 4,
+                    "maxX": 80,
+                    "centerX": 42,
+                    "bottomY": 464
+                  },
+                  {
+                    "minX": 100,
+                    "maxX": 166,
+                    "centerX": 133,
+                    "bottomY": 458
+                  },
+                  {
+                    "minX": 222,
+                    "maxX": 263,
+                    "centerX": 243,
+                    "bottomY": 462
+                  }
+                ]
+              },
+              "scale": [
+                0.47761194029850745,
+                0.5217391304347826
+              ],
+              "baselineShearPx": -5
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 134194,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 528
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 3,
+            "sourceBounds": {
+              "minX": 3,
+              "minY": 35,
+              "maxX": 263,
+              "maxY": 462,
+              "width": 261,
+              "height": 428,
+              "pixels": 58988
+            },
+            "placedBounds": {
+              "minX": 70,
+              "minY": 17,
+              "maxX": 193,
+              "maxY": 239,
+              "width": 124,
+              "height": 223
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 235,
+            "pivotDeviationPx": 1,
+            "anchors": {
+              "equipment": {
+                "name": "test-pedestal-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  184,
+                  235
+                ],
+                "deviation": [
+                  0,
+                  1
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  41,
+                  463
+                ],
+                "plantedFoot": [
+                  243,
+                  463
+                ],
+                "groups": [
+                  {
+                    "minX": 3,
+                    "maxX": 79,
+                    "centerX": 41,
+                    "bottomY": 463
+                  },
+                  {
+                    "minX": 98,
+                    "maxX": 165,
+                    "centerX": 132,
+                    "bottomY": 458
+                  },
+                  {
+                    "minX": 222,
+                    "maxX": 263,
+                    "centerX": 243,
+                    "bottomY": 463
+                  }
+                ]
+              },
+              "scale": [
+                0.4752475247524752,
+                0.5217391304347826
+              ],
+              "baselineShearPx": -6
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 140797,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 480
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 4,
+            "sourceBounds": {
+              "minX": 67,
+              "minY": 15,
+              "maxX": 327,
+              "maxY": 436,
+              "width": 261,
+              "height": 422,
+              "pixels": 56380
+            },
+            "placedBounds": {
+              "minX": 69,
+              "minY": 20,
+              "maxX": 193,
+              "maxY": 239,
+              "width": 125,
+              "height": 220
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "test-pedestal-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  184,
+                  234
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  106,
+                  437
+                ],
+                "plantedFoot": [
+                  307,
+                  435
+                ],
+                "groups": [
+                  {
+                    "minX": 67,
+                    "maxX": 144,
+                    "centerX": 106,
+                    "bottomY": 437
+                  },
+                  {
+                    "minX": 163,
+                    "maxX": 229,
+                    "centerX": 196,
+                    "bottomY": 432
+                  },
+                  {
+                    "minX": 287,
+                    "maxX": 327,
+                    "centerX": 307,
+                    "bottomY": 435
+                  }
+                ]
+              },
+              "scale": [
+                0.47761194029850745,
+                0.5217391304347826
+              ],
+              "baselineShearPx": -5
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 141630,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 518
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 5,
+            "sourceBounds": {
+              "minX": 36,
+              "minY": 7,
+              "maxX": 279,
+              "maxY": 436,
+              "width": 244,
+              "height": 430,
+              "pixels": 57896
+            },
+            "placedBounds": {
+              "minX": 67,
+              "minY": 16,
+              "maxX": 200,
+              "maxY": 239,
+              "width": 134,
+              "height": 224
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "test-pedestal-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  184,
+                  234
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  74,
+                  437
+                ],
+                "plantedFoot": [
+                  249,
+                  436
+                ],
+                "groups": [
+                  {
+                    "minX": 36,
+                    "maxX": 112,
+                    "centerX": 74,
+                    "bottomY": 437
+                  },
+                  {
+                    "minX": 124,
+                    "maxX": 191,
+                    "centerX": 158,
+                    "bottomY": 432
+                  },
+                  {
+                    "minX": 229,
+                    "maxX": 269,
+                    "centerX": 249,
+                    "bottomY": 436
+                  }
+                ]
+              },
+              "scale": [
+                0.5485714285714286,
+                0.5217391304347826
+              ],
+              "baselineShearPx": -6
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 133394,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 517
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 6,
+            "sourceBounds": {
+              "minX": 3,
+              "minY": 5,
+              "maxX": 282,
+              "maxY": 436,
+              "width": 280,
+              "height": 432,
+              "pixels": 57333
+            },
+            "placedBounds": {
+              "minX": 70,
+              "minY": 15,
+              "maxX": 203,
+              "maxY": 239,
+              "width": 134,
+              "height": 225
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 234,
+            "pivotDeviationPx": 0,
+            "anchors": {
+              "equipment": {
+                "name": "test-pedestal-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  184,
+                  234
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  41,
+                  437
+                ],
+                "plantedFoot": [
+                  242,
+                  436
+                ],
+                "groups": [
+                  {
+                    "minX": 3,
+                    "maxX": 79,
+                    "centerX": 41,
+                    "bottomY": 437
+                  },
+                  {
+                    "minX": 111,
+                    "maxX": 178,
+                    "centerX": 145,
+                    "bottomY": 431
+                  },
+                  {
+                    "minX": 222,
+                    "maxX": 262,
+                    "centerX": 242,
+                    "bottomY": 436
+                  }
+                ]
+              },
+              "scale": [
+                0.47761194029850745,
+                0.5217391304347826
+              ],
+              "baselineShearPx": -6
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 143259,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 521
+            },
+            "sourceBoundContact": false
+          },
+          {
+            "index": 7,
+            "sourceBounds": {
+              "minX": 3,
+              "minY": 3,
+              "maxX": 238,
+              "maxY": 436,
+              "width": 236,
+              "height": 434,
+              "pixels": 54213
+            },
+            "placedBounds": {
+              "minX": 36,
+              "minY": 14,
+              "maxX": 207,
+              "maxY": 239,
+              "width": 172,
+              "height": 226
+            },
+            "targetPivot": [
+              128,
+              240
+            ],
+            "computedFootY": 235,
+            "pivotDeviationPx": 1,
+            "anchors": {
+              "equipment": {
+                "name": "test-pedestal-left-ground",
+                "target": [
+                  88,
+                  240
+                ],
+                "actual": [
+                  88,
+                  240
+                ],
+                "deviation": [
+                  0,
+                  0
+                ]
+              },
+              "plantedFoot": {
+                "name": "rightmost-planted-foot",
+                "target": [
+                  184,
+                  234
+                ],
+                "actual": [
+                  184,
+                  235
+                ],
+                "deviation": [
+                  0,
+                  1
+                ]
+              },
+              "maximumDeviationPx": 2,
+              "sourceDetected": {
+                "equipment": [
+                  74,
+                  437
+                ],
+                "plantedFoot": [
+                  206,
+                  436
+                ],
+                "groups": [
+                  {
+                    "minX": 3,
+                    "maxX": 144,
+                    "centerX": 74,
+                    "bottomY": 437
+                  },
+                  {
+                    "minX": 186,
+                    "maxX": 226,
+                    "centerX": 206,
+                    "bottomY": 436
+                  }
+                ]
+              },
+              "scale": [
+                0.7272727272727273,
+                0.5217391304347826
+              ],
+              "baselineShearPx": -6
+            },
+            "key": {
+              "mode": "checker-flood",
+              "transparentPixels": 147961,
+              "partialPixels": 0,
+              "residualGreenPixels": 0,
+              "neutralEdgePixels": 490
+            },
+            "sourceBoundContact": false
+          }
+        ]
+      },
+      "visualContract": {
+        "frameCount": 8,
+        "action": "inspect",
+        "identity": "QA Navigator Wayfarer",
+        "identityReference": {
+          "path": "public/images/wayfarers/qa-navigator-v1-poses.png",
+          "sha256": "9c9c15aff8e0f4de1f42dde0cb1bb5d13763e761fcc1a9abdad3d0a41987bacd"
+        },
+        "readableText": false
+      }
+    }
+  ]
+}

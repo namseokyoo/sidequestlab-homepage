@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "reference_id": "approved-visual-v1",
+  "task_id": "ai-fleet-living-archipelago-vertical-slice-20260721",
+  "approval": {
+    "status": "approved",
+    "approved_by": "user",
+    "approved_on": "2026-07-21",
+    "authority": "conversation brief and supplied visual direction"
+  },
+  "asset": {
+    "path": "docs/references/archipelago/approved-visual-v1.png",
+    "media_type": "image/png",
+    "present": true,
+    "sha256": "108ca8b0200bc7cb983b8e50d2dcb50ffb5dc554b3fad9d6a78052f8023dfe88",
+    "bytes": 2413135,
+    "width_px": 1536,
+    "height_px": 1024,
+    "ingestion_status": "present-and-hashed"
+  },
+  "canonical_direction": {
+    "name": "Bright premium 2.5D cozy RPG archipelago",
+    "camera": "stable three-quarter orthographic",
+    "lighting": "soft upper-left sunlight with lower-right contact shadows",
+    "projects": "three silhouette-distinct project islands",
+    "characters": "exactly two visible non-robot AI Wayfarers on the selected-island slice: Code Engineer and QA Navigator",
+    "expected_visible_crew": 2,
+    "character_proportions": "premium chibi or stylized humanoids, 2.8 to 3.2 heads tall",
+    "visitor_role": "observer and explorer",
+    "navigation": "boat represents visitor selection only; projects are never vessels",
+    "information_priority": "identity, project facts, lifecycle activity, direct links, proof"
+  },
+  "interpretation": {
+    "preserve": [
+      "bright sunlit archipelago composition",
+      "premium miniature material quality",
+      "desktop map with adjacent project detail",
+      "mobile overview and project detail hierarchy",
+      "plain-language primary and proof actions"
+    ],
+    "do_not_literalize": [
+      "Atlas, Harbor, or Lumen placeholder project names",
+      "illustrative percentages, versions, health, timestamps, roles, or links",
+      "illustrative fleet-wide counts outside the selected-island two-character slice"
+    ],
+    "explicit_contract_overrides": [
+      "use DisplayLab, BookSalon, and N-Bang from verified repository data",
+      "show exactly two visible non-robot AI Wayfarers on the selected-island slice: Code Engineer and QA Navigator",
+      "use cute premium 2.8 to 3.2-head-tall chibi or stylized humanoid proportions without infant or mascot treatment",
+      "use only verified product and evidence URLs"
+    ]
+  },
+  "negative_criteria": [
+    "editorial workshop as the primary visual metaphor",
+    "dark operations canvas or control room",
+    "industrial robots, drones, metal chassis, visor faces, or antennae",
+    "projects represented as boats or vessels",
+    "pirate, military, survival-game, infantile mascot, or excessive toy-box framing",
+    "proof or required links hidden behind scene-only interaction",
+    "mobile implemented as a scaled-down desktop map",
+    "unverified or invented URLs"
+  ],
+  "required_receipts_for_reference_pass": [
+    "approved image present at the declared path",
+    "asset byte size and SHA-256 recorded",
+    "desktop and mobile implementation screenshots",
+    "documented visual comparison",
+    "independent reviewer receipt"
+  ],
+  "current_verdict": "PARTIAL",
+  "verdict_reason": "Direction and source receipt are locked, but runtime screenshots and independent visual comparison do not yet exist."
+}

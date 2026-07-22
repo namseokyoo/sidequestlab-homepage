@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0",
+  "snapshotVersion": 1,
+  "dataMode": "DEMO",
+  "approvalState": "APPROVED",
+  "publishedAt": "2026-07-20T00:00:00Z",
+  "reviewAfter": "2026-08-20T00:00:00Z",
+  "selectedProjectId": "displaylab",
+  "projects": [
+    {
+      "projectId": "displaylab",
+      "lifecycle": "BUILDING",
+      "progressPercent": 68,
+      "version": "v0.9.2",
+      "health": "NORMAL",
+      "crew": [
+        {
+          "id": "displaylab-code-engineer",
+          "role": "CODE_ENGINEER",
+          "state": "WORKING"
+        },
+        {
+          "id": "displaylab-qa-navigator",
+          "role": "QA_NAVIGATOR",
+          "state": "TESTING"
+        }
+      ]
+    },
+    {
+      "projectId": "booksalon",
+      "lifecycle": "MAINTENANCE",
+      "progressPercent": 52,
+      "version": "v1.0.0",
+      "health": "CAUTION",
+      "crew": []
+    },
+    {
+      "projectId": "nbbang",
+      "lifecycle": "OPERATING",
+      "progressPercent": 100,
+      "version": "v1.0.0",
+      "health": "NORMAL",
+      "crew": []
+    }
+  ]
+}

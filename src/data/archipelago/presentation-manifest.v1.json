@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1.0",
+  "navigatorBoatKey": "visitor-navigator-boat",
+  "projects": [
+    {
+      "projectId": "displaylab",
+      "order": 0,
+      "portKey": "forge-port",
+      "islandKey": "displaylab-island",
+      "routeKey": "displaylab-route",
+      "focusBox": { "x": 0.28, "y": 0.1, "width": 0.44, "height": 0.38 },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": { "x": 0.42, "y": 0.33 },
+        "qaNavigator": { "x": 0.56, "y": 0.31 }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": { "x": 0.34, "y": 0.64 },
+        "qaNavigator": { "x": 0.72, "y": 0.64 }
+      },
+      "landmarkAnchors": [
+        { "key": "display-pavilion", "anchor": { "x": 0.39, "y": 0.2 } },
+        { "key": "swatch-garden", "anchor": { "x": 0.62, "y": 0.24 } }
+      ],
+      "emblem": { "key": "display-prism", "anchor": { "x": 0.5, "y": 0.15 } },
+      "labelSafeRegion": { "x": 0.36, "y": 0.11, "width": 0.28, "height": 0.08 }
+    },
+    {
+      "projectId": "booksalon",
+      "order": 1,
+      "portKey": "review-port",
+      "islandKey": "booksalon-island",
+      "routeKey": "booksalon-route",
+      "focusBox": { "x": 0.08, "y": 0.45, "width": 0.38, "height": 0.42 },
+      "focusScaleCap": 2.1,
+      "crewAnchors": {
+        "codeEngineer": { "x": 0.2, "y": 0.72 },
+        "qaNavigator": { "x": 0.32, "y": 0.69 }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": { "x": 0.17, "y": 0.64 },
+        "qaNavigator": { "x": 0.45, "y": 0.64 }
+      },
+      "landmarkAnchors": [
+        { "key": "reading-house", "anchor": { "x": 0.2, "y": 0.55 } },
+        { "key": "lantern-path", "anchor": { "x": 0.38, "y": 0.77 } }
+      ],
+      "emblem": { "key": "open-book", "anchor": { "x": 0.13, "y": 0.5 } },
+      "labelSafeRegion": { "x": 0.13, "y": 0.47, "width": 0.26, "height": 0.08 }
+    },
+    {
+      "projectId": "nbbang",
+      "order": 2,
+      "portKey": "discovery-port",
+      "islandKey": "nbbang-island",
+      "routeKey": "nbbang-route",
+      "focusBox": { "x": 0.54, "y": 0.47, "width": 0.4, "height": 0.42 },
+      "focusScaleCap": 2,
+      "crewAnchors": {
+        "codeEngineer": { "x": 0.68, "y": 0.74 },
+        "qaNavigator": { "x": 0.82, "y": 0.71 }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": { "x": 0.42, "y": 0.64 },
+        "qaNavigator": { "x": 0.78, "y": 0.64 }
+      },
+      "landmarkAnchors": [
+        { "key": "ledger-kiosk", "anchor": { "x": 0.65, "y": 0.58 } },
+        { "key": "equal-share-bridge", "anchor": { "x": 0.84, "y": 0.63 } }
+      ],
+      "emblem": { "key": "equal-share-mark", "anchor": { "x": 0.59, "y": 0.52 } },
+      "labelSafeRegion": { "x": 0.59, "y": 0.49, "width": 0.28, "height": 0.08 }
+    }
+  ]
+}

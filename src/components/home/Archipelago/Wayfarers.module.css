@@ -1,0 +1,32 @@
+.party { position: absolute; z-index: 5; inset: 0; pointer-events: none; }
+.wayfarer { position: absolute; display: grid; min-width: 0; min-height: 132px; place-items: end center; padding: 0; border: 0; color: var(--arch-ink); background: transparent; font: inherit; cursor: pointer; pointer-events: auto; filter: drop-shadow(0 9px 8px rgb(23 52 58 / 24%)); transform: translate(-50%, -94%); }
+.wayfarer:focus-visible { outline: 4px solid var(--arch-gold); outline-offset: 4px; border-radius: 16px; }
+.character { position: relative; display: block; width: 92px; height: 102px; overflow: hidden; }
+.character::after { position: absolute; z-index: 0; bottom: 2px; left: 50%; width: 48px; height: 10px; border-radius: 50%; background: rgb(23 52 58 / 24%); filter: blur(2px); content: ''; transform: translateX(-50%); }
+.poseSheet { position: absolute; z-index: 1; width: 260px; max-width: none; height: 260px; top: -5px; left: -20px; object-fit: contain; }
+.wayfarer[data-motion-state='playing'] .poseSheet { visibility: hidden; }
+.character[data-frame='1'] .poseSheet { top: -5px; left: -145px; }
+.character[data-frame='2'] .poseSheet { top: -134px; left: -20px; }
+.character[data-frame='3'] .poseSheet { top: -134px; left: -145px; }
+.motionStrip { position: absolute; z-index: 1; width: 800%; max-width: none; height: 100%; inset: 0 auto 0 0; object-fit: cover; animation: stripOnce 840ms steps(7, end) 1 both; }
+.wayfarerLabel { display: flex; min-height: 44px; align-items: center; gap: 7px; padding: 5px 9px; border: 2px solid rgb(255 255 255 / 80%); border-radius: 12px; background: rgb(255 249 236 / 92%); box-shadow: 0 8px 18px rgb(23 52 58 / 18%); }
+.wayfarerLabel strong { font-size: .75rem; white-space: nowrap; }
+.wayfarerLabel small { color: var(--arch-muted); font-size: .75rem; text-transform: capitalize; white-space: nowrap; }
+.wayfarer[data-pose='blocked'] .wayfarerLabel { border-color: rgb(164 63 59 / 55%); background: #fff3f0; }
+.wayfarer[data-pose='waiting'] .wayfarerLabel { border-color: rgb(229 170 69 / 65%); }
+.symbolicDisclosure { position: absolute; z-index: 6; left: 50%; bottom: 12px; max-width: calc(100% - 24px); margin: 0; padding: 7px 10px; border-radius: 10px; color: var(--arch-ink); background: rgb(255 249 236 / 94%); box-shadow: 0 8px 18px rgb(23 52 58 / 18%); font-size: .75rem; font-weight: 800; text-align: center; transform: translateX(-50%); }
+
+@keyframes stripOnce { to { transform: translateX(-87.5%); } }
+@media (max-width: 1023px) {
+  .party[data-variant='mobile'] .wayfarer { min-height: 118px; transform: translate(-50%, -90%); }
+  .party[data-variant='mobile'] .character { width: 72px; height: 84px; }
+  .party[data-variant='mobile'] .character::after { width: 42px; height: 8px; }
+  .party[data-variant='mobile'] .poseSheet { width: 230px; height: 230px; top: -4px; left: -18px; }
+  .party[data-variant='mobile'] .character[data-frame='1'] .poseSheet { top: -4px; left: -128px; }
+  .party[data-variant='mobile'] .character[data-frame='2'] .poseSheet { top: -119px; left: -18px; }
+  .party[data-variant='mobile'] .character[data-frame='3'] .poseSheet { top: -119px; left: -128px; }
+}
+@media (max-width: 390px) { .wayfarerLabel { padding-inline: 6px; } .wayfarerLabel small { display: none; } }
+@media (prefers-reduced-motion: reduce) { .motionStrip { animation: none; } }
+:global([data-motion='REDUCED']) .motionStrip,
+:global([data-motion='OFF']) .motionStrip { animation: none; }

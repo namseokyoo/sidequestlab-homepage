@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 3,
+  "kind": "living-archipelago-scene-assets",
+  "taskId": "living-archipelago-uiux-recovery-20260721",
+  "approvedReference": {
+    "path": "docs/references/archipelago/approved-visual-v1.png",
+    "sha256": "108ca8b0200bc7cb983b8e50d2dcb50ffb5dc554b3fad9d6a78052f8023dfe88"
+  },
+  "pipeline": {
+    "version": "1.0.0",
+    "node": "v22.22.2",
+    "sharp": "0.34.5",
+    "vips": "8.17.3"
+  },
+  "assets": [
+    {
+      "id": "desktop-overview-v3",
+      "prompt": {
+        "path": "docs/references/archipelago/prompts/desktop-overview-v3.md",
+        "sha256": "be231dd846f99e09c23d5f746fcf1d6570732a7996b506d441d402747179bb35"
+      },
+      "provider": {
+        "name": "Codex Image Generation",
+        "outputId": "exec-298943f7-1e90-430d-9102-ecb4169fe3ab"
+      },
+      "source": {
+        "rawPath": "tmp/archipelago-recovery/raw/archipelago-scene-v3-projects.raw.png",
+        "sha256": "7d2ba26ad41bb91fba3214d6064c1f4783f67a023a7cf6e946b95669e0cce4d7",
+        "width": 1586,
+        "height": 992
+      },
+      "output": {
+        "path": "public/images/archipelago/archipelago-scene-v3-projects.png",
+        "width": 1536,
+        "height": 960,
+        "status": "mechanically-prepared",
+        "sha256": "83f70adf6fb3088233b35e22a5a58def874b9a3e64bc488860279304480076fa",
+        "bytes": 3602298,
+        "hasAlpha": false
+      },
+      "processing": {
+        "fit": "cover",
+        "position": "centre",
+        "width": 1536,
+        "height": 960,
+        "kernel": "lanczos3",
+        "encoder": "sharp-png",
+        "compressionLevel": 9,
+        "adaptiveFiltering": false
+      },
+      "visualContract": {
+        "projectIslands": 3,
+        "navigatorBoats": 1,
+        "people": 0,
+        "readableText": false,
+        "embeddedText": false,
+        "logos": false,
+        "semanticUi": false,
+        "abstractCalibrationSurfaces": true,
+        "light": "upper-left",
+        "camera": "approved isometric overview"
+      }
+    },
+    {
+      "id": "mobile-overview-v3",
+      "prompt": {
+        "path": "docs/references/archipelago/prompts/mobile-overview-v3.md",
+        "sha256": "bd60d8b8a448513428c6e79c831da776c06cc87a7e6f4f3855a7dcc12ad92907"
+      },
+      "provider": {
+        "name": "Codex Image Generation",
+        "outputId": "exec-5666ecfa-a2c0-492d-92cf-bfcab10a308c"
+      },
+      "source": {
+        "rawPath": "tmp/archipelago-recovery/raw/archipelago-mobile-v3-projects.raw.png",
+        "sha256": "90d8ad84eb37a4e9911948f13d25d45202e8f26a10e2c3d53e9a3989e4b9a3f9",
+        "width": 941,
+        "height": 1672
+      },
+      "output": {
+        "path": "public/images/archipelago/archipelago-mobile-v3-projects.png",
+        "width": 941,
+        "height": 1672,
+        "status": "mechanically-prepared",
+        "sha256": "d8410cdc7235ebc8db1fbf964bbb3f65531896b2924accbf3da798b46253a98a",
+        "bytes": 3785526,
+        "hasAlpha": false
+      },
+      "processing": {
+        "fit": "cover",
+        "position": "centre",
+        "width": 941,
+        "height": 1672,
+        "kernel": "lanczos3",
+        "encoder": "sharp-png",
+        "compressionLevel": 9,
+        "adaptiveFiltering": false
+      },
+      "visualContract": {
+        "projectIslands": 3,
+        "navigatorBoats": 1,
+        "people": 0,
+        "readableText": false,
+        "embeddedText": false,
+        "logos": false,
+        "semanticUi": false,
+        "abstractCalibrationSurfaces": true,
+        "light": "upper-left",
+        "camera": "approved isometric mobile overview"
+      }
+    },
+    {
+      "id": "displaylab-focus-v1",
+      "prompt": {
+        "path": "docs/references/archipelago/prompts/displaylab-focus-v1.md",
+        "sha256": "15f597afad6356c4544d8108ba4eb0e9b5e7956b6640512903b5b7d3f91f1cc8"
+      },
+      "provider": {
+        "name": "Codex Image Generation",
+        "outputId": "exec-47c98e7c-54bd-4b42-bff0-ca4810a25899"
+      },
+      "source": {
+        "rawPath": "tmp/archipelago-recovery/raw/displaylab-focus-v1.raw.png",
+        "sha256": "4b1beb4f1da42f1b8d70ce64d3cafb196b59b8bb5d5bf7d561c44de24940d73b",
+        "width": 1599,
+        "height": 984
+      },
+      "output": {
+        "path": "public/images/archipelago/dioramas/displaylab-focus-v1.png",
+        "width": 1280,
+        "height": 768,
+        "status": "mechanically-prepared",
+        "sha256": "294e453acade4faddc3ea99e19d6ba7c0fb1f2a9ce170729ec31e536e2251e4c",
+        "bytes": 2644024,
+        "hasAlpha": false
+      },
+      "processing": {
+        "fit": "cover",
+        "position": "centre",
+        "width": 1280,
+        "height": 768,
+        "kernel": "lanczos3",
+        "encoder": "sharp-png",
+        "compressionLevel": 9,
+        "adaptiveFiltering": false
+      },
+      "visualContract": {
+        "landmarks": [
+          "presentation cove",
+          "swatch prism",
+          "projection tools"
+        ],
+        "people": 0,
+        "readableText": false,
+        "embeddedText": false,
+        "logos": false,
+        "semanticUi": false,
+        "abstractCalibrationSurfaces": true,
+        "light": "upper-left"
+      }
+    },
+    {
+      "id": "booksalon-focus-v1",
+      "prompt": {
+        "path": "docs/references/archipelago/prompts/booksalon-focus-v1.md",
+        "sha256": "597391467794c24edeb8206dd859b3af4b190061bd84a22c06b84b837804090b"
+      },
+      "provider": {
+        "name": "Codex Image Generation",
+        "outputId": "exec-287c0b36-755f-4a96-aaec-a8385253e187"
+      },
+      "source": {
+        "rawPath": "tmp/archipelago-recovery/raw/booksalon-focus-v1.raw.png",
+        "sha256": "c36e8ff4fbda57c9a36807e0e36c0bf34fa8e9bf68bef8d5152a3666b0546627",
+        "width": 1586,
+        "height": 992
+      },
+      "output": {
+        "path": "public/images/archipelago/dioramas/booksalon-focus-v1.png",
+        "width": 1280,
+        "height": 768,
+        "status": "mechanically-prepared",
+        "sha256": "ba53b822023e9c15001c5c0081d0a0c3bbbc76d0a763d53e1ff8353599b56173",
+        "bytes": 2662433,
+        "hasAlpha": false
+      },
+      "processing": {
+        "fit": "cover",
+        "position": "centre",
+        "width": 1280,
+        "height": 768,
+        "kernel": "lanczos3",
+        "encoder": "sharp-png",
+        "compressionLevel": 9,
+        "adaptiveFiltering": false
+      },
+      "visualContract": {
+        "landmarks": [
+          "reading courtyard",
+          "library terraces",
+          "greenhouse",
+          "communal table"
+        ],
+        "people": 0,
+        "readableText": false,
+        "embeddedText": false,
+        "logos": false,
+        "semanticUi": false,
+        "abstractCalibrationSurfaces": false,
+        "light": "upper-left"
+      }
+    },
+    {
+      "id": "nbbang-focus-v1",
+      "prompt": {
+        "path": "docs/references/archipelago/prompts/nbbang-focus-v1.md",
+        "sha256": "ba6d93dda64d82fd1a5fafd753a729390a998e60609d70481b08d9d3e6afafcf"
+      },
+      "provider": {
+        "name": "Codex Image Generation",
+        "outputId": "exec-fcd58478-d15f-4c94-8321-d25408225abc"
+      },
+      "source": {
+        "rawPath": "tmp/archipelago-recovery/raw/nbbang-focus-v1.raw.png",
+        "sha256": "48e09629fc2721bce7a18e84d7973313813da96e143f1f971400e77fee10cca8",
+        "width": 1586,
+        "height": 992
+      },
+      "output": {
+        "path": "public/images/archipelago/dioramas/nbbang-focus-v1.png",
+        "width": 1280,
+        "height": 768,
+        "status": "mechanically-prepared",
+        "sha256": "0e020efc9bceccb0b52218d2882b946966c10c65e0a2782570caf5375f91df78",
+        "bytes": 2619297,
+        "hasAlpha": false
+      },
+      "processing": {
+        "fit": "cover",
+        "position": "centre",
+        "width": 1280,
+        "height": 768,
+        "kernel": "lanczos3",
+        "encoder": "sharp-png",
+        "compressionLevel": 9,
+        "adaptiveFiltering": false
+      },
+      "visualContract": {
+        "landmarks": [
+          "twin neighborhoods",
+          "equal-share bridge",
+          "ledger counter",
+          "productive garden"
+        ],
+        "people": 0,
+        "readableText": false,
+        "embeddedText": false,
+        "logos": false,
+        "semanticUi": false,
+        "abstractCalibrationSurfaces": false,
+        "light": "upper-left"
+      }
+    }
+  ]
+}

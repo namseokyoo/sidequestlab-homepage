@@ -1,0 +1,30 @@
+.feed { overflow: hidden; border: 1px solid rgb(37 126 131 / 20%); border-radius: 22px; background: rgb(255 249 236 / 95%); box-shadow: 0 18px 48px rgb(23 52 58 / 9%); }
+.heading { padding: 17px 17px 10px; }
+.heading h2 { max-width: 590px; margin: 0; font-size: clamp(1.2rem, 4.8vw, 1.7rem); line-height: 1.22; letter-spacing: -.035em; text-wrap: balance; word-break: keep-all; }
+.list { display: grid; gap: 8px; padding: 8px; border-top: 1px solid rgb(37 126 131 / 13%); }
+.list article { overflow: hidden; border: 1px solid rgb(37 126 131 / 17%); border-radius: 15px; background: var(--arch-foam); }
+.list article[data-selected='true'] { border-color: var(--arch-coral); box-shadow: inset 4px 0 var(--arch-coral); }
+.selectProject { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; min-height: 72px; gap: 10px; align-items: center; padding: 11px 12px 8px; border: 0; color: var(--arch-ink); background: transparent; font: inherit; text-align: left; cursor: pointer; }
+.selectProject > span, .selectProject strong, .selectProject small { display: block; }
+.selectProject strong { margin-bottom: 3px; font-size: 1rem; }
+.selectProject small { color: #46676c; font-size: 1rem; line-height: 1.42; }
+.selectProject em { padding: 5px 7px; border-radius: 999px; color: #245b60; background: #dff1ed; font-size: .75rem; font-style: normal; font-weight: 850; white-space: nowrap; }
+.cardSnapshot { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 10px; align-items: center; padding: 0 12px 9px; color: #355b61; font-size: 1rem; }
+.cardSnapshot p { grid-column: 1 / -1; margin: 0; line-height: 1.4; }
+.cardSnapshot time { color: var(--arch-muted); font-size: .75rem; white-space: nowrap; }
+.cardSnapshot a { display: inline-flex; min-height: 44px; align-items: center; color: #245b60; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+.selectProject:focus-visible, .cardSnapshot a:focus-visible { outline: 3px solid var(--arch-gold); outline-offset: 2px; }
+.expansion { padding: 0 8px 8px; }
+.expansion > div { border-radius: 14px; background: #fffaf0; }
+
+@media (max-width: 390px) {
+  .heading { padding-inline: 13px; }
+  .list { padding: 6px; }
+  .selectProject { grid-template-columns: 1fr; }
+  .selectProject em { width: fit-content; }
+}
+
+@media (max-width: 340px) {
+  .cardSnapshot { grid-template-columns: 1fr; }
+  .cardSnapshot a { width: fit-content; }
+}
