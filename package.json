@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/living-workshop/*.test.ts tests/archipelago/*.test.ts tests/archipelago-ui/*.test.ts",
+    "test": "node --experimental-strip-types --test tests/living-workshop/*.test.ts tests/archipelago/*.test.ts tests/archipelago-ui/*.test.ts tests/archipelago-v2/*.test.ts",
     "test:workshop": "node --experimental-strip-types --test tests/living-workshop/*.test.ts"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "next": "16.1.5",
     "next-intl": "^4.7.0",
     "next-mdx-remote": "^6.0.0",
+    "pixi.js": "^8.19.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },

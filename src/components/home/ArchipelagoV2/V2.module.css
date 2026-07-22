@@ -1,0 +1,660 @@
+/* ── Living Archipelago V2 ─────────────────────────────────────────
+   World UI chrome: paper-and-ink panels over a living canvas.
+   Tokens follow DESIGN.md §2; typography follows §3.
+   ──────────────────────────────────────────────────────────────── */
+
+.v2Root {
+  --arch-sky: #ddf3f3;
+  --arch-water-deep: #257e83;
+  --arch-foam: #f7fff8;
+  --arch-sand: #e8c983;
+  --arch-coral: #ee7459;
+  --arch-gold: #e5aa45;
+  --arch-paper: #fff9ec;
+  --arch-ink: #17343a;
+  --arch-muted: #557379;
+  --arch-grass: #7bbe67;
+  --arch-forest: #397457;
+  --panel-bg: var(--arch-paper);
+  --panel-border: #d8c9a8;
+  --panel-shadow: 0 2px 0 rgba(23, 52, 58, 0.12), 0 8px 24px rgba(23, 52, 58, 0.14);
+  --font-display: 'Avenir Next', 'Pretendard', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-body: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--arch-water-deep);
+  color: var(--arch-ink);
+  font-family: var(--font-body);
+  transition: background 600ms ease;
+}
+
+.v2Root[data-night='true'] {
+  --panel-bg: #f0e8d8;
+  --panel-border: #b8a888;
+  background: #0f3a42;
+}
+
+/* ── World stage ─────────────────────────────────────────────── */
+
+.worldStage {
+  position: relative;
+  flex: 1;
+  min-height: 520px;
+  overflow: hidden;
+}
+
+.worldCanvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── Header over world ───────────────────────────────────────── */
+
+.worldHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  max-width: 420px;
+  padding: 28px 28px 20px;
+  pointer-events: none;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  color: var(--arch-foam);
+  text-shadow: 0 1px 4px rgba(23, 52, 58, 0.5);
+}
+
+.worldTitle {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--arch-paper);
+  text-shadow: 0 2px 8px rgba(23, 52, 58, 0.45), 0 0 2px rgba(23, 52, 58, 0.3);
+  word-break: keep-all;
+}
+
+.worldIntro {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--arch-foam);
+  text-shadow: 0 1px 6px rgba(23, 52, 58, 0.55);
+  word-break: keep-all;
+}
+
+/* ── Day/night + motion controls ─────────────────────────────── */
+
+.dialPosition {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.dayNightDial {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 12px 12px 12px 3px;
+  box-shadow: var(--panel-shadow);
+}
+
+.dialToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-body);
+}
+
+.dialTrack {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8ecdc8, #69cdc4);
+  border: 2px solid var(--arch-ink);
+  transition: background 400ms ease;
+}
+
+.dialToggle[aria-checked='true'] .dialTrack {
+  background: linear-gradient(135deg, #163a42, #0e2a33);
+}
+
+.dialThumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  border-radius: 50%;
+  background: var(--arch-paper);
+  border: 1.5px solid var(--arch-ink);
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dialThumb[data-night='true'] {
+  transform: translateX(20px);
+}
+
+.dialLabel {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--arch-ink);
+}
+
+.dialSlider {
+  width: 110px;
+  accent-color: var(--arch-coral);
+  cursor: pointer;
+}
+
+.motionToggle {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--panel-bg);
+  box-shadow: var(--panel-shadow);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: transform 150ms ease;
+}
+
+.motionToggle:hover {
+  transform: scale(1.08);
+}
+
+.motionToggle:active {
+  transform: scale(0.95);
+}
+
+/* ── Island labels ───────────────────────────────────────────── */
+
+.islandLabels {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.islandLabel {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: auto;
+  padding: 5px 14px 6px;
+  border: 2px solid var(--arch-ink);
+  border-radius: 8px 8px 8px 2px;
+  background: var(--arch-paper);
+  color: var(--arch-ink);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 2px 0 rgba(23, 52, 58, 0.25);
+  transition: transform 150ms ease, background 150ms ease, box-shadow 150ms ease;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+.islandLabel::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid var(--arch-ink);
+}
+
+.islandLabel:hover {
+  transform: translate(-50%, -100%) scale(1.07);
+  background: var(--arch-sand);
+}
+
+.islandLabel:active {
+  transform: translate(-50%, -100%) scale(0.97);
+}
+
+.islandLabel[data-selected='true'] {
+  background: var(--arch-coral);
+  color: var(--arch-paper);
+  border-color: var(--arch-ink);
+}
+
+.islandLabel:focus-visible {
+  outline: 3px solid var(--arch-foam);
+  outline-offset: 2px;
+}
+
+/* ── Project overlay ─────────────────────────────────────────── */
+
+.projectOverlay {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  z-index: 12;
+  width: min(380px, calc(100% - 40px));
+  padding: 20px 22px 18px;
+  background: var(--panel-bg);
+  border: 2.5px solid var(--arch-ink);
+  border-radius: 14px 14px 14px 4px;
+  box-shadow: 0 3px 0 rgba(23, 52, 58, 0.2), 0 12px 32px rgba(23, 52, 58, 0.25);
+  animation: overlayIn 320ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.overlayHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.overlayKicker {
+  margin: 0 0 2px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--arch-coral);
+}
+
+.overlayTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+}
+
+.overlayBack {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border: 2px solid var(--arch-ink);
+  border-radius: 8px;
+  background: var(--arch-sand);
+  color: var(--arch-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease;
+  white-space: nowrap;
+}
+
+.overlayBack:hover {
+  background: var(--arch-gold);
+  transform: translateY(-1px);
+}
+
+.overlaySummary {
+  margin: 0 0 12px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--arch-muted);
+  word-break: keep-all;
+}
+
+.overlayStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.overlayStats > div {
+  padding: 8px 10px;
+  background: rgba(232, 201, 131, 0.25);
+  border: 1.5px solid var(--panel-border);
+  border-radius: 8px;
+}
+
+.overlayStats dt {
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--arch-muted);
+}
+
+.overlayStats dd {
+  margin: 2px 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--arch-ink);
+}
+
+.overlayProgress {
+  height: 8px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  background: rgba(23, 52, 58, 0.12);
+  border: 1px solid var(--panel-border);
+  overflow: hidden;
+}
+
+.overlayProgress > span {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--arch-grass), var(--arch-gold));
+  transition: width 600ms cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.overlayOutcome {
+  margin: 0 0 4px;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.overlayOutcome > span {
+  color: var(--arch-muted);
+  font-weight: 600;
+}
+
+.overlayOutcome > strong {
+  display: block;
+  color: var(--arch-ink);
+}
+
+.overlayUpdated {
+  margin: 0 0 14px;
+  font-size: 0.75rem;
+  color: var(--arch-muted);
+}
+
+.overlayUpdated time {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.overlayActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.overlayActions a {
+  padding: 7px 14px;
+  border: 2px solid var(--arch-ink);
+  border-radius: 9px;
+  background: var(--arch-paper);
+  color: var(--arch-ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+.overlayActions a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 0 rgba(23, 52, 58, 0.2);
+}
+
+.overlayPrimary {
+  background: var(--arch-coral) !important;
+  color: var(--arch-paper) !important;
+}
+
+.overlayPrimary:hover {
+  background: #d9634a !important;
+}
+
+.overlayUnavailable {
+  padding: 7px 10px;
+  font-size: 0.72rem;
+  color: var(--arch-muted);
+  border: 1.5px dashed var(--panel-border);
+  border-radius: 9px;
+}
+
+/* ── Harbor Log ──────────────────────────────────────────────── */
+
+.harborLog {
+  position: relative;
+  z-index: 10;
+  padding: 28px clamp(20px, 5vw, 56px) 32px;
+  background: var(--panel-bg);
+  border-top: 3px solid var(--arch-ink);
+}
+
+.harborLogHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.harborLogTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.harborLogTitle::before {
+  content: '⚓ ';
+}
+
+.harborLogSubtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--arch-muted);
+}
+
+.harborLogList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.harborLogEntry {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--panel-border);
+  border-radius: 12px 12px 12px 3px;
+  background: rgba(255, 249, 236, 0.7);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.harborLogEntry:hover {
+  transform: translateY(-3px);
+  border-color: var(--arch-coral);
+  box-shadow: 0 4px 0 rgba(23, 52, 58, 0.12), 0 10px 24px rgba(23, 52, 58, 0.1);
+  background: var(--arch-paper);
+}
+
+.harborLogEntry:active {
+  transform: translateY(-1px);
+}
+
+.harborLogEntry[data-selected='true'] {
+  border-color: var(--arch-coral);
+  background: rgba(238, 116, 89, 0.08);
+  box-shadow: inset 0 0 0 1px var(--arch-coral);
+}
+
+.harborLogEntry:focus-visible {
+  outline: 3px solid var(--arch-coral);
+  outline-offset: 2px;
+}
+
+.harborLogIcon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
+  border-radius: 10px;
+  background: rgba(232, 201, 131, 0.35);
+  border: 1.5px solid var(--panel-border);
+}
+
+.harborLogBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.harborLogName {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--arch-ink);
+}
+
+.harborLogVersion {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--arch-forest);
+  background: rgba(123, 190, 103, 0.18);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.harborLogAction {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: var(--arch-muted);
+}
+
+.harborLogTime {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--arch-muted);
+}
+
+/* ── Semantic list (visually hidden but accessible) ──────────── */
+
+.semanticList {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+
+@media (max-width: 1023px) {
+  .worldStage {
+    min-height: 440px;
+  }
+
+  .worldHeader {
+    max-width: 300px;
+    padding: 20px 20px 14px;
+  }
+
+  .projectOverlay {
+    right: 12px;
+    bottom: 12px;
+    width: min(340px, calc(100% - 24px));
+    padding: 16px 18px 14px;
+  }
+
+  .dialPosition {
+    top: 14px;
+    right: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .worldHeader {
+    max-width: calc(100% - 100px);
+  }
+
+  .worldIntro {
+    display: none;
+  }
+
+  .overlayStats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .harborLogList {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Reduced motion ──────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .projectOverlay,
+  .harborLogEntry,
+  .islandLabel,
+  .overlayActions a,
+  .motionToggle,
+  .dialThumb,
+  .overlayProgress > span {
+    animation: none;
+    transition: none;
+  }
+}

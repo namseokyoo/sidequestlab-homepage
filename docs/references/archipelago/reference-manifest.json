@@ -68,5 +68,39 @@
     "independent reviewer receipt"
   ],
   "current_verdict": "PARTIAL",
-  "verdict_reason": "Direction and source receipt are locked, but runtime screenshots and independent visual comparison do not yet exist."
+  "verdict_reason": "Direction and source receipt are locked, but runtime screenshots and independent visual comparison do not yet exist.",
+  "visual_target_v2": {
+    "status": "pending-user-confirmation",
+    "created_on": "2026-07-23",
+    "authority": "user-approved tech spec change (2026-07-23): 2D canvas game renderer (PixiJS) permitted; previous PixiJS/WebGL prohibition from living-archipelago-uiux-recovery-20260721 superseded",
+    "spec": "docs/references/archipelago/visual-target-v2/visual-target-v2-spec.md",
+    "assets": [
+      {
+        "path": "docs/references/archipelago/visual-target-v2/01-atlas-overview-day.png",
+        "role": "atlas-overview-desktop-day",
+        "sha256": "f8d661a2c4348dfe5625453e23310d92c815cb066f451e67b93ff40467b8bc66"
+      },
+      {
+        "path": "docs/references/archipelago/visual-target-v2/02-project-focus-closeup.png",
+        "role": "project-focus-closeup",
+        "sha256": "8c96d39e28e236c2f10fd9759039dd4fa0e41e19e138b976355a15c725d89b76"
+      },
+      {
+        "path": "docs/references/archipelago/visual-target-v2/03-atlas-night-mood.png",
+        "role": "atlas-night-mood",
+        "sha256": "a51a432d8dce08ca295611b58b78646f8e1a2092a865af4d1a5c4b982a3d97a9"
+      },
+      {
+        "path": "docs/references/archipelago/visual-target-v2/04-mobile-vertical-journey.png",
+        "role": "mobile-vertical-journey",
+        "sha256": "049756fed0775beadb7ddad36cd072a4f2a68603629380640872f2e8ec33bf13"
+      }
+    ],
+    "interpretation_rule": "Target images define quality bar and mood only. Island identity (silhouette, landmarks, palette) follows DESIGN.md section 6. Character rules follow DESIGN.md section 7. Lifecycle motion semantics follow DESIGN.md section 8.",
+    "pending_decisions": [
+      "style-direction: soft paper-clay painting vs pixel-art",
+      "night-mood: include in v2 scope or defer",
+      "mobile: confirm vertical voyage composition"
+    ]
+  }
 }
