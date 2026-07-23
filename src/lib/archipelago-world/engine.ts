@@ -29,6 +29,7 @@ import { createSkySystem } from './render/sky.ts';
 import { createTerrainTextures, type TerrainTextures } from './render/terrain-textures.ts';
 import { createWaterSystem } from './render/water.ts';
 import { createWayfarer, type WayfarerRole, type WayfarerState, type WayfarerSystem } from './render/wayfarer.ts';
+import { loadArchipelagoSprites } from './render/sprite-assets.ts';
 
 export type EngineOptions = {
   readonly canvas: HTMLCanvasElement;
@@ -121,13 +122,13 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     const displaylab = ISLAND_LAYOUTS.find((l) => l.id === 'displaylab');
     const booksalon = ISLAND_LAYOUTS.find((l) => l.id === 'booksalon');
     if (displaylab) {
-      const engineer = createWayfarer('CODE_ENGINEER', displaylab.cx - 20, displaylab.cy + 40);
+      const engineer = createWayfarer('CODE_ENGINEER', displaylab.cx - 20, displaylab.cy + 40, 'wayfarer-engineer');
       engineer.setState('WORKING');
       wayfarers.set('CODE_ENGINEER', engineer);
       wayfarerLayer.addChild(engineer.container);
     }
     if (booksalon) {
-      const qa = createWayfarer('QA_NAVIGATOR', booksalon.cx + 60, booksalon.cy + 30);
+      const qa = createWayfarer('QA_NAVIGATOR', booksalon.cx + 60, booksalon.cy + 30, 'wayfarer-qa');
       qa.setState('INSPECTING');
       wayfarers.set('QA_NAVIGATOR', qa);
       wayfarerLayer.addChild(qa.container);
@@ -135,6 +136,14 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
 
     repaintAll();
     applyCamera();
+
+    // Load AI sprites in the background — procedural art is already
+    // visible; sprites swap in as each texture arrives.
+    void loadArchipelagoSprites().then((loaded) => {
+      if (destroyed || loaded === 0) return;
+      // Repaint islands so landmark sprites attach to fresh layers
+      repaintAll();
+    });
 
     // Main loop
     app.ticker.add((ticker) => {
@@ -205,6 +214,12 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     destroy(): void {
       destroyed = true;
       tickCallbacks.length = 0;
+      for (const system of islands.values()) {
+        system.dispose?.();
+      }
+      for (const w of wayfarers.values()) {
+        w.dispose?.();
+      }
       terrainTextures?.destroy();
       terrainTextures = null;
       app.destroy(true, { children: true, texture: true });

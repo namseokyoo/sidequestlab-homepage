@@ -5,9 +5,10 @@
  * (magnifier + clipboard). Fully vector-drawn, animated idle/walk/task.
  */
 
-import { Container, Graphics } from 'pixi.js';
+import { Container, Graphics, Sprite } from 'pixi.js';
 
 import type { WorldPalette } from '../palette.ts';
+import { getSpriteTexture, onSpriteLoaded, type SpriteKey } from './sprite-assets.ts';
 
 export type WayfarerRole = 'CODE_ENGINEER' | 'QA_NAVIGATOR';
 
@@ -21,6 +22,7 @@ export type WayfarerSystem = {
   readonly setFacing: (facing: 1 | -1) => void;
   readonly moveTo: (x: number, y: number, durationMs: number) => void;
   readonly position: () => { x: number; y: number };
+  readonly dispose?: () => void;
 };
 
 const HEAD_R = 11;
@@ -30,7 +32,12 @@ const LEG_H = 8;
 /** Visual scale so characters read at ~1/8 viewport height when focused. */
 const WAYFARER_SCALE = 2.2;
 
-export function createWayfarer(role: WayfarerRole, x: number, y: number): WayfarerSystem {
+export function createWayfarer(
+  role: WayfarerRole,
+  x: number,
+  y: number,
+  spriteKey?: SpriteKey,
+): WayfarerSystem {
   const container = new Container();
   container.label = `wayfarer-${role.toLowerCase()}`;
   container.x = x;
@@ -38,6 +45,8 @@ export function createWayfarer(role: WayfarerRole, x: number, y: number): Wayfar
 
   const shadow = new Graphics();
   const body = new Container();
+  /** AI sprite body — replaces procedural art when the texture is loaded. */
+  const spriteBody = new Container();
   const legL = new Graphics();
   const legR = new Graphics();
   const torso = new Graphics();
@@ -50,6 +59,7 @@ export function createWayfarer(role: WayfarerRole, x: number, y: number): Wayfar
   const toolG = new Graphics();
   head.addChild(headG, faceG, hairG);
   body.addChild(legL, legR, torso, armL, armR, head, toolG);
+  body.addChild(spriteBody);
   // Scale wrapper: feet at container origin, character extends upward
   const inner = new Container();
   inner.scale.set(WAYFARER_SCALE);
@@ -60,6 +70,8 @@ export function createWayfarer(role: WayfarerRole, x: number, y: number): Wayfar
   let state: WayfarerState = 'IDLE';
   let facing: 1 | -1 = 1;
   let palette: WorldPalette | null = null;
+  let nightTint = 0;
+  let spriteActive = false;
   // Movement
   let moveFrom = { x, y };
   let moveTarget = { x, y };
@@ -70,8 +82,63 @@ export function createWayfarer(role: WayfarerRole, x: number, y: number): Wayfar
   // Wave reaction
   let waveUntil = 0;
 
+  // ── AI sprite integration ───────────────────────────────────────
+  // The sprite replaces the procedural head/torso/legs as a single
+  // body image. Procedural arms stay on top so walk/work/wave
+  // animations keep moving. Sprite canvas is 512×512 with feet at
+  // the bottom; we scale it to match the procedural character height
+  // (44 units) plus a little extra for the richer art.
+  const SPRITE_DISPLAY_H = 54;
+  let spriteImg: Sprite | null = null;
+
+  function applySpriteTexture(texture: import('pixi.js').Texture): void {
+    spriteBody.removeChildren().forEach((c) => c.destroy({ children: true }));
+    spriteImg = new Sprite(texture);
+    spriteImg.anchor.set(0.5, 1); // feet at origin
+    const scale = SPRITE_DISPLAY_H / texture.height;
+    spriteImg.width = texture.width * scale;
+    spriteImg.height = SPRITE_DISPLAY_H;
+    spriteImg.y = (BODY_H + LEG_H) * 0.98;
+    spriteBody.addChild(spriteImg);
+    spriteActive = true;
+    syncSpriteVisibility();
+    applyNightTint();
+  }
+
+  function syncSpriteVisibility(): void {
+    const show = spriteActive;
+    legL.visible = !show;
+    legR.visible = !show;
+    torso.visible = !show;
+    head.visible = !show;
+    toolG.visible = !show;
+    spriteBody.visible = show;
+  }
+
+  function applyNightTint(): void {
+    if (!spriteImg) return;
+    const r = Math.round(255 - nightTint * 60);
+    const g = Math.round(255 - nightTint * 40);
+    const b = Math.round(255 - nightTint * 10);
+    spriteImg.tint = (r << 16) | (g << 8) | b;
+  }
+
+  let unsubscribeSprite: (() => void) | null = null;
+  if (spriteKey) {
+    const existing = getSpriteTexture(spriteKey);
+    if (existing) {
+      applySpriteTexture(existing);
+    } else {
+      unsubscribeSprite = onSpriteLoaded(spriteKey, (texture) => {
+        if (texture) applySpriteTexture(texture);
+      });
+    }
+  }
+
   function repaint(p: WorldPalette, night: number): void {
     palette = p;
+    nightTint = night;
+    applyNightTint();
     const skin = mixNum(0xffd9b8, 0xd4a882, night * 0.4);
     const isEngineer = role === 'CODE_ENGINEER';
     const outfitMain = isEngineer ? mixNum(0x4a7fa5, 0x35607e, night * 0.4) : mixNum(0x5a9e6f, 0x3d7a52, night * 0.4);
@@ -260,6 +327,7 @@ export function createWayfarer(role: WayfarerRole, x: number, y: number): Wayfar
   function tick(timeMs: number, _deltaMs: number, motionOn: boolean): void {
     if (palette === null) return;
     const now = performance.now();
+    syncSpriteVisibility();
 
     // Movement interpolation
     if (moving) {
@@ -371,6 +439,9 @@ export function createWayfarer(role: WayfarerRole, x: number, y: number): Wayfar
     setFacing,
     moveTo,
     position: () => ({ x: container.x, y: container.y }),
+    dispose: () => {
+      unsubscribeSprite?.();
+    },
   };
 }
 

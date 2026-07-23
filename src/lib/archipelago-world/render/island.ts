@@ -6,12 +6,13 @@
  * entire scene can repaint during day/night transitions.
  */
 
-import { Container, Graphics } from 'pixi.js';
+import { Container, Graphics, Sprite } from 'pixi.js';
 
 import { CLIFF_HEIGHT, generateBlob, scatterOnIsland, type IslandLayout } from '../islands.ts';
 import { createSeededRandom } from '../math.ts';
 import type { WorldPalette } from '../palette.ts';
 import { circle, drawBlob, ellipse, roundedBox, triangle } from '../shapes.ts';
+import { getSpriteTexture, onSpriteLoaded, type SpriteKey } from './sprite-assets.ts';
 import type { TerrainTextures } from './terrain-textures.ts';
 
 export type IslandSystem = {
@@ -20,6 +21,7 @@ export type IslandSystem = {
   readonly repaint: (palette: WorldPalette, night: number, textures?: TerrainTextures) => void;
   /** Smoke source positions registered with the particle system. */
   readonly smokeSources: readonly { readonly x: number; readonly y: number }[];
+  readonly dispose?: () => void;
 };
 
 type TreeAnim = {
@@ -62,7 +64,93 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
   let boatBaseY = 0;
   const smokeSources: { x: number; y: number }[] = [];
 
+  // ── AI landmark sprite state ────────────────────────────────────
+  // When a sprite texture is available it replaces the procedural
+  // landmark art. Procedural fallback stays drawn until then.
+  let landmarkSprite: Sprite | null = null;
+  let landmarkGlow: Graphics | null = null;
+  let spriteNight = 0;
+  let spriteUnsub: (() => void) | null = null;
+
+  /** Which sprite key maps to this island's signature landmark. */
+  const landmarkKey: SpriteKey | null =
+    layout.id === 'displaylab'
+      ? 'landmark-lighthouse'
+      : layout.id === 'booksalon'
+        ? 'landmark-booksalon'
+        : null;
+
+  /** World-space anchor for the landmark sprite (feet/base position). */
+  function landmarkAnchor(): { x: number; y: number; h: number } {
+    const { cx, cy, rx, ry } = layout;
+    if (layout.id === 'displaylab') {
+      return { x: cx + rx * 0.35, y: cy - ry * 0.35 + 12, h: 100 };
+    }
+    // booksalon reading house
+    return { x: cx - rx * 0.05, y: cy - ry * 0.2 + 4, h: 92 };
+  }
+
+  function applyLandmarkSprite(texture: import('pixi.js').Texture): void {
+    removeLandmarkSprite();
+    const anchor = landmarkAnchor();
+    landmarkSprite = new Sprite(texture);
+    landmarkSprite.anchor.set(0.5, 1); // base at anchor
+    const scale = anchor.h / texture.height;
+    landmarkSprite.width = texture.width * scale;
+    landmarkSprite.height = anchor.h;
+    landmarkSprite.x = anchor.x;
+    landmarkSprite.y = anchor.y;
+    landmarkSprite.label = `landmark-sprite-${layout.id}`;
+
+    // Soft night glow behind the sprite
+    landmarkGlow = new Graphics();
+    landmarkGlow.circle(anchor.x, anchor.y - anchor.h * 0.45, anchor.h * 0.5);
+    landmarkGlow.fill({ color: 0xffd08a, alpha: 0.12 });
+    landmarkGlow.visible = false;
+
+    animLayer.addChild(landmarkGlow, landmarkSprite);
+    updateLandmarkNight(spriteNight);
+    repaintLandmarkFallback();
+  }
+
+  function removeLandmarkSprite(): void {
+    landmarkSprite?.destroy();
+    landmarkSprite = null;
+    landmarkGlow?.destroy();
+    landmarkGlow = null;
+  }
+
+  function updateLandmarkNight(night: number): void {
+    spriteNight = night;
+    if (!landmarkSprite) return;
+    const r = Math.round(255 - night * 55);
+    const g = Math.round(255 - night * 35);
+    const b = Math.round(255 - night * 5);
+    landmarkSprite.tint = (r << 16) | (g << 8) | b;
+    if (landmarkGlow) landmarkGlow.visible = night > 0.25;
+  }
+
+  /** Re-run the static repaint so procedural landmark art can hide itself. */
+  let lastRepaintArgs: { p: WorldPalette; night: number; textures?: TerrainTextures } | null = null;
+  function repaintLandmarkFallback(): void {
+    if (!lastRepaintArgs) return;
+    repaint(lastRepaintArgs.p, lastRepaintArgs.night, lastRepaintArgs.textures);
+  }
+
+  if (landmarkKey) {
+    const existing = getSpriteTexture(landmarkKey);
+    if (existing) {
+      applyLandmarkSprite(existing);
+    } else {
+      spriteUnsub = onSpriteLoaded(landmarkKey, (texture) => {
+        if (texture) applyLandmarkSprite(texture);
+      });
+    }
+  }
+
   function repaint(p: WorldPalette, night: number, textures?: TerrainTextures): void {
+    lastRepaintArgs = { p, night, textures };
+    updateLandmarkNight(night);
     staticLayer.clear();
     animLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
     trees.length = 0;
@@ -71,6 +159,8 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     lanterns.length = 0;
     boat = null;
     smokeSources.length = 0;
+    landmarkSprite = null;
+    landmarkGlow = null;
 
     const random = createSeededRandom(layout.seed);
     const { cx, cy, rx, ry } = layout;
@@ -163,6 +253,12 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     if (layout.id === 'displaylab') drawDisplayLab(staticLayer, animLayer, layout, p, night, random);
     else if (layout.id === 'booksalon') drawBookSalon(staticLayer, animLayer, layout, p, night, random);
     else drawNbbang(staticLayer, animLayer, layout, p, night, random);
+
+    // Re-attach landmark sprite on top of freshly rebuilt layers
+    if (landmarkKey) {
+      const tex = getSpriteTexture(landmarkKey);
+      if (tex) applyLandmarkSprite(tex);
+    }
 
     // ── Vegetation ──────────────────────────────────────────────────
     const treeSpots = scatterOnIsland(layout, layout.seed + 10, 7, { innerScale: 0.75, avoidCenter: 0.25 });
@@ -286,72 +382,93 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     rand: () => number,
   ): void {
     const { cx, cy, rx, ry } = isl;
+    const spriteOn = landmarkSprite !== null;
 
     // Prism lighthouse (signature landmark)
     const lx = cx + rx * 0.35;
     const ly = cy - ry * 0.35;
-    // Tower body — tapered with rounded silhouette
-    g.moveTo(lx - 15, ly + 12);
-    g.quadraticCurveTo(lx - 12, ly - 20, lx - 9, ly - 52);
-    g.quadraticCurveTo(lx, ly - 57, lx + 9, ly - 52);
-    g.quadraticCurveTo(lx + 12, ly - 20, lx + 15, ly + 12);
-    g.closePath();
-    g.fill({ color: p.stone, alpha: 1 });
-    // Sunlit edge
-    g.moveTo(lx - 11, ly + 8);
-    g.quadraticCurveTo(lx - 9, ly - 20, lx - 6, ly - 48);
-    g.stroke({ color: mixNum(p.stone, 0xffffff, 0.3), alpha: 0.5, width: 4, cap: 'round' });
-    // Stripes
-    for (let i = 0; i < 3; i++) {
-      const sy = ly - 40 + i * 18;
-      g.rect(lx - 12 + i * 1.2, sy, 24 - i * 2.4, 8);
-      g.fill({ color: p.coral, alpha: 0.85 });
-      g.rect(lx - 12 + i * 1.2, sy, 24 - i * 2.4, 2.5);
-      g.fill({ color: mixNum(p.coral, 0xffffff, 0.3), alpha: 0.5 });
-    }
-    // Prism top — glass triangle with inner glow
-    triangle(g, lx, ly - 80, lx - 14, ly - 52, lx + 14, ly - 52, mixNum(p.stone, 0xffffff, 0.55), 0.95);
-    triangle(g, lx, ly - 74, lx - 8, ly - 54, lx + 8, ly - 54, night > 0.3 ? p.windowGlow : 0xc8e8f0, night > 0.3 ? 0.8 : 0.5);
-    // Rainbow refraction beams
-    const beamColors = [0xff6b6b, 0xffa94d, 0xffd43b, 0x69db7c, 0x4dabf7, 0x9775fa];
-    for (let i = 0; i < beamColors.length; i++) {
-      const angle = -0.5 + (i / (beamColors.length - 1)) * 1.0;
-      g.moveTo(lx, ly - 64);
-      g.lineTo(lx + Math.cos(angle + 0.8) * 70, ly - 64 + Math.sin(angle + 0.8) * 46);
-      g.stroke({ color: beamColors[i], alpha: night > 0.4 ? 0.55 : 0.35, width: 3.5, cap: 'round' });
-    }
-    // Beacon glow at night
-    if (night > 0.3) {
-      const glow = new Graphics();
-      circle(glow, lx, ly - 64, 12, p.windowGlow, 0.7);
-      circle(glow, lx, ly - 64, 24, p.windowGlow, 0.2);
-      anim.addChild(glow);
-      windows.push({ g: glow, phase: rand() * Math.PI * 2 });
+    if (!spriteOn) {
+      // Tower body — tapered with rounded silhouette
+      g.moveTo(lx - 15, ly + 12);
+      g.quadraticCurveTo(lx - 12, ly - 20, lx - 9, ly - 52);
+      g.quadraticCurveTo(lx, ly - 57, lx + 9, ly - 52);
+      g.quadraticCurveTo(lx + 12, ly - 20, lx + 15, ly + 12);
+      g.closePath();
+      g.fill({ color: p.stone, alpha: 1 });
+      // Sunlit edge
+      g.moveTo(lx - 11, ly + 8);
+      g.quadraticCurveTo(lx - 9, ly - 20, lx - 6, ly - 48);
+      g.stroke({ color: mixNum(p.stone, 0xffffff, 0.3), alpha: 0.5, width: 4, cap: 'round' });
+      // Stripes
+      for (let i = 0; i < 3; i++) {
+        const sy = ly - 40 + i * 18;
+        g.rect(lx - 12 + i * 1.2, sy, 24 - i * 2.4, 8);
+        g.fill({ color: p.coral, alpha: 0.85 });
+        g.rect(lx - 12 + i * 1.2, sy, 24 - i * 2.4, 2.5);
+        g.fill({ color: mixNum(p.coral, 0xffffff, 0.3), alpha: 0.5 });
+      }
+      // Prism top — glass triangle with inner glow
+      triangle(g, lx, ly - 80, lx - 14, ly - 52, lx + 14, ly - 52, mixNum(p.stone, 0xffffff, 0.55), 0.95);
+      triangle(g, lx, ly - 74, lx - 8, ly - 54, lx + 8, ly - 54, night > 0.3 ? p.windowGlow : 0xc8e8f0, night > 0.3 ? 0.8 : 0.5);
+      // Rainbow refraction beams
+      const beamColors = [0xff6b6b, 0xffa94d, 0xffd43b, 0x69db7c, 0x4dabf7, 0x9775fa];
+      for (let i = 0; i < beamColors.length; i++) {
+        const angle = -0.5 + (i / (beamColors.length - 1)) * 1.0;
+        g.moveTo(lx, ly - 64);
+        g.lineTo(lx + Math.cos(angle + 0.8) * 70, ly - 64 + Math.sin(angle + 0.8) * 46);
+        g.stroke({ color: beamColors[i], alpha: night > 0.4 ? 0.55 : 0.35, width: 3.5, cap: 'round' });
+      }
+      // Beacon glow at night
+      if (night > 0.3) {
+        const glow = new Graphics();
+        circle(glow, lx, ly - 64, 12, p.windowGlow, 0.7);
+        circle(glow, lx, ly - 64, 24, p.windowGlow, 0.2);
+        anim.addChild(glow);
+        windows.push({ g: glow, phase: rand() * Math.PI * 2 });
+      }
     }
 
     // Presentation pavilion — open structure with projection sail
     const px = cx - rx * 0.25;
     const py = cy - ry * 0.15;
-    // Posts
-    g.rect(px - 30, py - 28, 5, 34);
-    g.fill({ color: p.woodDark, alpha: 1 });
-    g.rect(px + 26, py - 28, 5, 34);
-    g.fill({ color: p.woodDark, alpha: 1 });
-    // Sail / screen
-    g.moveTo(px - 32, py - 28);
-    g.quadraticCurveTo(px, py - 38, px + 33, py - 28);
-    g.lineTo(px + 30, py - 6);
-    g.quadraticCurveTo(px, py - 14, px - 29, py - 6);
-    g.closePath();
-    g.fill({ color: p.paper, alpha: 0.95 });
-    // Color swatches on screen
-    const swatchColors = [p.coral, p.gold, 0x69cdc4, p.grass];
-    for (let i = 0; i < 4; i++) {
-      g.rect(px - 22 + i * 13, py - 24, 9, 12);
-      g.fill({ color: swatchColors[i], alpha: 0.85 });
+    const pavilionTex = getSpriteTexture('landmark-pavilion');
+    if (pavilionTex) {
+      const pav = new Sprite(pavilionTex);
+      pav.anchor.set(0.5, 1);
+      const pavH = 62;
+      const pavScale = pavH / pavilionTex.height;
+      pav.width = pavilionTex.width * pavScale;
+      pav.height = pavH;
+      pav.x = px;
+      pav.y = py + 14;
+      pav.label = 'landmark-sprite-pavilion';
+      const r = Math.round(255 - night * 55);
+      const gr = Math.round(255 - night * 35);
+      const b = Math.round(255 - night * 5);
+      pav.tint = (r << 16) | (gr << 8) | b;
+      anim.addChild(pav);
+    } else {
+      // Posts
+      g.rect(px - 30, py - 28, 5, 34);
+      g.fill({ color: p.woodDark, alpha: 1 });
+      g.rect(px + 26, py - 28, 5, 34);
+      g.fill({ color: p.woodDark, alpha: 1 });
+      // Sail / screen
+      g.moveTo(px - 32, py - 28);
+      g.quadraticCurveTo(px, py - 38, px + 33, py - 28);
+      g.lineTo(px + 30, py - 6);
+      g.quadraticCurveTo(px, py - 14, px - 29, py - 6);
+      g.closePath();
+      g.fill({ color: p.paper, alpha: 0.95 });
+      // Color swatches on screen
+      const swatchColors = [p.coral, p.gold, 0x69cdc4, p.grass];
+      for (let i = 0; i < 4; i++) {
+        g.rect(px - 22 + i * 13, py - 24, 9, 12);
+        g.fill({ color: swatchColors[i], alpha: 0.85 });
+      }
+      // Platform
+      roundedBox(g, px - 36, py + 4, 74, 10, 3, p.wood, 1);
     }
-    // Platform
-    roundedBox(g, px - 36, py + 4, 74, 10, 3, p.wood, 1);
 
     // Swatch garden — color swatches planted like flowers
     const gardenX = cx + rx * 0.05;
@@ -401,12 +518,15 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     rand: () => number,
   ): void {
     const { cx, cy, rx, ry } = isl;
+    const spriteOn = landmarkSprite !== null;
 
     // Reading house — two-story signature building
     const hx = cx - rx * 0.05;
     const hy = cy - ry * 0.2;
-    drawHouse(g, hx, hy, 64, 48, p, night, windows, rand, 0, true);
-    smokeSources.push({ x: hx + 22, y: hy - 44 });
+    if (!spriteOn) {
+      drawHouse(g, hx, hy, 64, 48, p, night, windows, rand, 0, true);
+      smokeSources.push({ x: hx + 22, y: hy - 44 });
+    }
 
     // Round reading terrace
     const tx = cx + rx * 0.32;
@@ -905,7 +1025,16 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     }
   }
 
-  return { container, tick, repaint, smokeSources };
+  return {
+    container,
+    tick,
+    repaint,
+    smokeSources,
+    dispose: () => {
+      spriteUnsub?.();
+      removeLandmarkSprite();
+    },
+  };
 }
 
 function mixNum(a: number, b: number, t: number): number {
