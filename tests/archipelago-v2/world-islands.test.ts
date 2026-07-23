@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  CLIFF_HEIGHT,
   ISLAND_LAYOUTS,
   WORLD_HEIGHT,
   WORLD_WIDTH,
   generateBlob,
+  islandFocusZoom,
   scatterOnIsland,
 } from '../../src/lib/archipelago-world/islands.ts';
 
@@ -91,4 +93,30 @@ test('Given scatterOnIsland, When called with the same seed, Then output is dete
   const a = scatterOnIsland(layout, 12, 15);
   const b = scatterOnIsland(layout, 12, 15);
   assert.deepEqual(a, b);
+});
+
+test('Given islandFocusZoom, When computed for each island, Then the island fits inside the viewport', () => {
+  const viewport = { width: 1280, height: 720 };
+  for (const layout of ISLAND_LAYOUTS) {
+    const zoom = islandFocusZoom(layout, viewport);
+    assert.ok(zoom > 0.3, `${layout.id} zoom ${zoom} is usable`);
+    const west = layout.cx - layout.rx;
+    const east = layout.companion
+      ? layout.companion.cx + layout.companion.rx
+      : layout.cx + layout.rx;
+    const north = layout.cy - layout.ry;
+    const south = Math.max(
+      layout.cy + layout.ry,
+      layout.companion ? layout.companion.cy + layout.companion.ry : 0,
+    ) + CLIFF_HEIGHT;
+    assert.ok((east - west) * 1.22 * zoom <= viewport.width, `${layout.id} fits horizontally`);
+    assert.ok((south - north) * 1.22 * zoom <= viewport.height, `${layout.id} fits vertically`);
+  }
+});
+
+test('Given islandFocusZoom, When the viewport is small, Then zoom shrinks proportionally', () => {
+  const layout = ISLAND_LAYOUTS[0];
+  const big = islandFocusZoom(layout, { width: 1600, height: 900 });
+  const small = islandFocusZoom(layout, { width: 390, height: 844 });
+  assert.ok(small < big, 'mobile viewport yields smaller zoom');
 });

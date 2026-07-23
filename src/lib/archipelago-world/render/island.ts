@@ -8,15 +8,16 @@
 
 import { Container, Graphics } from 'pixi.js';
 
-import { generateBlob, scatterOnIsland, type IslandLayout } from '../islands.ts';
+import { CLIFF_HEIGHT, generateBlob, scatterOnIsland, type IslandLayout } from '../islands.ts';
 import { createSeededRandom } from '../math.ts';
 import type { WorldPalette } from '../palette.ts';
 import { circle, drawBlob, ellipse, roundedBox, triangle } from '../shapes.ts';
+import type { TerrainTextures } from './terrain-textures.ts';
 
 export type IslandSystem = {
   readonly container: Container;
   readonly tick: (timeMs: number, deltaMs: number, motionOn: boolean, night: number) => void;
-  readonly repaint: (palette: WorldPalette, night: number) => void;
+  readonly repaint: (palette: WorldPalette, night: number, textures?: TerrainTextures) => void;
   /** Smoke source positions registered with the particle system. */
   readonly smokeSources: readonly { readonly x: number; readonly y: number }[];
 };
@@ -61,7 +62,7 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
   let boatBaseY = 0;
   const smokeSources: { x: number; y: number }[] = [];
 
-  function repaint(p: WorldPalette, night: number): void {
+  function repaint(p: WorldPalette, night: number, textures?: TerrainTextures): void {
     staticLayer.clear();
     animLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
     trees.length = 0;
@@ -76,27 +77,49 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
 
     // ── Terrain layers ──────────────────────────────────────────────
     // Water shadow beneath island
-    ellipse(staticLayer, cx + 8, cy + 14, rx * 1.08, ry * 1.08, p.waterDeep, 0.45);
+    ellipse(staticLayer, cx + 10, cy + 18, rx * 1.1, ry * 1.1, p.waterDeep, 0.4);
 
-    // Wet sand ring
-    const sandBlob = generateBlob(cx, cy + 4, rx * 1.02, ry * 1.02, layout.seed + 1, { noise: 0.12 });
-    drawBlob(staticLayer, sandBlob);
-    staticLayer.fill({ color: mixNum(p.sand, p.waterLight, 0.3), alpha: 1 });
+    // Wet sand ring (tidal zone)
+    const wetBlob = generateBlob(cx, cy + 5, rx * 1.04, ry * 1.04, layout.seed + 1, { noise: 0.12 });
+    drawBlob(staticLayer, wetBlob);
+    staticLayer.fill({ color: mixNum(p.sand, p.waterLight, 0.35), alpha: 1 });
 
-    // Sand beach
-    const beachBlob = generateBlob(cx, cy, rx, ry, layout.seed + 2, { noise: 0.13 });
-    drawBlob(staticLayer, beachBlob);
-    staticLayer.fill({ color: p.sand, alpha: 1 });
+    // Cliff face — extruded below the beach outline for visible height
+    const beachPts = generateBlob(cx, cy, rx, ry, layout.seed + 2, { noise: 0.13 });
+    const cliffPts = beachPts.map((pt) => ({ x: pt.x, y: pt.y + CLIFF_HEIGHT }));
+    staticLayer.moveTo(beachPts[0].x, beachPts[0].y);
+    for (const pt of cliffPts) staticLayer.lineTo(pt.x, pt.y);
+    for (let i = beachPts.length - 1; i >= 0; i--) staticLayer.lineTo(beachPts[i].x, beachPts[i].y);
+    staticLayer.closePath();
+    staticLayer.fill(textures ? { texture: textures.cliff } : { color: mixNum(p.sand, p.forest, 0.45) });
+    // Cliff shading overlay
+    staticLayer.moveTo(beachPts[0].x, beachPts[0].y);
+    for (const pt of cliffPts) staticLayer.lineTo(pt.x, pt.y);
+    for (let i = beachPts.length - 1; i >= 0; i--) staticLayer.lineTo(beachPts[i].x, beachPts[i].y);
+    staticLayer.closePath();
+    staticLayer.fill({ color: p.ink, alpha: 0.12 });
 
-    // Cliff edge (darker band between sand and grass)
-    const cliffBlob = generateBlob(cx, cy - 4, rx * 0.88, ry * 0.88, layout.seed + 3, { noise: 0.12 });
-    drawBlob(staticLayer, cliffBlob);
-    staticLayer.fill({ color: mixNum(p.sand, p.forest, 0.35), alpha: 1 });
+    // Sand beach (top surface)
+    drawBlob(staticLayer, beachPts);
+    staticLayer.fill(textures ? { texture: textures.sand } : { color: p.sand });
+
+    // Cliff rim highlight (sunlit edge between beach and cliff face)
+    drawBlob(staticLayer, beachPts);
+    staticLayer.stroke({ color: mixNum(p.sand, 0xffffff, 0.35), alpha: 0.5, width: 3 });
+
+    // Terrace step (mid band between beach and plateau)
+    const terraceBlob = generateBlob(cx, cy - 5, rx * 0.86, ry * 0.86, layout.seed + 3, { noise: 0.12 });
+    drawBlob(staticLayer, terraceBlob);
+    staticLayer.fill({ color: mixNum(p.sand, p.grass, 0.35), alpha: 1 });
 
     // Grass plateau
-    const grassBlob = generateBlob(cx, cy - 8, rx * 0.8, ry * 0.8, layout.seed + 4, { noise: 0.15 });
+    const grassBlob = generateBlob(cx, cy - 10, rx * 0.78, ry * 0.78, layout.seed + 4, { noise: 0.15 });
     drawBlob(staticLayer, grassBlob);
-    staticLayer.fill({ color: p.grass, alpha: 1 });
+    staticLayer.fill(textures ? { texture: textures.grass } : { color: p.grass });
+
+    // Grass rim highlight
+    drawBlob(staticLayer, grassBlob);
+    staticLayer.stroke({ color: mixNum(p.grass, 0xffffff, 0.25), alpha: 0.4, width: 2.5 });
 
     // Grass highlight patches
     const patches = scatterOnIsland(layout, layout.seed + 5, 6, { innerScale: 0.6 });
@@ -151,8 +174,11 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     const bushSpots = scatterOnIsland(layout, layout.seed + 11, 8, { innerScale: 0.78, avoidCenter: 0.2 });
     for (const spot of bushSpots) {
       const size = 8 + random() * 10;
-      circle(staticLayer, spot.x, spot.y, size, mixNum(p.grass, p.forest, 0.4), 1);
-      circle(staticLayer, spot.x - size * 0.4, spot.y - size * 0.3, size * 0.6, mixNum(p.grass, p.forest, 0.25), 1);
+      ellipse(staticLayer, spot.x + 3, spot.y + 2, size * 0.9, size * 0.4, p.grassShadow, 0.4);
+      circle(staticLayer, spot.x + size * 0.35, spot.y, size * 0.7, mixNum(p.forest, p.ink, 0.1), 1);
+      circle(staticLayer, spot.x, spot.y - size * 0.15, size, mixNum(p.grass, p.forest, 0.35), 1);
+      circle(staticLayer, spot.x - size * 0.4, spot.y - size * 0.35, size * 0.6, mixNum(p.grass, p.forest, 0.15), 1);
+      circle(staticLayer, spot.x - size * 0.3, spot.y - size * 0.55, size * 0.3, mixNum(p.grass, 0xffffff, 0.25), 0.6);
     }
 
     // Flowers
@@ -160,27 +186,56 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     const flowerColors = [p.coral, p.gold, p.foam, 0xd98bb6];
     for (let i = 0; i < flowerSpots.length; i++) {
       const spot = flowerSpots[i];
-      circle(staticLayer, spot.x, spot.y, 3, flowerColors[i % flowerColors.length], 0.9);
-      circle(staticLayer, spot.x, spot.y, 1.2, p.gold, 0.9);
+      staticLayer.moveTo(spot.x, spot.y);
+      staticLayer.quadraticCurveTo(spot.x - 1, spot.y - 5, spot.x, spot.y - 7);
+      staticLayer.stroke({ color: mixNum(p.grass, p.forest, 0.3), alpha: 0.8, width: 1.5, cap: 'round' });
+      const pc = flowerColors[i % flowerColors.length];
+      for (let petal = 0; petal < 5; petal++) {
+        const angle = (petal / 5) * Math.PI * 2;
+        circle(staticLayer, spot.x + Math.cos(angle) * 2.6, spot.y - 7 + Math.sin(angle) * 2.6, 2.2, pc, 0.9);
+      }
+      circle(staticLayer, spot.x, spot.y - 7, 1.6, p.gold, 1);
     }
 
     // Rocks
     const rockSpots = scatterOnIsland(layout, layout.seed + 13, 4, { innerScale: 0.8, avoidCenter: 0.3 });
     for (const spot of rockSpots) {
-      ellipse(staticLayer, spot.x, spot.y, 7 + random() * 6, 5 + random() * 4, p.stone, 0.9);
-      ellipse(staticLayer, spot.x - 2, spot.y - 2, 4, 3, mixNum(p.stone, 0xffffff, 0.3), 0.7);
+      const rw = 8 + random() * 8;
+      const rh = 6 + random() * 5;
+      ellipse(staticLayer, spot.x + 3, spot.y + 2, rw * 0.9, rh * 0.45, p.grassShadow, 0.4);
+      ellipse(staticLayer, spot.x, spot.y, rw, rh, mixNum(p.stone, p.ink, 0.15), 1);
+      ellipse(staticLayer, spot.x - rw * 0.15, spot.y - rh * 0.25, rw * 0.75, rh * 0.7, p.stone, 1);
+      ellipse(staticLayer, spot.x - rw * 0.25, spot.y - rh * 0.4, rw * 0.4, rh * 0.35, mixNum(p.stone, 0xffffff, 0.3), 0.7);
+    }
+
+    // Grass tufts
+    const tuftSpots = scatterOnIsland(layout, layout.seed + 14, 14, { innerScale: 0.75, avoidCenter: 0.1 });
+    for (const spot of tuftSpots) {
+      const th = 5 + random() * 5;
+      for (let b = -1; b <= 1; b++) {
+        staticLayer.moveTo(spot.x + b * 3, spot.y);
+        staticLayer.quadraticCurveTo(spot.x + b * 4, spot.y - th, spot.x + b * 5, spot.y - th - 2);
+        staticLayer.stroke({ color: mixNum(p.grass, p.forest, 0.25), alpha: 0.8, width: 1.8, cap: 'round' });
+      }
     }
 
     // ── Companion island (N-Bang) + bridge ──────────────────────────
     if (layout.companion) {
       const c = layout.companion;
       ellipse(staticLayer, c.cx + 6, c.cy + 10, c.rx * 1.06, c.ry * 1.06, p.waterDeep, 0.4);
-      const cSand = generateBlob(c.cx, c.cy + 3, c.rx * 1.01, c.ry * 1.01, c.seed + 1, { noise: 0.12 });
-      drawBlob(staticLayer, cSand);
-      staticLayer.fill({ color: p.sand, alpha: 1 });
+      const cCliffH = Math.round(CLIFF_HEIGHT * 0.7);
+      const cBeach = generateBlob(c.cx, c.cy + 2, c.rx * 1.01, c.ry * 1.01, c.seed + 1, { noise: 0.12 });
+      const cCliff = cBeach.map((pt) => ({ x: pt.x, y: pt.y + cCliffH }));
+      staticLayer.moveTo(cBeach[0].x, cBeach[0].y);
+      for (const pt of cCliff) staticLayer.lineTo(pt.x, pt.y);
+      for (let i = cBeach.length - 1; i >= 0; i--) staticLayer.lineTo(cBeach[i].x, cBeach[i].y);
+      staticLayer.closePath();
+      staticLayer.fill(textures ? { texture: textures.cliff } : { color: mixNum(p.sand, p.forest, 0.45) });
+      drawBlob(staticLayer, cBeach);
+      staticLayer.fill(textures ? { texture: textures.sand } : { color: p.sand });
       const cGrass = generateBlob(c.cx, c.cy - 4, c.rx * 0.82, c.ry * 0.82, c.seed + 2, { noise: 0.14 });
       drawBlob(staticLayer, cGrass);
-      staticLayer.fill({ color: p.grass, alpha: 1 });
+      staticLayer.fill(textures ? { texture: textures.grass } : { color: p.grass });
 
       // Small house cluster on companion
       drawHouse(staticLayer, c.cx - 20, c.cy - 18, 34, 26, p, night, windows, random, 0);
@@ -235,34 +290,41 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     // Prism lighthouse (signature landmark)
     const lx = cx + rx * 0.35;
     const ly = cy - ry * 0.35;
-    // Tower body — tapered
-    g.moveTo(lx - 14, ly + 10);
-    g.lineTo(lx - 9, ly - 52);
-    g.lineTo(lx + 9, ly - 52);
-    g.lineTo(lx + 14, ly + 10);
+    // Tower body — tapered with rounded silhouette
+    g.moveTo(lx - 15, ly + 12);
+    g.quadraticCurveTo(lx - 12, ly - 20, lx - 9, ly - 52);
+    g.quadraticCurveTo(lx, ly - 57, lx + 9, ly - 52);
+    g.quadraticCurveTo(lx + 12, ly - 20, lx + 15, ly + 12);
     g.closePath();
     g.fill({ color: p.stone, alpha: 1 });
+    // Sunlit edge
+    g.moveTo(lx - 11, ly + 8);
+    g.quadraticCurveTo(lx - 9, ly - 20, lx - 6, ly - 48);
+    g.stroke({ color: mixNum(p.stone, 0xffffff, 0.3), alpha: 0.5, width: 4, cap: 'round' });
     // Stripes
     for (let i = 0; i < 3; i++) {
       const sy = ly - 40 + i * 18;
-      g.rect(lx - 12 + i * 1.2, sy, 24 - i * 2.4, 7);
+      g.rect(lx - 12 + i * 1.2, sy, 24 - i * 2.4, 8);
       g.fill({ color: p.coral, alpha: 0.85 });
+      g.rect(lx - 12 + i * 1.2, sy, 24 - i * 2.4, 2.5);
+      g.fill({ color: mixNum(p.coral, 0xffffff, 0.3), alpha: 0.5 });
     }
-    // Prism top — triangle with rainbow refraction
-    triangle(g, lx, ly - 78, lx - 13, ly - 52, lx + 13, ly - 52, mixNum(p.stone, 0xffffff, 0.5), 1);
+    // Prism top — glass triangle with inner glow
+    triangle(g, lx, ly - 80, lx - 14, ly - 52, lx + 14, ly - 52, mixNum(p.stone, 0xffffff, 0.55), 0.95);
+    triangle(g, lx, ly - 74, lx - 8, ly - 54, lx + 8, ly - 54, night > 0.3 ? p.windowGlow : 0xc8e8f0, night > 0.3 ? 0.8 : 0.5);
     // Rainbow refraction beams
     const beamColors = [0xff6b6b, 0xffa94d, 0xffd43b, 0x69db7c, 0x4dabf7, 0x9775fa];
     for (let i = 0; i < beamColors.length; i++) {
       const angle = -0.5 + (i / (beamColors.length - 1)) * 1.0;
-      g.moveTo(lx, ly - 62);
-      g.lineTo(lx + Math.cos(angle + 0.8) * 70, ly - 62 + Math.sin(angle + 0.8) * 46);
-      g.stroke({ color: beamColors[i], alpha: night > 0.4 ? 0.5 : 0.3, width: 3, cap: 'round' });
+      g.moveTo(lx, ly - 64);
+      g.lineTo(lx + Math.cos(angle + 0.8) * 70, ly - 64 + Math.sin(angle + 0.8) * 46);
+      g.stroke({ color: beamColors[i], alpha: night > 0.4 ? 0.55 : 0.35, width: 3.5, cap: 'round' });
     }
     // Beacon glow at night
     if (night > 0.3) {
       const glow = new Graphics();
-      circle(glow, lx, ly - 62, 10, p.windowGlow, 0.7);
-      circle(glow, lx, ly - 62, 20, p.windowGlow, 0.2);
+      circle(glow, lx, ly - 64, 12, p.windowGlow, 0.7);
+      circle(glow, lx, ly - 64, 24, p.windowGlow, 0.2);
       anim.addChild(glow);
       windows.push({ g: glow, phase: rand() * Math.PI * 2 });
     }
@@ -439,15 +501,20 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     // Scale-shaped lighthouse (signature)
     const lx = cx + rx * 0.15;
     const ly = cy - ry * 0.35;
-    // Tower
-    g.moveTo(lx - 10, ly + 8);
-    g.lineTo(lx - 7, ly - 40);
-    g.lineTo(lx + 7, ly - 40);
-    g.lineTo(lx + 10, ly + 8);
+    // Tower — rounded taper
+    g.moveTo(lx - 11, ly + 10);
+    g.quadraticCurveTo(lx - 9, ly - 15, lx - 7, ly - 40);
+    g.quadraticCurveTo(lx, ly - 44, lx + 7, ly - 40);
+    g.quadraticCurveTo(lx + 9, ly - 15, lx + 11, ly + 10);
     g.closePath();
     g.fill({ color: p.stone, alpha: 1 });
-    g.rect(lx - 8, ly - 24, 16, 6);
+    g.moveTo(lx - 8, ly + 6);
+    g.quadraticCurveTo(lx - 7, ly - 15, lx - 5, ly - 36);
+    g.stroke({ color: mixNum(p.stone, 0xffffff, 0.3), alpha: 0.5, width: 3, cap: 'round' });
+    g.rect(lx - 8, ly - 24, 16, 7);
     g.fill({ color: p.coral, alpha: 0.8 });
+    g.rect(lx - 8, ly - 24, 16, 2.5);
+    g.fill({ color: mixNum(p.coral, 0xffffff, 0.3), alpha: 0.5 });
     // Scale beam on top
     g.rect(lx - 24, ly - 46, 48, 3);
     g.fill({ color: p.woodDark, alpha: 1 });
@@ -535,32 +602,67 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     variant: number,
     twoStory = false,
   ): void {
-    const roofH = h * 0.55;
+    const roofH = h * 0.6;
     const bodyH = twoStory ? h : h * 0.7;
     const roofColor = variant % 2 === 0 ? p.roofCoral : p.roofTeal;
 
-    // Body
-    roundedBox(g, x - w / 2, y - bodyH, w, bodyH, 3, mixNum(p.paper, p.wood, 0.25), 1);
-    // Wood trim
-    g.rect(x - w / 2, y - 4, w, 4);
-    g.fill({ color: p.woodDark, alpha: 0.7 });
+    const wallColor = mixNum(p.paper, p.wood, 0.25);
+
+    // Foundation stone band
+    roundedBox(g, x - w / 2 - 2, y - 5, w + 4, 6, 2, mixNum(p.stone, p.ink, 0.1), 1);
+
+    // Body — rounded
+    roundedBox(g, x - w / 2, y - bodyH, w, bodyH - 3, 5, wallColor, 1);
+    // Siding lines
+    for (let i = 1; i < 4; i++) {
+      g.rect(x - w / 2 + 3, y - bodyH + (bodyH / 4) * i, w - 6, 1);
+      g.fill({ color: mixNum(wallColor, p.woodDark, 0.25), alpha: 0.35 });
+    }
+    // Corner trim
+    g.rect(x - w / 2, y - bodyH, 3, bodyH - 3);
+    g.fill({ color: p.woodDark, alpha: 0.5 });
+    g.rect(x + w / 2 - 3, y - bodyH, 3, bodyH - 3);
+    g.fill({ color: p.woodDark, alpha: 0.5 });
 
     if (twoStory) {
-      // Second floor line
       g.rect(x - w / 2 + 3, y - bodyH * 0.55, w - 6, 2.5);
       g.fill({ color: p.woodDark, alpha: 0.5 });
     }
 
-    // Roof — overhanging
-    triangle(g, x, y - bodyH - roofH, x - w / 2 - 8, y - bodyH + 2, x + w / 2 + 8, y - bodyH + 2, roofColor, 1);
-    // Roof ridge highlight
-    g.moveTo(x, y - bodyH - roofH);
-    g.lineTo(x + w / 2 + 8, y - bodyH + 2);
-    g.stroke({ color: mixNum(roofColor, 0xffffff, 0.3), alpha: 0.5, width: 2 });
+    // Roof — puffy curved AC-style
+    const roofW = w / 2 + 12;
+    const roofBase = y - bodyH + 3;
+    const roofTop = y - bodyH - roofH;
+    g.moveTo(x - roofW, roofBase);
+    g.quadraticCurveTo(x - roofW * 0.55, roofBase - roofH * 0.15, x, roofTop);
+    g.quadraticCurveTo(x + roofW * 0.55, roofBase - roofH * 0.15, x + roofW, roofBase);
+    g.quadraticCurveTo(x, roofBase + 6, x - roofW, roofBase);
+    g.closePath();
+    g.fill({ color: roofColor, alpha: 1 });
+    // Roof tile lines
+    for (let i = 1; i <= 2; i++) {
+      const t = i / 3;
+      const ly = roofTop + (roofBase - roofTop) * t;
+      const lw = roofW * (0.35 + t * 0.6);
+      g.moveTo(x - lw, ly + 2);
+      g.quadraticCurveTo(x, ly - 3, x + lw, ly + 2);
+      g.stroke({ color: mixNum(roofColor, p.ink, 0.2), alpha: 0.4, width: 1.5 });
+    }
+    // Roof highlight (sun from upper-left)
+    g.moveTo(x - roofW * 0.7, roofBase - 2);
+    g.quadraticCurveTo(x - roofW * 0.35, roofBase - roofH * 0.5, x - roofW * 0.05, roofTop + 2);
+    g.stroke({ color: mixNum(roofColor, 0xffffff, 0.35), alpha: 0.5, width: 3, cap: 'round' });
+    // Ridge cap
+    circle(g, x, roofTop, 3.5, mixNum(roofColor, 0xffffff, 0.25), 1);
 
-    // Door
-    roundedBox(g, x - 5, y - 16, 10, 16, 3, p.woodDark, 1);
-    circle(g, x + 2.5, y - 8, 1.2, p.gold, 0.9);
+    // Door — arched
+    g.moveTo(x - 6, y - 3);
+    g.lineTo(x - 6, y - 14);
+    g.quadraticCurveTo(x, y - 20, x + 6, y - 14);
+    g.lineTo(x + 6, y - 3);
+    g.closePath();
+    g.fill({ color: p.woodDark, alpha: 1 });
+    circle(g, x + 3.5, y - 10, 1.3, p.gold, 0.9);
 
     // Windows (glow at night)
     const winPositions = twoStory
@@ -575,10 +677,16 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
           { wx: x + w / 4 - 2, wy: y - bodyH * 0.55 },
         ];
     for (const wp of winPositions) {
-      g.rect(wp.wx, wp.wy, 9, 9);
-      g.fill({ color: p.woodDark, alpha: 1 });
+      // Frame
+      roundedBox(g, wp.wx - 1.5, wp.wy - 1.5, 12, 12, 2, p.woodDark, 1);
+      // Glass
       const glow = new Graphics();
-      roundedBox(glow, wp.wx + 1.5, wp.wy + 1.5, 6, 6, 1, p.windowGlow, night > 0.25 ? 0.95 : 0.35);
+      roundedBox(glow, wp.wx, wp.wy, 9, 9, 1.5, night > 0.25 ? p.windowGlow : mixNum(p.windowGlow, p.skyTop, 0.5), night > 0.25 ? 0.95 : 0.5);
+      // Cross mullion
+      glow.rect(wp.wx + 3.8, wp.wy, 1.4, 9);
+      glow.fill({ color: p.woodDark, alpha: 0.7 });
+      glow.rect(wp.wx, wp.wy + 3.8, 9, 1.4);
+      glow.fill({ color: p.woodDark, alpha: 0.7 });
       if (night > 0.25) {
         circle(glow, wp.wx + 4.5, wp.wy + 4.5, 10, p.windowGlow, 0.12);
       }
@@ -587,8 +695,9 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     }
 
     // Chimney
-    g.rect(x + w / 4, y - bodyH - roofH * 0.55, 7, roofH * 0.5);
-    g.fill({ color: mixNum(p.stone, p.woodDark, 0.3), alpha: 1 });
+    roundedBox(g, x + w / 4, y - bodyH - roofH * 0.5, 8, roofH * 0.45, 2, mixNum(p.stone, p.woodDark, 0.3), 1);
+    g.rect(x + w / 4 - 1.5, y - bodyH - roofH * 0.5, 11, 3);
+    g.fill({ color: mixNum(p.stone, p.ink, 0.15), alpha: 1 });
   }
 
   function drawTree(
@@ -600,24 +709,93 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     rand: () => number,
     treeList: TreeAnim[],
   ): void {
-    const trunkH = 12 + rand() * 10;
-    const canopyR = 10 + rand() * 10;
-    // Contact shadow
-    ellipse(g, x + 4, y + 3, canopyR * 0.9, canopyR * 0.35, p.grassShadow, 0.4);
-    // Trunk
-    g.rect(x - 2.5, y - trunkH, 5, trunkH);
-    g.fill({ color: p.woodDark, alpha: 1 });
-    // Canopy — animated cluster
-    const canopy = new Graphics();
-    circle(canopy, 0, -trunkH - canopyR * 0.5, canopyR, mixNum(p.grass, p.forest, 0.35), 1);
-    circle(canopy, -canopyR * 0.55, -trunkH - canopyR * 0.2, canopyR * 0.7, mixNum(p.grass, p.forest, 0.2), 1);
-    circle(canopy, canopyR * 0.5, -trunkH - canopyR * 0.3, canopyR * 0.65, p.grass, 1);
-    // Highlight
-    circle(canopy, -canopyR * 0.2, -trunkH - canopyR * 0.7, canopyR * 0.35, mixNum(p.grass, 0xffffff, 0.25), 0.6);
-    canopy.x = x;
-    canopy.y = y;
-    anim.addChild(canopy);
-    treeList.push({ canopy, phase: rand() * Math.PI * 2, baseY: y });
+    const kind = rand();
+    const scale = 0.85 + rand() * 0.5;
+    // Contact shadow (sun from upper-left)
+    ellipse(g, x + 6 * scale, y + 3, 16 * scale, 6 * scale, p.grassShadow, 0.45);
+
+    if (kind < 0.45) {
+      // ── Round deciduous ─────────────────────────────────────────
+      const trunkH = (16 + rand() * 8) * scale;
+      const r = (14 + rand() * 8) * scale;
+      // Curved trunk
+      g.moveTo(x - 3 * scale, y);
+      g.quadraticCurveTo(x - 1 * scale, y - trunkH * 0.6, x + 1 * scale, y - trunkH);
+      g.lineTo(x + 5 * scale, y - trunkH);
+      g.quadraticCurveTo(x + 4 * scale, y - trunkH * 0.5, x + 3 * scale, y);
+      g.closePath();
+      g.fill({ color: p.woodDark, alpha: 1 });
+      // Canopy cluster — shadow side, main, light side, highlight
+      const canopy = new Graphics();
+      const cy0 = -trunkH - r * 0.4;
+      circle(canopy, r * 0.3, cy0 + r * 0.3, r * 0.8, mixNum(p.forest, p.ink, 0.15), 1);
+      circle(canopy, 0, cy0, r, mixNum(p.grass, p.forest, 0.3), 1);
+      circle(canopy, -r * 0.35, cy0 - r * 0.25, r * 0.75, mixNum(p.grass, p.forest, 0.1), 1);
+      circle(canopy, -r * 0.3, cy0 - r * 0.55, r * 0.4, mixNum(p.grass, 0xffffff, 0.3), 0.7);
+      canopy.x = x;
+      canopy.y = y;
+      anim.addChild(canopy);
+      treeList.push({ canopy, phase: rand() * Math.PI * 2, baseY: y });
+    } else if (kind < 0.75) {
+      // ── Conifer — stacked tiers ─────────────────────────────────
+      const h = (34 + rand() * 14) * scale;
+      const w = (16 + rand() * 6) * scale;
+      g.rect(x - 2.5 * scale, y - h * 0.25, 5 * scale, h * 0.25);
+      g.fill({ color: p.woodDark, alpha: 1 });
+      const canopy = new Graphics();
+      for (let i = 0; i < 3; i++) {
+        const ty = -h * 0.2 - i * h * 0.26;
+        const tw = w * (1 - i * 0.28);
+        triangle(
+          canopy,
+          0, ty - h * 0.3,
+          -tw, ty,
+          tw, ty,
+          i === 0 ? mixNum(p.forest, p.ink, 0.1) : mixNum(p.forest, p.grass, i * 0.15),
+          1,
+        );
+        // Light tip on each tier
+        triangle(
+          canopy,
+          0, ty - h * 0.3,
+          -tw * 0.4, ty - h * 0.18,
+          tw * 0.4, ty - h * 0.18,
+          mixNum(p.forest, 0xffffff, 0.15),
+          0.5,
+        );
+      }
+      canopy.x = x;
+      canopy.y = y;
+      anim.addChild(canopy);
+      treeList.push({ canopy, phase: rand() * Math.PI * 2, baseY: y });
+    } else {
+      // ── Palm — leaning trunk + fronds ───────────────────────────
+      const h = (26 + rand() * 10) * scale;
+      const lean = (rand() - 0.5) * 16 * scale;
+      g.moveTo(x - 2.5 * scale, y);
+      g.quadraticCurveTo(x + lean * 0.3, y - h * 0.6, x + lean, y - h);
+      g.lineTo(x + lean + 4 * scale, y - h);
+      g.quadraticCurveTo(x + lean * 0.3 + 4 * scale, y - h * 0.55, x + 3 * scale, y);
+      g.closePath();
+      g.fill({ color: p.wood, alpha: 1 });
+      const canopy = new Graphics();
+      for (let i = 0; i < 5; i++) {
+        const angle = -Math.PI * 0.85 + (i / 4) * Math.PI * 0.7 + 0.15;
+        const fx = Math.cos(angle) * 20 * scale;
+        const fy = Math.sin(angle) * 12 * scale;
+        canopy.moveTo(lean + 2 * scale, -h);
+        canopy.quadraticCurveTo(lean + fx * 0.6, -h + fy - 6 * scale, lean + fx, -h + fy + 4 * scale);
+        canopy.quadraticCurveTo(lean + fx * 0.5, -h + fy + 2 * scale, lean + 2 * scale, -h + 3 * scale);
+        canopy.closePath();
+        canopy.fill({ color: i % 2 === 0 ? mixNum(p.grass, p.forest, 0.2) : p.grass, alpha: 1 });
+      }
+      circle(canopy, lean, -h + 2 * scale, 3 * scale, p.woodDark, 1);
+      circle(canopy, lean + 4 * scale, -h + 3 * scale, 2.5 * scale, p.woodDark, 1);
+      canopy.x = x;
+      canopy.y = y;
+      anim.addChild(canopy);
+      treeList.push({ canopy, phase: rand() * Math.PI * 2, baseY: y });
+    }
   }
 
   function addFlag(
@@ -636,23 +814,35 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
   }
 
   function drawBoat(g: Graphics, x: number, y: number, p: WorldPalette): void {
-    // Hull
-    g.moveTo(x - 18, y - 4);
-    g.quadraticCurveTo(x - 20, y + 6, x - 10, y + 7);
-    g.lineTo(x + 10, y + 7);
-    g.quadraticCurveTo(x + 20, y + 6, x + 18, y - 4);
+    // Hull — rounded bottom
+    g.moveTo(x - 20, y - 5);
+    g.quadraticCurveTo(x - 22, y + 7, x - 10, y + 9);
+    g.lineTo(x + 10, y + 9);
+    g.quadraticCurveTo(x + 22, y + 7, x + 20, y - 5);
     g.closePath();
     g.fill({ color: p.wood, alpha: 1 });
-    // Inner
-    g.moveTo(x - 13, y - 2);
-    g.quadraticCurveTo(x - 14, y + 4, x - 7, y + 4.5);
-    g.lineTo(x + 7, y + 4.5);
-    g.quadraticCurveTo(x + 14, y + 4, x + 13, y - 2);
+    // Gunwale rim
+    g.moveTo(x - 20, y - 5);
+    g.quadraticCurveTo(x, y - 1, x + 20, y - 5);
+    g.stroke({ color: p.woodDark, alpha: 1, width: 3 });
+    // Inner hull
+    g.moveTo(x - 15, y - 3);
+    g.quadraticCurveTo(x - 16, y + 5, x - 8, y + 6);
+    g.lineTo(x + 8, y + 6);
+    g.quadraticCurveTo(x + 16, y + 5, x + 15, y - 3);
     g.closePath();
-    g.fill({ color: p.woodDark, alpha: 0.8 });
-    // Seat
-    g.rect(x - 6, y - 1, 12, 3);
+    g.fill({ color: p.woodDark, alpha: 0.75 });
+    // Seat plank
+    g.rect(x - 7, y - 1, 14, 3.5);
     g.fill({ color: mixNum(p.wood, 0xffffff, 0.2), alpha: 0.9 });
+    // Oar
+    g.moveTo(x + 12, y - 2);
+    g.lineTo(x + 26, y + 8);
+    g.stroke({ color: p.woodDark, alpha: 0.9, width: 2.5, cap: 'round' });
+    // Mooring rope
+    g.moveTo(x - 18, y - 4);
+    g.quadraticCurveTo(x - 30, y - 10, x - 38, y - 16);
+    g.stroke({ color: mixNum(p.woodDark, p.muted, 0.5), alpha: 0.6, width: 1.5 });
   }
 
   // ── Animation tick ──────────────────────────────────────────────

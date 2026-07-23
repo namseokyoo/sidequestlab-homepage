@@ -11,6 +11,9 @@ import { createSeededRandom } from './math.ts';
 export const WORLD_WIDTH = 1600;
 export const WORLD_HEIGHT = 1000;
 
+/** Vertical extrusion height of the main island cliff face. */
+export const CLIFF_HEIGHT = 22;
+
 export type IslandKind = 'displaylab' | 'booksalon' | 'nbbang';
 
 export type IslandLayout = {
@@ -36,8 +39,8 @@ export const ISLAND_LAYOUTS: readonly IslandLayout[] = [
     id: 'displaylab',
     cx: 800,
     cy: 300,
-    rx: 310,
-    ry: 175,
+    rx: 340,
+    ry: 190,
     seed: 42,
     rotation: -0.12,
   },
@@ -45,8 +48,8 @@ export const ISLAND_LAYOUTS: readonly IslandLayout[] = [
     id: 'booksalon',
     cx: 400,
     cy: 660,
-    rx: 260,
-    ry: 165,
+    rx: 285,
+    ry: 180,
     seed: 77,
     rotation: 0.08,
   },
@@ -54,13 +57,36 @@ export const ISLAND_LAYOUTS: readonly IslandLayout[] = [
     id: 'nbbang',
     cx: 1190,
     cy: 680,
-    rx: 230,
-    ry: 150,
+    rx: 250,
+    ry: 162,
     seed: 123,
     rotation: 0.15,
-    companion: { cx: 1420, cy: 620, rx: 110, ry: 80, seed: 124 },
+    companion: { cx: 1420, cy: 620, rx: 120, ry: 88, seed: 124 },
   },
 ];
+
+/**
+ * Maximum focus zoom that keeps an entire island (including its cliff
+ * face and any companion landmass) visible in the viewport.
+ */
+export function islandFocusZoom(
+  layout: IslandLayout,
+  viewport: { readonly width: number; readonly height: number },
+  padding = 1.22,
+): number {
+  const west = layout.cx - layout.rx;
+  const east = layout.companion
+    ? layout.companion.cx + layout.companion.rx
+    : layout.cx + layout.rx;
+  const north = layout.cy - layout.ry;
+  const south = Math.max(
+    layout.cy + layout.ry,
+    layout.companion ? layout.companion.cy + layout.companion.ry : 0,
+  ) + CLIFF_HEIGHT;
+  const spanX = (east - west) * padding;
+  const spanY = (south - north) * padding;
+  return Math.min(viewport.width / spanX, viewport.height / spanY);
+}
 
 export type BlobPoint = { readonly x: number; readonly y: number };
 

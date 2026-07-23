@@ -21,11 +21,12 @@ import {
   type FocusBox,
   type VoyageWaypoint,
 } from './camera.ts';
-import { ISLAND_LAYOUTS, WORLD_HEIGHT, WORLD_WIDTH, type IslandKind } from './islands.ts';
+import { ISLAND_LAYOUTS, WORLD_HEIGHT, WORLD_WIDTH, islandFocusZoom, type IslandKind } from './islands.ts';
 import { buildWorldPalette, type WorldPalette } from './palette.ts';
 import { createIslandSystem, type IslandSystem } from './render/island.ts';
 import { createParticleSystem } from './render/particles.ts';
 import { createSkySystem } from './render/sky.ts';
+import { createTerrainTextures, type TerrainTextures } from './render/terrain-textures.ts';
 import { createWaterSystem } from './render/water.ts';
 import { createWayfarer, type WayfarerRole, type WayfarerState, type WayfarerSystem } from './render/wayfarer.ts';
 
@@ -73,6 +74,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
   let cameraTweening = false;
   let voyageWaypoints: readonly VoyageWaypoint[] = [];
   const tickCallbacks: ((camera: CameraState, night: number) => void)[] = [];
+  let terrainTextures: TerrainTextures | null = null;
 
   const world = new Container();
   world.label = 'world';
@@ -100,6 +102,8 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
   }).then(() => {
     if (destroyed) return;
 
+    terrainTextures = createTerrainTextures(app.renderer, buildWorldPalette(night));
+
     app.stage.addChild(world);
     world.addChild(sky.container, water.container, sky.shadowLayer, islandLayer, wayfarerLayer, particles.container);
 
@@ -113,16 +117,20 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
       }
     }
 
-    // Wayfarers on DisplayLab island (default selected per snapshot)
+    // Wayfarers stationed on their home islands
     const displaylab = ISLAND_LAYOUTS.find((l) => l.id === 'displaylab');
+    const booksalon = ISLAND_LAYOUTS.find((l) => l.id === 'booksalon');
     if (displaylab) {
-      const engineer = createWayfarer('CODE_ENGINEER', displaylab.cx - 40, displaylab.cy + 30);
-      const qa = createWayfarer('QA_NAVIGATOR', displaylab.cx + 50, displaylab.cy + 20);
+      const engineer = createWayfarer('CODE_ENGINEER', displaylab.cx - 20, displaylab.cy + 40);
       engineer.setState('WORKING');
-      qa.setState('INSPECTING');
       wayfarers.set('CODE_ENGINEER', engineer);
+      wayfarerLayer.addChild(engineer.container);
+    }
+    if (booksalon) {
+      const qa = createWayfarer('QA_NAVIGATOR', booksalon.cx + 60, booksalon.cy + 30);
+      qa.setState('INSPECTING');
       wayfarers.set('QA_NAVIGATOR', qa);
-      wayfarerLayer.addChild(engineer.container, qa.container);
+      wayfarerLayer.addChild(qa.container);
     }
 
     repaintAll();
@@ -161,10 +169,10 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
   function repaintAll(): void {
     const palette: WorldPalette = buildWorldPalette(night);
     sky.repaint(palette, night);
-    water.repaint(palette);
+    water.repaint(palette, night);
     particles.repaint(palette);
     for (const system of islands.values()) {
-      system.repaint(palette, night);
+      system.repaint(palette, night, terrainTextures ?? undefined);
     }
     for (const w of wayfarers.values()) {
       w.repaint(palette, night);
@@ -197,6 +205,8 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     destroy(): void {
       destroyed = true;
       tickCallbacks.length = 0;
+      terrainTextures?.destroy();
+      terrainTextures = null;
       app.destroy(true, { children: true, texture: true });
     },
 
@@ -218,6 +228,10 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
       }
       lastNightBucket = bucket;
       night = clamped;
+      if (terrainTextures && !destroyed) {
+        terrainTextures.destroy();
+        terrainTextures = createTerrainTextures(app.renderer, buildWorldPalette(night));
+      }
       repaintAll();
     },
 
@@ -228,10 +242,16 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     },
 
     focusIsland(id: IslandKind, focusBox: FocusBox): void {
-      const target = focusCameraTarget(focusBox, { width: WORLD_WIDTH, height: WORLD_HEIGHT });
+      const layout = ISLAND_LAYOUTS.find((l) => l.id === id);
+      const islandCap = layout
+        ? islandFocusZoom(layout, { width: viewportW, height: viewportH })
+        : focusBox.scaleCap;
+      const target = focusCameraTarget(
+        { ...focusBox, scaleCap: Math.min(focusBox.scaleCap, islandCap) },
+        { width: WORLD_WIDTH, height: WORLD_HEIGHT },
+      );
       tweenTo(target, FOCUS_TRANSITION_MS);
       // Wayfarers wave when their island is selected
-      const layout = ISLAND_LAYOUTS.find((l) => l.id === id);
       if (layout) {
         for (const w of wayfarers.values()) {
           const pos = w.position();

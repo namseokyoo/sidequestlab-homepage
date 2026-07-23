@@ -27,6 +27,8 @@ const HEAD_R = 11;
 const BODY_H = 14;
 const LEG_H = 8;
 // Total ≈ HEAD_R*2 + BODY_H + LEG_H = 44 → head ratio ≈ 2.9 heads tall
+/** Visual scale so characters read at ~1/8 viewport height when focused. */
+const WAYFARER_SCALE = 2.2;
 
 export function createWayfarer(role: WayfarerRole, x: number, y: number): WayfarerSystem {
   const container = new Container();
@@ -48,7 +50,12 @@ export function createWayfarer(role: WayfarerRole, x: number, y: number): Wayfar
   const toolG = new Graphics();
   head.addChild(headG, faceG, hairG);
   body.addChild(legL, legR, torso, armL, armR, head, toolG);
-  container.addChild(shadow, body);
+  // Scale wrapper: feet at container origin, character extends upward
+  const inner = new Container();
+  inner.scale.set(WAYFARER_SCALE);
+  inner.y = -(BODY_H + LEG_H) * WAYFARER_SCALE;
+  inner.addChild(shadow, body);
+  container.addChild(inner);
 
   let state: WayfarerState = 'IDLE';
   let facing: 1 | -1 = 1;
@@ -74,7 +81,7 @@ export function createWayfarer(role: WayfarerRole, x: number, y: number): Wayfar
 
     // Shadow
     shadow.clear();
-    shadow.ellipse(0, LEG_H + 2, 10, 4);
+    shadow.ellipse(0, BODY_H + LEG_H, 11, 4.5);
     shadow.fill({ color: 0x17343a, alpha: 0.2 });
 
     // Legs

@@ -5,7 +5,7 @@
 
 import { Container, Graphics } from 'pixi.js';
 
-import { WORLD_HEIGHT, WORLD_WIDTH } from '../islands.ts';
+import { ISLAND_LAYOUTS, WORLD_HEIGHT, WORLD_WIDTH } from '../islands.ts';
 import { createSeededRandom } from '../math.ts';
 import type { WorldPalette } from '../palette.ts';
 import { circle, ellipse } from '../shapes.ts';
@@ -13,7 +13,7 @@ import { circle, ellipse } from '../shapes.ts';
 export type WaterSystem = {
   readonly container: Container;
   readonly tick: (timeMs: number, deltaMs: number, motionOn: boolean) => void;
-  readonly repaint: (palette: WorldPalette) => void;
+  readonly repaint: (palette: WorldPalette, night?: number) => void;
 };
 
 type Sparkle = {
@@ -49,9 +49,12 @@ export function createWaterSystem(): WaterSystem {
 
   const base = new Graphics();
   const bands = new Graphics();
+  const shallows = new Graphics();
   const foamLayer = new Graphics();
+  const foamDots = new Container();
   const animLayer = new Container();
-  container.addChild(base, bands, foamLayer, animLayer);
+  const moonGlade = new Graphics();
+  container.addChild(base, bands, shallows, foamLayer, foamDots, animLayer, moonGlade);
 
   const random = createSeededRandom(999);
 
@@ -113,9 +116,35 @@ export function createWaterSystem(): WaterSystem {
     ripples.push(ripple);
   }
 
+  // Foam dots along shorelines
+  type FoamDot = { readonly g: Graphics; readonly phase: number; readonly baseX: number; readonly baseY: number };
+  const dots: FoamDot[] = [];
+  const dotRand = createSeededRandom(808);
+  for (const layout of ISLAND_LAYOUTS) {
+    const spots = layout.companion
+      ? [layout, { cx: layout.companion.cx, cy: layout.companion.cy, rx: layout.companion.rx, ry: layout.companion.ry }]
+      : [layout];
+    for (const s of spots) {
+      for (let i = 0; i < 14; i++) {
+        const angle = dotRand() * Math.PI * 2;
+        const g = new Graphics();
+        const dot: FoamDot = {
+          g,
+          phase: dotRand() * Math.PI * 2,
+          baseX: s.cx + Math.cos(angle) * (s.rx + 18 + dotRand() * 16),
+          baseY: s.cy + Math.sin(angle) * (s.ry + 14 + dotRand() * 12),
+        };
+        g.x = dot.baseX;
+        g.y = dot.baseY;
+        foamDots.addChild(g);
+        dots.push(dot);
+      }
+    }
+  }
+
   let currentPalette: WorldPalette | null = null;
 
-  function repaint(palette: WorldPalette): void {
+  function repaint(palette: WorldPalette, night = 0): void {
     currentPalette = palette;
 
     // Base gradient bands (horizontal)
@@ -139,18 +168,37 @@ export function createWaterSystem(): WaterSystem {
       const y = bandRandom() * WORLD_HEIGHT;
       const x = bandRandom() * WORLD_WIDTH * 0.7;
       const w = 120 + bandRandom() * 280;
-      bands.roundRect(x, y, w, 6 + bandRandom() * 8, 6);
-      bands.fill({ color: palette.waterLight, alpha: 0.12 + bandRandom() * 0.1 });
+      const amp = 4 + bandRandom() * 8;
+      bands.moveTo(x, y);
+      bands.quadraticCurveTo(x + w * 0.25, y - amp, x + w * 0.5, y);
+      bands.quadraticCurveTo(x + w * 0.75, y + amp, x + w, y);
+      bands.stroke({ color: palette.waterLight, alpha: 0.12 + bandRandom() * 0.1, width: 5 + bandRandom() * 5, cap: 'round' });
+    }
+
+    // Shallow water halos around islands
+    shallows.clear();
+    for (const layout of ISLAND_LAYOUTS) {
+      ellipse(shallows, layout.cx, layout.cy + 6, layout.rx + 42, layout.ry + 34, palette.waterLight, 0.28);
+      ellipse(shallows, layout.cx, layout.cy + 4, layout.rx + 22, layout.ry + 18, palette.foam, 0.1);
+      if (layout.companion) {
+        ellipse(shallows, layout.companion.cx, layout.companion.cy + 5, layout.companion.rx + 34, layout.companion.ry + 26, palette.waterLight, 0.28);
+      }
     }
 
     // Foam ring hints near island positions
     foamLayer.clear();
-    const foamSpots = [
-      { cx: 800, cy: 300, rx: 340, ry: 200 },
-      { cx: 400, cy: 660, rx: 290, ry: 190 },
-      { cx: 1190, cy: 680, rx: 260, ry: 175 },
-      { cx: 1420, cy: 620, rx: 135, ry: 100 },
-    ];
+    const foamSpots: { cx: number; cy: number; rx: number; ry: number }[] = [];
+    for (const layout of ISLAND_LAYOUTS) {
+      foamSpots.push({ cx: layout.cx, cy: layout.cy, rx: layout.rx + 30, ry: layout.ry + 25 });
+      if (layout.companion) {
+        foamSpots.push({
+          cx: layout.companion.cx,
+          cy: layout.companion.cy,
+          rx: layout.companion.rx + 25,
+          ry: layout.companion.ry + 20,
+        });
+      }
+    }
     for (const spot of foamSpots) {
       foamLayer.ellipse(spot.cx, spot.cy, spot.rx, spot.ry);
       foamLayer.stroke({ color: palette.foam, alpha: 0.35, width: 10 });
@@ -182,6 +230,26 @@ export function createWaterSystem(): WaterSystem {
       r.g.ellipse(0, 0, 22, 8);
       r.g.stroke({ color: palette.foam, alpha: 0.25, width: 2 });
     }
+
+    // Repaint foam dots
+    for (const d of dots) {
+      d.g.clear();
+      circle(d.g, 0, 0, 2 + (d.phase % 2), palette.foam, 0.6);
+    }
+
+    // Moonlight glade on water (night)
+    moonGlade.clear();
+    moonGlade.visible = night > 0.3;
+    if (night > 0.3) {
+      const alpha = Math.min(1, (night - 0.3) / 0.4) * 0.5;
+      const mx = 1350;
+      for (let i = 0; i < 8; i++) {
+        const gy = 380 + i * 55;
+        const gw = 30 + i * 14;
+        moonGlade.roundRect(mx - gw / 2, gy, gw, 8 + i * 2, 6);
+        moonGlade.fill({ color: palette.moonlight, alpha: alpha * (1 - i * 0.08) });
+      }
+    }
   }
 
   function tick(timeMs: number, _deltaMs: number, motionOn: boolean): void {
@@ -190,6 +258,7 @@ export function createWaterSystem(): WaterSystem {
       for (const s of sparkles) s.g.alpha = 0.35;
       for (const f of fishes) f.g.alpha = 0.4;
       for (const r of ripples) r.g.alpha = 0.15;
+      for (const d of dots) d.g.alpha = 0.35;
       return;
     }
     for (const s of sparkles) {
@@ -214,6 +283,17 @@ export function createWaterSystem(): WaterSystem {
     // Gentle foam breathing
     if (currentPalette) {
       foamLayer.alpha = 0.8 + Math.sin(timeMs / 3000) * 0.2;
+    }
+    // Foam dots drift and pulse
+    for (const d of dots) {
+      const wave = Math.sin(timeMs / 2400 + d.phase);
+      d.g.x = d.baseX + Math.sin(timeMs / 3800 + d.phase * 2) * 5;
+      d.g.y = d.baseY + Math.cos(timeMs / 3200 + d.phase) * 3;
+      d.g.alpha = 0.25 + Math.max(0, wave) * 0.45;
+    }
+    // Moon glade shimmer
+    if (moonGlade.visible) {
+      moonGlade.alpha = 0.85 + Math.sin(timeMs / 2600) * 0.15;
     }
   }
 
