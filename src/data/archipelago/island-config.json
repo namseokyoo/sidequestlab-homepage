@@ -1,0 +1,97 @@
+{
+  "$schema": "./island-config.schema.json",
+  "version": 1,
+  "islands": [
+    {
+      "id": "displaylab",
+      "position": { "cx": 800, "cy": 300, "rx": 340, "ry": 190 },
+      "landmark": {
+        "type": "lighthouse",
+        "spritePath": "/images/archipelago/sprites/landmark-lighthouse.png",
+        "anchorOffset": { "x": 0.35, "y": -0.35 }
+      },
+      "vegetation": {
+        "trees": 12,
+        "bushes": 14,
+        "flowers": 20,
+        "tufts": 22
+      },
+      "coastal": {
+        "shells": 8,
+        "conchs": 4,
+        "tidepools": 4,
+        "rocks": 6
+      },
+      "cliff": {
+        "vines": 4,
+        "mossPatches": 5
+      },
+      "smokeSources": [
+        { "x": 868, "y": 224 }
+      ],
+      "spriteOverrides": {},
+      "walkCycleSheet": "/images/archipelago/sprites/wayfarer-engineer-walk.png",
+      "companion": null
+    },
+    {
+      "id": "booksalon",
+      "position": { "cx": 400, "cy": 660, "rx": 285, "ry": 180 },
+      "landmark": {
+        "type": "booksalon",
+        "spritePath": "/images/archipelago/sprites/landmark-booksalon.png",
+        "anchorOffset": { "x": -0.05, "y": -0.2 }
+      },
+      "vegetation": {
+        "trees": 12,
+        "bushes": 14,
+        "flowers": 20,
+        "tufts": 22
+      },
+      "coastal": {
+        "shells": 8,
+        "conchs": 4,
+        "tidepools": 4,
+        "rocks": 6
+      },
+      "cliff": {
+        "vines": 4,
+        "mossPatches": 5
+      },
+      "smokeSources": [],
+      "spriteOverrides": {},
+      "walkCycleSheet": "/images/archipelago/sprites/wayfarer-qa-walk.png",
+      "companion": null
+    },
+    {
+      "id": "nbbang",
+      "position": { "cx": 1190, "cy": 680, "rx": 250, "ry": 162 },
+      "landmark": {
+        "type": "pavilion",
+        "spritePath": "/images/archipelago/sprites/landmark-pavilion.png",
+        "anchorOffset": { "x": 0, "y": -0.1 }
+      },
+      "vegetation": {
+        "trees": 12,
+        "bushes": 14,
+        "flowers": 20,
+        "tufts": 22
+      },
+      "coastal": {
+        "shells": 8,
+        "conchs": 4,
+        "tidepools": 4,
+        "rocks": 6
+      },
+      "cliff": {
+        "vines": 3,
+        "mossPatches": 4
+      },
+      "smokeSources": [
+        { "x": 1280, "y": 676 }
+      ],
+      "spriteOverrides": {},
+      "walkCycleSheet": null,
+      "companion": { "cx": 1420, "cy": 620, "rx": 120, "ry": 88 }
+    }
+  ]
+}

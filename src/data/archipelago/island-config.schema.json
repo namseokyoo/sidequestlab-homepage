@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://sidequestlab.dev/schemas/island-config.json",
+  "title": "Archipelago Island Configuration",
+  "description": "Extension schema for configuring island sprites, vegetation density, and landmarks in the Living Archipelago world engine.",
+  "type": "object",
+  "required": ["version", "islands"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "integer", "minimum": 1 },
+    "islands": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/island" }
+    }
+  },
+  "definitions": {
+    "island": {
+      "type": "object",
+      "required": ["id", "position", "landmark", "vegetation", "coastal", "cliff", "smokeSources", "spriteOverrides"],
+      "properties": {
+        "id": { "type": "string", "enum": ["displaylab", "booksalon", "nbbang"] },
+        "position": { "$ref": "#/definitions/position" },
+        "landmark": { "$ref": "#/definitions/landmark" },
+        "vegetation": { "$ref": "#/definitions/vegetation" },
+        "coastal": { "$ref": "#/definitions/coastal" },
+        "cliff": { "$ref": "#/definitions/cliff" },
+        "smokeSources": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/point" }
+        },
+        "spriteOverrides": {
+          "type": "object",
+          "properties": {
+            "trees": { "type": "string" },
+            "bush": { "type": "string" },
+            "flowers": { "type": "string" },
+            "tufts": { "type": "string" },
+            "rocks": { "type": "string" },
+            "shells": { "type": "string" },
+            "vines": { "type": "string" }
+          },
+          "additionalProperties": { "type": "string" }
+        },
+        "walkCycleSheet": { "type": ["string", "null"] },
+        "companion": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "required": ["cx", "cy", "rx", "ry"],
+              "properties": {
+                "cx": { "type": "number" },
+                "cy": { "type": "number" },
+                "rx": { "type": "number" },
+                "ry": { "type": "number" }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "position": {
+      "type": "object",
+      "required": ["cx", "cy", "rx", "ry"],
+      "properties": {
+        "cx": { "type": "number" },
+        "cy": { "type": "number" },
+        "rx": { "type": "number", "exclusiveMinimum": 0 },
+        "ry": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "landmark": {
+      "type": "object",
+      "required": ["type", "spritePath", "anchorOffset"],
+      "properties": {
+        "type": { "type": "string" },
+        "spritePath": { "type": "string", "pattern": "^/images/" },
+        "anchorOffset": { "$ref": "#/definitions/point" }
+      }
+    },
+    "vegetation": {
+      "type": "object",
+      "required": ["trees", "bushes", "flowers", "tufts"],
+      "properties": {
+        "trees": { "type": "integer", "minimum": 0, "maximum": 30 },
+        "bushes": { "type": "integer", "minimum": 0, "maximum": 30 },
+        "flowers": { "type": "integer", "minimum": 0, "maximum": 40 },
+        "tufts": { "type": "integer", "minimum": 0, "maximum": 40 }
+      }
+    },
+    "coastal": {
+      "type": "object",
+      "required": ["shells", "conchs", "tidepools", "rocks"],
+      "properties": {
+        "shells": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "conchs": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "tidepools": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "rocks": { "type": "integer", "minimum": 0, "maximum": 12 }
+      }
+    },
+    "cliff": {
+      "type": "object",
+      "required": ["vines", "mossPatches"],
+      "properties": {
+        "vines": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "mossPatches": { "type": "integer", "minimum": 0, "maximum": 10 }
+      }
+    },
+    "point": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" }
+      }
+    }
+  }
+}
