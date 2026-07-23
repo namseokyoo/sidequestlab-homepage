@@ -41,6 +41,86 @@
       "version": "v1.0.0",
       "health": "NORMAL",
       "crew": []
+    },
+    {
+      "projectId": "pulseup",
+      "lifecycle": "BUILDING",
+      "progressPercent": 45,
+      "version": "v0.3.0",
+      "health": "NORMAL",
+      "crew": []
+    },
+    {
+      "projectId": "spectrum-visualizer",
+      "lifecycle": "OPERATING",
+      "progressPercent": 100,
+      "version": "v1.2.0",
+      "health": "NORMAL",
+      "crew": []
+    },
+    {
+      "projectId": "pomodoro-timer",
+      "lifecycle": "OPERATING",
+      "progressPercent": 100,
+      "version": "v1.0.0",
+      "health": "NORMAL",
+      "crew": []
+    },
+    {
+      "projectId": "thisor",
+      "lifecycle": "OPERATING",
+      "progressPercent": 100,
+      "version": "v1.0.0",
+      "health": "NORMAL",
+      "crew": []
+    },
+    {
+      "projectId": "livenote",
+      "lifecycle": "MAINTENANCE",
+      "progressPercent": 88,
+      "version": "v1.1.0",
+      "health": "NORMAL",
+      "crew": []
+    },
+    {
+      "projectId": "todo-app",
+      "lifecycle": "OPERATING",
+      "progressPercent": 100,
+      "version": "v1.0.0",
+      "health": "NORMAL",
+      "crew": []
+    },
+    {
+      "projectId": "sidequestlab-homepage",
+      "lifecycle": "BUILDING",
+      "progressPercent": 72,
+      "version": "v0.8.0",
+      "health": "NORMAL",
+      "crew": []
+    },
+    {
+      "projectId": "fdtd-lab-mcp",
+      "lifecycle": "TESTING",
+      "progressPercent": 55,
+      "version": "v0.2.0",
+      "health": "CAUTION",
+      "crew": []
+    },
+    {
+      "projectId": "n8n-automation",
+      "lifecycle": "OPERATING",
+      "progressPercent": 90,
+      "version": "v1.0.0",
+      "health": "NORMAL",
+      "crew": []
+    },
+    {
+      "projectId": "monitoring-system",
+      "lifecycle": "PLANNING",
+      "progressPercent": 15,
+      "version": "v0.1.0",
+      "health": "UNKNOWN",
+      "crew": []
     }
   ]
 }

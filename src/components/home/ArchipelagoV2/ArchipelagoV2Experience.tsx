@@ -57,7 +57,7 @@ function resolveCardOverlaps(
   cardW: number,
   cardH: number,
   viewport: { width: number; height: number },
-  iterations = 5,
+  iterations = 20,
 ): { x: number; y: number }[] {
   // Work on a mutable copy; callers keep their input arrays intact.
   const pos = positions.map((p) => ({ ...p }));

@@ -8,22 +8,62 @@
       "portKey": "forge-port",
       "islandKey": "displaylab-island",
       "routeKey": "displaylab-route",
-      "focusBox": { "x": 0.28, "y": 0.1, "width": 0.44, "height": 0.38 },
+      "focusBox": {
+        "x": 0.28,
+        "y": 0.1,
+        "width": 0.44,
+        "height": 0.38
+      },
       "focusScaleCap": 1.9,
       "crewAnchors": {
-        "codeEngineer": { "x": 0.42, "y": 0.33 },
-        "qaNavigator": { "x": 0.56, "y": 0.31 }
+        "codeEngineer": {
+          "x": 0.42,
+          "y": 0.33
+        },
+        "qaNavigator": {
+          "x": 0.56,
+          "y": 0.31
+        }
       },
       "mobileCrewAnchors": {
-        "codeEngineer": { "x": 0.34, "y": 0.64 },
-        "qaNavigator": { "x": 0.72, "y": 0.64 }
+        "codeEngineer": {
+          "x": 0.34,
+          "y": 0.64
+        },
+        "qaNavigator": {
+          "x": 0.72,
+          "y": 0.64
+        }
       },
       "landmarkAnchors": [
-        { "key": "display-pavilion", "anchor": { "x": 0.39, "y": 0.2 } },
-        { "key": "swatch-garden", "anchor": { "x": 0.62, "y": 0.24 } }
+        {
+          "key": "display-pavilion",
+          "anchor": {
+            "x": 0.39,
+            "y": 0.2
+          }
+        },
+        {
+          "key": "swatch-garden",
+          "anchor": {
+            "x": 0.62,
+            "y": 0.24
+          }
+        }
       ],
-      "emblem": { "key": "display-prism", "anchor": { "x": 0.5, "y": 0.15 } },
-      "labelSafeRegion": { "x": 0.36, "y": 0.11, "width": 0.28, "height": 0.08 }
+      "emblem": {
+        "key": "display-prism",
+        "anchor": {
+          "x": 0.5,
+          "y": 0.15
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.36,
+        "y": 0.11,
+        "width": 0.28,
+        "height": 0.08
+      }
     },
     {
       "projectId": "booksalon",
@@ -31,22 +71,62 @@
       "portKey": "review-port",
       "islandKey": "booksalon-island",
       "routeKey": "booksalon-route",
-      "focusBox": { "x": 0.08, "y": 0.45, "width": 0.38, "height": 0.42 },
+      "focusBox": {
+        "x": 0.08,
+        "y": 0.45,
+        "width": 0.38,
+        "height": 0.42
+      },
       "focusScaleCap": 2.1,
       "crewAnchors": {
-        "codeEngineer": { "x": 0.2, "y": 0.72 },
-        "qaNavigator": { "x": 0.32, "y": 0.69 }
+        "codeEngineer": {
+          "x": 0.2,
+          "y": 0.72
+        },
+        "qaNavigator": {
+          "x": 0.32,
+          "y": 0.69
+        }
       },
       "mobileCrewAnchors": {
-        "codeEngineer": { "x": 0.17, "y": 0.64 },
-        "qaNavigator": { "x": 0.45, "y": 0.64 }
+        "codeEngineer": {
+          "x": 0.17,
+          "y": 0.64
+        },
+        "qaNavigator": {
+          "x": 0.45,
+          "y": 0.64
+        }
       },
       "landmarkAnchors": [
-        { "key": "reading-house", "anchor": { "x": 0.2, "y": 0.55 } },
-        { "key": "lantern-path", "anchor": { "x": 0.38, "y": 0.77 } }
+        {
+          "key": "reading-house",
+          "anchor": {
+            "x": 0.2,
+            "y": 0.55
+          }
+        },
+        {
+          "key": "lantern-path",
+          "anchor": {
+            "x": 0.38,
+            "y": 0.77
+          }
+        }
       ],
-      "emblem": { "key": "open-book", "anchor": { "x": 0.13, "y": 0.5 } },
-      "labelSafeRegion": { "x": 0.13, "y": 0.47, "width": 0.26, "height": 0.08 }
+      "emblem": {
+        "key": "open-book",
+        "anchor": {
+          "x": 0.13,
+          "y": 0.5
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.13,
+        "y": 0.47,
+        "width": 0.26,
+        "height": 0.08
+      }
     },
     {
       "projectId": "nbbang",
@@ -54,22 +134,692 @@
       "portKey": "discovery-port",
       "islandKey": "nbbang-island",
       "routeKey": "nbbang-route",
-      "focusBox": { "x": 0.54, "y": 0.47, "width": 0.4, "height": 0.42 },
+      "focusBox": {
+        "x": 0.54,
+        "y": 0.47,
+        "width": 0.4,
+        "height": 0.42
+      },
       "focusScaleCap": 2,
       "crewAnchors": {
-        "codeEngineer": { "x": 0.68, "y": 0.74 },
-        "qaNavigator": { "x": 0.82, "y": 0.71 }
+        "codeEngineer": {
+          "x": 0.68,
+          "y": 0.74
+        },
+        "qaNavigator": {
+          "x": 0.82,
+          "y": 0.71
+        }
       },
       "mobileCrewAnchors": {
-        "codeEngineer": { "x": 0.42, "y": 0.64 },
-        "qaNavigator": { "x": 0.78, "y": 0.64 }
+        "codeEngineer": {
+          "x": 0.42,
+          "y": 0.64
+        },
+        "qaNavigator": {
+          "x": 0.78,
+          "y": 0.64
+        }
       },
       "landmarkAnchors": [
-        { "key": "ledger-kiosk", "anchor": { "x": 0.65, "y": 0.58 } },
-        { "key": "equal-share-bridge", "anchor": { "x": 0.84, "y": 0.63 } }
+        {
+          "key": "ledger-kiosk",
+          "anchor": {
+            "x": 0.65,
+            "y": 0.58
+          }
+        },
+        {
+          "key": "equal-share-bridge",
+          "anchor": {
+            "x": 0.84,
+            "y": 0.63
+          }
+        }
       ],
-      "emblem": { "key": "equal-share-mark", "anchor": { "x": 0.59, "y": 0.52 } },
-      "labelSafeRegion": { "x": 0.59, "y": 0.49, "width": 0.28, "height": 0.08 }
+      "emblem": {
+        "key": "equal-share-mark",
+        "anchor": {
+          "x": 0.59,
+          "y": 0.52
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.59,
+        "y": 0.49,
+        "width": 0.28,
+        "height": 0.08
+      }
+    },
+    {
+      "projectId": "pulseup",
+      "order": 3,
+      "portKey": "pulseup-port",
+      "islandKey": "pulseup-island",
+      "routeKey": "pulseup-route",
+      "focusBox": {
+        "x": 0.02,
+        "y": 0.52,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.1,
+          "y": 0.5900000000000001
+        },
+        "qaNavigator": {
+          "x": 0.21,
+          "y": 0.5900000000000001
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.08,
+          "y": 0.62
+        },
+        "qaNavigator": {
+          "x": 0.22999999999999998,
+          "y": 0.62
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "pulseup-landmark-a",
+          "anchor": {
+            "x": 0.11,
+            "y": 0.5700000000000001
+          }
+        },
+        {
+          "key": "pulseup-landmark-b",
+          "anchor": {
+            "x": 0.21,
+            "y": 0.5800000000000001
+          }
+        }
+      ],
+      "emblem": {
+        "key": "pulseup-emblem",
+        "anchor": {
+          "x": 0.16,
+          "y": 0.55
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.06,
+        "y": 0.53,
+        "width": 0.2,
+        "height": 0.05
+      }
+    },
+    {
+      "projectId": "spectrum-visualizer",
+      "order": 4,
+      "portKey": "spectrum-visualizer-port",
+      "islandKey": "spectrum-visualizer-island",
+      "routeKey": "spectrum-visualizer-route",
+      "focusBox": {
+        "x": 0.36,
+        "y": 0.52,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.44,
+          "y": 0.5900000000000001
+        },
+        "qaNavigator": {
+          "x": 0.55,
+          "y": 0.5900000000000001
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.42,
+          "y": 0.62
+        },
+        "qaNavigator": {
+          "x": 0.57,
+          "y": 0.62
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "spectrum-visualizer-landmark-a",
+          "anchor": {
+            "x": 0.44999999999999996,
+            "y": 0.5700000000000001
+          }
+        },
+        {
+          "key": "spectrum-visualizer-landmark-b",
+          "anchor": {
+            "x": 0.55,
+            "y": 0.5800000000000001
+          }
+        }
+      ],
+      "emblem": {
+        "key": "spectrum-visualizer-emblem",
+        "anchor": {
+          "x": 0.5,
+          "y": 0.55
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.39999999999999997,
+        "y": 0.53,
+        "width": 0.2,
+        "height": 0.05
+      }
+    },
+    {
+      "projectId": "pomodoro-timer",
+      "order": 5,
+      "portKey": "pomodoro-timer-port",
+      "islandKey": "pomodoro-timer-island",
+      "routeKey": "pomodoro-timer-route",
+      "focusBox": {
+        "x": 0.7,
+        "y": 0.52,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.7799999999999999,
+          "y": 0.5900000000000001
+        },
+        "qaNavigator": {
+          "x": 0.8899999999999999,
+          "y": 0.5900000000000001
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.76,
+          "y": 0.62
+        },
+        "qaNavigator": {
+          "x": 0.9099999999999999,
+          "y": 0.62
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "pomodoro-timer-landmark-a",
+          "anchor": {
+            "x": 0.7899999999999999,
+            "y": 0.5700000000000001
+          }
+        },
+        {
+          "key": "pomodoro-timer-landmark-b",
+          "anchor": {
+            "x": 0.8899999999999999,
+            "y": 0.5800000000000001
+          }
+        }
+      ],
+      "emblem": {
+        "key": "pomodoro-timer-emblem",
+        "anchor": {
+          "x": 0.84,
+          "y": 0.55
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.74,
+        "y": 0.53,
+        "width": 0.2,
+        "height": 0.05
+      }
+    },
+    {
+      "projectId": "thisor",
+      "order": 6,
+      "portKey": "thisor-port",
+      "islandKey": "thisor-island",
+      "routeKey": "thisor-route",
+      "focusBox": {
+        "x": 0.02,
+        "y": 0.82,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.1,
+          "y": 0.8899999999999999
+        },
+        "qaNavigator": {
+          "x": 0.21,
+          "y": 0.8899999999999999
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.08,
+          "y": 0.9199999999999999
+        },
+        "qaNavigator": {
+          "x": 0.22999999999999998,
+          "y": 0.9199999999999999
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "thisor-landmark-a",
+          "anchor": {
+            "x": 0.11,
+            "y": 0.87
+          }
+        },
+        {
+          "key": "thisor-landmark-b",
+          "anchor": {
+            "x": 0.21,
+            "y": 0.8799999999999999
+          }
+        }
+      ],
+      "emblem": {
+        "key": "thisor-emblem",
+        "anchor": {
+          "x": 0.16,
+          "y": 0.85
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.06,
+        "y": 0.83,
+        "width": 0.2,
+        "height": 0.05
+      }
+    },
+    {
+      "projectId": "livenote",
+      "order": 7,
+      "portKey": "livenote-port",
+      "islandKey": "livenote-island",
+      "routeKey": "livenote-route",
+      "focusBox": {
+        "x": 0.36,
+        "y": 0.82,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.44,
+          "y": 0.8899999999999999
+        },
+        "qaNavigator": {
+          "x": 0.55,
+          "y": 0.8899999999999999
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.42,
+          "y": 0.9199999999999999
+        },
+        "qaNavigator": {
+          "x": 0.57,
+          "y": 0.9199999999999999
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "livenote-landmark-a",
+          "anchor": {
+            "x": 0.44999999999999996,
+            "y": 0.87
+          }
+        },
+        {
+          "key": "livenote-landmark-b",
+          "anchor": {
+            "x": 0.55,
+            "y": 0.8799999999999999
+          }
+        }
+      ],
+      "emblem": {
+        "key": "livenote-emblem",
+        "anchor": {
+          "x": 0.5,
+          "y": 0.85
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.39999999999999997,
+        "y": 0.83,
+        "width": 0.2,
+        "height": 0.05
+      }
+    },
+    {
+      "projectId": "todo-app",
+      "order": 8,
+      "portKey": "todo-app-port",
+      "islandKey": "todo-app-island",
+      "routeKey": "todo-app-route",
+      "focusBox": {
+        "x": 0.7,
+        "y": 0.82,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.7799999999999999,
+          "y": 0.8899999999999999
+        },
+        "qaNavigator": {
+          "x": 0.8899999999999999,
+          "y": 0.8899999999999999
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.76,
+          "y": 0.9199999999999999
+        },
+        "qaNavigator": {
+          "x": 0.9099999999999999,
+          "y": 0.9199999999999999
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "todo-app-landmark-a",
+          "anchor": {
+            "x": 0.7899999999999999,
+            "y": 0.87
+          }
+        },
+        {
+          "key": "todo-app-landmark-b",
+          "anchor": {
+            "x": 0.8899999999999999,
+            "y": 0.8799999999999999
+          }
+        }
+      ],
+      "emblem": {
+        "key": "todo-app-emblem",
+        "anchor": {
+          "x": 0.84,
+          "y": 0.85
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.74,
+        "y": 0.83,
+        "width": 0.2,
+        "height": 0.05
+      }
+    },
+    {
+      "projectId": "sidequestlab-homepage",
+      "order": 9,
+      "portKey": "sidequestlab-homepage-port",
+      "islandKey": "sidequestlab-homepage-island",
+      "routeKey": "sidequestlab-homepage-route",
+      "focusBox": {
+        "x": 0.7,
+        "y": 0.05,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.7799999999999999,
+          "y": 0.12000000000000001
+        },
+        "qaNavigator": {
+          "x": 0.8899999999999999,
+          "y": 0.12000000000000001
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.76,
+          "y": 0.15000000000000002
+        },
+        "qaNavigator": {
+          "x": 0.9099999999999999,
+          "y": 0.15000000000000002
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "sidequestlab-homepage-landmark-a",
+          "anchor": {
+            "x": 0.7899999999999999,
+            "y": 0.1
+          }
+        },
+        {
+          "key": "sidequestlab-homepage-landmark-b",
+          "anchor": {
+            "x": 0.8899999999999999,
+            "y": 0.11
+          }
+        }
+      ],
+      "emblem": {
+        "key": "sidequestlab-homepage-emblem",
+        "anchor": {
+          "x": 0.84,
+          "y": 0.08
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.74,
+        "y": 0.060000000000000005,
+        "width": 0.2,
+        "height": 0.05
+      }
+    },
+    {
+      "projectId": "fdtd-lab-mcp",
+      "order": 10,
+      "portKey": "fdtd-lab-mcp-port",
+      "islandKey": "fdtd-lab-mcp-island",
+      "routeKey": "fdtd-lab-mcp-route",
+      "focusBox": {
+        "x": 0.7,
+        "y": 0.24,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.7799999999999999,
+          "y": 0.31
+        },
+        "qaNavigator": {
+          "x": 0.8899999999999999,
+          "y": 0.31
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.76,
+          "y": 0.33999999999999997
+        },
+        "qaNavigator": {
+          "x": 0.9099999999999999,
+          "y": 0.33999999999999997
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "fdtd-lab-mcp-landmark-a",
+          "anchor": {
+            "x": 0.7899999999999999,
+            "y": 0.29
+          }
+        },
+        {
+          "key": "fdtd-lab-mcp-landmark-b",
+          "anchor": {
+            "x": 0.8899999999999999,
+            "y": 0.3
+          }
+        }
+      ],
+      "emblem": {
+        "key": "fdtd-lab-mcp-emblem",
+        "anchor": {
+          "x": 0.84,
+          "y": 0.27
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.74,
+        "y": 0.25,
+        "width": 0.2,
+        "height": 0.05
+      }
+    },
+    {
+      "projectId": "n8n-automation",
+      "order": 11,
+      "portKey": "n8n-automation-port",
+      "islandKey": "n8n-automation-island",
+      "routeKey": "n8n-automation-route",
+      "focusBox": {
+        "x": 0.02,
+        "y": 0.05,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.1,
+          "y": 0.12000000000000001
+        },
+        "qaNavigator": {
+          "x": 0.21,
+          "y": 0.12000000000000001
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.08,
+          "y": 0.15000000000000002
+        },
+        "qaNavigator": {
+          "x": 0.22999999999999998,
+          "y": 0.15000000000000002
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "n8n-automation-landmark-a",
+          "anchor": {
+            "x": 0.11,
+            "y": 0.1
+          }
+        },
+        {
+          "key": "n8n-automation-landmark-b",
+          "anchor": {
+            "x": 0.21,
+            "y": 0.11
+          }
+        }
+      ],
+      "emblem": {
+        "key": "n8n-automation-emblem",
+        "anchor": {
+          "x": 0.16,
+          "y": 0.08
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.06,
+        "y": 0.060000000000000005,
+        "width": 0.2,
+        "height": 0.05
+      }
+    },
+    {
+      "projectId": "monitoring-system",
+      "order": 12,
+      "portKey": "monitoring-system-port",
+      "islandKey": "monitoring-system-island",
+      "routeKey": "monitoring-system-route",
+      "focusBox": {
+        "x": 0.02,
+        "y": 0.24,
+        "width": 0.28,
+        "height": 0.15
+      },
+      "focusScaleCap": 1.9,
+      "crewAnchors": {
+        "codeEngineer": {
+          "x": 0.1,
+          "y": 0.31
+        },
+        "qaNavigator": {
+          "x": 0.21,
+          "y": 0.31
+        }
+      },
+      "mobileCrewAnchors": {
+        "codeEngineer": {
+          "x": 0.08,
+          "y": 0.33999999999999997
+        },
+        "qaNavigator": {
+          "x": 0.22999999999999998,
+          "y": 0.33999999999999997
+        }
+      },
+      "landmarkAnchors": [
+        {
+          "key": "monitoring-system-landmark-a",
+          "anchor": {
+            "x": 0.11,
+            "y": 0.29
+          }
+        },
+        {
+          "key": "monitoring-system-landmark-b",
+          "anchor": {
+            "x": 0.21,
+            "y": 0.3
+          }
+        }
+      ],
+      "emblem": {
+        "key": "monitoring-system-emblem",
+        "anchor": {
+          "x": 0.16,
+          "y": 0.27
+        }
+      },
+      "labelSafeRegion": {
+        "x": 0.06,
+        "y": 0.25,
+        "width": 0.2,
+        "height": 0.05
+      }
     }
   ]
 }

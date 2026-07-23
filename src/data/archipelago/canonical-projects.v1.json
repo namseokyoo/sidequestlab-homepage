@@ -36,6 +36,126 @@
         "ko": "여러 차수의 모임 비용과 최소 송금 경로를 정리하는 정산 서비스",
         "en": "A settlement service for multi-round expenses and minimal transfer routes."
       }
+    },
+    {
+      "id": "pulseup",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "펄스업",
+        "en": "PulseUp"
+      },
+      "summary": {
+        "ko": "익명 게시판에 TTL과 투표 경제를 결합한 커뮤니티 실험 서비스",
+        "en": "A community experiment combining anonymous posting with TTL and voting economy"
+      }
+    },
+    {
+      "id": "spectrum-visualizer",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "스펙트럼 시각화기",
+        "en": "Spectrum Visualizer"
+      },
+      "summary": {
+        "ko": "OLED/디스플레이 연구자용 스펙트럼-색좌표 시각화 도구",
+        "en": "Spectrum-to-color coordinate visualization tool for OLED/display researchers"
+      }
+    },
+    {
+      "id": "pomodoro-timer",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "뽀모도로 타이머",
+        "en": "Pomodoro Timer"
+      },
+      "summary": {
+        "ko": "집중력 향상을 위한 뽀모도로 기법 타이머",
+        "en": "A Pomodoro technique timer for better focus"
+      }
+    },
+    {
+      "id": "thisor",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "디스올",
+        "en": "Thisor"
+      },
+      "summary": {
+        "ko": "가벼운 이것저것 투표 앱",
+        "en": "A lightweight this-or-that voting app"
+      }
+    },
+    {
+      "id": "livenote",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "라이브노트",
+        "en": "LiveNote"
+      },
+      "summary": {
+        "ko": "실시간 협업 노트 앱",
+        "en": "A real-time collaborative note app"
+      }
+    },
+    {
+      "id": "todo-app",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "투두앱",
+        "en": "Todo App"
+      },
+      "summary": {
+        "ko": "심플한 할 일 관리 앱",
+        "en": "A simple task management app"
+      }
+    },
+    {
+      "id": "sidequestlab-homepage",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "SidequestLab 홈페이지",
+        "en": "SidequestLab Homepage"
+      },
+      "summary": {
+        "ko": "회사 공식 홈페이지이자 포트폴리오 대시보드",
+        "en": "The official company homepage and portfolio dashboard"
+      }
+    },
+    {
+      "id": "fdtd-lab-mcp",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "FDTD Lab MCP",
+        "en": "FDTD Lab MCP"
+      },
+      "summary": {
+        "ko": "AI 에이전트가 Lumerical FDTD 워크플로우를 안전하게 다루도록 돕는 연구 자동화",
+        "en": "Research automation helping AI agents safely drive Lumerical FDTD workflows"
+      }
+    },
+    {
+      "id": "n8n-automation",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "n8n 자동화",
+        "en": "n8n Automation"
+      },
+      "summary": {
+        "ko": "Telegram과 코딩 에이전트를 잇는 양방향 자동화 시스템",
+        "en": "A bidirectional automation system bridging Telegram and coding agents"
+      }
+    },
+    {
+      "id": "monitoring-system",
+      "visibility": "PUBLIC",
+      "name": {
+        "ko": "모니터링 시스템",
+        "en": "Monitoring System"
+      },
+      "summary": {
+        "ko": "프로덕션 서비스 모니터링 시스템",
+        "en": "A production service monitoring system"
+      }
     }
   ]
 }
