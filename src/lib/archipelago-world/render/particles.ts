@@ -1,6 +1,6 @@
 /**
  * Lightweight particle systems: chimney smoke, fireflies (night),
- * butterflies (day), and release sparkles.
+ * butterflies (day), release sparkles, and intro water-splash bursts.
  */
 
 import { Container, Graphics, Sprite } from 'pixi.js';
@@ -17,6 +17,7 @@ export type ParticleSystem = {
   readonly repaint: (palette: WorldPalette) => void;
   readonly addSmokeSource: (x: number, y: number) => void;
   readonly burstSparkles: (x: number, y: number, count: number) => void;
+  readonly burstSplash: (x: number, y: number, count: number) => void;
 };
 
 type SmokePuff = {
@@ -73,6 +74,17 @@ type Sparkle = {
   readonly maxLife: number;
 };
 
+type SplashDroplet = {
+  readonly g: Graphics;
+  vx: number;
+  vy: number;
+  life: number;
+  readonly maxLife: number;
+};
+
+/** Cyan droplet tone — WorldPalette has no plain `water` member. */
+const SPLASH_CYAN = 0xb8e8f0;
+
 export function createParticleSystem(): ParticleSystem {
   const container = new Container();
   container.label = 'particles';
@@ -82,7 +94,8 @@ export function createParticleSystem(): ParticleSystem {
   const butterflyLayer = new Container();
   const leafLayer = new Container();
   const sparkleLayer = new Container();
-  container.addChild(smokeLayer, fireflyLayer, butterflyLayer, leafLayer, sparkleLayer);
+  const splashLayer = new Container();
+  container.addChild(smokeLayer, fireflyLayer, butterflyLayer, leafLayer, sparkleLayer, splashLayer);
 
   const random = createSeededRandom(2026);
   const smokePuffs: SmokePuff[] = [];
@@ -90,6 +103,7 @@ export function createParticleSystem(): ParticleSystem {
   const butterflies: Butterfly[] = [];
   const leaves: FallingLeaf[] = [];
   const sparkles: Sparkle[] = [];
+  const splashDroplets: SplashDroplet[] = [];
   let palette: WorldPalette | null = null;
 
   // Pre-create fireflies
@@ -206,6 +220,24 @@ export function createParticleSystem(): ParticleSystem {
         maxLife: 900 + random() * 600,
       });
       sparkleLayer.addChild(g);
+    }
+  }
+
+  function burstSplash(x: number, y: number, count: number): void {
+    if (!palette) return;
+    for (let i = 0; i < count; i++) {
+      const g = new Graphics();
+      circle(g, 0, 0, 1.5 + random() * 2, i % 2 === 0 ? palette.foam : SPLASH_CYAN, 1);
+      g.x = x;
+      g.y = y;
+      splashDroplets.push({
+        g,
+        vx: (random() - 0.5) * 0.1,
+        vy: -(0.06 + random() * 0.09),
+        life: 0,
+        maxLife: 600 + random() * 500,
+      });
+      splashLayer.addChild(g);
     }
   }
 
@@ -381,7 +413,25 @@ export function createParticleSystem(): ParticleSystem {
       s.vy += 0.00004 * deltaMs;
       s.g.alpha = 1 - s.life / s.maxLife;
     }
+
+    // Splash droplets — arc up under launch velocity, then fall back down
+    for (let i = splashDroplets.length - 1; i >= 0; i--) {
+      const d = splashDroplets[i];
+      d.life += deltaMs;
+      if (d.life >= d.maxLife) {
+        splashLayer.removeChild(d.g);
+        d.g.destroy();
+        splashDroplets.splice(i, 1);
+        continue;
+      }
+      d.g.x += d.vx * deltaMs;
+      d.g.y += d.vy * deltaMs;
+      d.vy += 0.00025 * deltaMs;
+      // Full alpha for the first 60% of life, then fade out
+      const t = d.life / d.maxLife;
+      d.g.alpha = t < 0.6 ? 1 : (1 - t) / 0.4;
+    }
   }
 
-  return { container, tick, repaint, addSmokeSource, burstSparkles };
+  return { container, tick, repaint, addSmokeSource, burstSparkles, burstSplash };
 }

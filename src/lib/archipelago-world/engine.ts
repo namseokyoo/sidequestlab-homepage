@@ -85,6 +85,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
   let terrainTextures: TerrainTextures | null = null;
   let initialized = false;
   let introStart = 0;
+  const splashedIslands = new Set<string>();
   const INTRO_REVEAL_STAGGER = 380;
   const INTRO_REVEAL_MS = 750;
 
@@ -224,11 +225,22 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
           const eased = 1 - Math.pow(1 - local, 3);
           system.container.alpha = eased;
           system.container.y = (1 - eased) * 36;
+          // Water-splash burst the moment the island breaks the surface
+          if (local > 0 && !splashedIslands.has(layout.id)) {
+            splashedIslands.add(layout.id);
+            particles.burstSplash(layout.cx, layout.cy + layout.ry * 0.82, 12 + Math.floor(layout.rx / 30));
+            particles.burstSplash(layout.cx - layout.rx * 0.55, layout.cy + layout.ry * 0.6, 6);
+            particles.burstSplash(layout.cx + layout.rx * 0.55, layout.cy + layout.ry * 0.6, 6);
+            if (layout.companion) {
+              particles.burstSplash(layout.companion.cx, layout.companion.cy + layout.companion.ry * 0.82, 8);
+            }
+          }
         });
         const wfLocal = clamp((elapsed - islandLayouts.length * INTRO_REVEAL_STAGGER) / INTRO_REVEAL_MS, 0, 1);
         wayfarerLayer.alpha = wfLocal;
         if (elapsed > islandLayouts.length * INTRO_REVEAL_STAGGER + INTRO_REVEAL_MS + 200) {
           introStart = 0;
+          splashedIslands.clear();
           for (const layout of islandLayouts) {
             const system = islands.get(layout.id);
             if (system) {
