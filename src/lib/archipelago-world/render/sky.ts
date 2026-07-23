@@ -72,7 +72,7 @@ export function createSkySystem(): SkySystem {
   }
 
   const seagulls: Seagull[] = [];
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 7; i++) {
     const g = new Graphics();
     seagulls.push({
       g,

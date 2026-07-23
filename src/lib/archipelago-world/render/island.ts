@@ -12,7 +12,7 @@ import { CLIFF_HEIGHT, generateBlob, scatterOnIsland, type IslandLayout } from '
 import { createSeededRandom } from '../math.ts';
 import type { WorldPalette } from '../palette.ts';
 import { circle, drawBlob, ellipse, roundedBox, triangle } from '../shapes.ts';
-import { getSpriteTexture, onSpriteLoaded, type SpriteKey } from './sprite-assets.ts';
+import { getSpriteSize, getSpriteTexture, onSpriteLoaded, type SpriteKey } from './sprite-assets.ts';
 import type { TerrainTextures } from './terrain-textures.ts';
 
 export type IslandSystem = {
@@ -28,6 +28,16 @@ type TreeAnim = {
   readonly canopy: Graphics;
   readonly phase: number;
   readonly baseY: number;
+};
+
+/** Unified sprite animation entry for vegetation/cliff sprites. */
+type SpriteAnim = {
+  readonly sprite: Sprite;
+  readonly phase: number;
+  readonly baseY: number;
+  readonly baseScaleX: number;
+  readonly baseScaleY: number;
+  readonly kind: 'tree' | 'bush' | 'flower' | 'tuft' | 'vine';
 };
 
 type FlagAnim = {
@@ -54,9 +64,12 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
 
   const staticLayer = new Graphics();
   const animLayer = new Container();
-  container.addChild(staticLayer, animLayer);
+  /** Static sprite details (rocks, shells, tide pools, moss patches). */
+  const detailLayer = new Container();
+  container.addChild(staticLayer, detailLayer, animLayer);
 
   const trees: TreeAnim[] = [];
+  const spriteAnims: SpriteAnim[] = [];
   const flags: FlagAnim[] = [];
   const windows: WindowGlow[] = [];
   const lanterns: LanternGlow[] = [];
@@ -153,7 +166,9 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     updateLandmarkNight(night);
     staticLayer.clear();
     animLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
+    detailLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
     trees.length = 0;
+    spriteAnims.length = 0;
     flags.length = 0;
     windows.length = 0;
     lanterns.length = 0;
@@ -261,59 +276,56 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     }
 
     // ── Vegetation ──────────────────────────────────────────────────
-    const treeSpots = scatterOnIsland(layout, layout.seed + 10, 7, { innerScale: 0.75, avoidCenter: 0.25 });
+    const treeSpots = scatterOnIsland(layout, layout.seed + 10, 12, { innerScale: 0.75, avoidCenter: 0.25 });
     for (const spot of treeSpots) {
-      drawTree(staticLayer, animLayer, spot.x, spot.y, p, random, trees);
+      drawTree(staticLayer, animLayer, spot.x, spot.y, p, random, trees, spriteAnims);
     }
 
     // Bushes
-    const bushSpots = scatterOnIsland(layout, layout.seed + 11, 8, { innerScale: 0.78, avoidCenter: 0.2 });
+    const bushSpots = scatterOnIsland(layout, layout.seed + 11, 14, { innerScale: 0.78, avoidCenter: 0.2 });
     for (const spot of bushSpots) {
-      const size = 8 + random() * 10;
-      ellipse(staticLayer, spot.x + 3, spot.y + 2, size * 0.9, size * 0.4, p.grassShadow, 0.4);
-      circle(staticLayer, spot.x + size * 0.35, spot.y, size * 0.7, mixNum(p.forest, p.ink, 0.1), 1);
-      circle(staticLayer, spot.x, spot.y - size * 0.15, size, mixNum(p.grass, p.forest, 0.35), 1);
-      circle(staticLayer, spot.x - size * 0.4, spot.y - size * 0.35, size * 0.6, mixNum(p.grass, p.forest, 0.15), 1);
-      circle(staticLayer, spot.x - size * 0.3, spot.y - size * 0.55, size * 0.3, mixNum(p.grass, 0xffffff, 0.25), 0.6);
+      drawBush(staticLayer, animLayer, spot.x, spot.y, p, random, spriteAnims);
     }
 
     // Flowers
-    const flowerSpots = scatterOnIsland(layout, layout.seed + 12, 12, { innerScale: 0.7, avoidCenter: 0.15 });
-    const flowerColors = [p.coral, p.gold, p.foam, 0xd98bb6];
+    const flowerSpots = scatterOnIsland(layout, layout.seed + 12, 20, { innerScale: 0.7, avoidCenter: 0.15 });
     for (let i = 0; i < flowerSpots.length; i++) {
-      const spot = flowerSpots[i];
-      staticLayer.moveTo(spot.x, spot.y);
-      staticLayer.quadraticCurveTo(spot.x - 1, spot.y - 5, spot.x, spot.y - 7);
-      staticLayer.stroke({ color: mixNum(p.grass, p.forest, 0.3), alpha: 0.8, width: 1.5, cap: 'round' });
-      const pc = flowerColors[i % flowerColors.length];
-      for (let petal = 0; petal < 5; petal++) {
-        const angle = (petal / 5) * Math.PI * 2;
-        circle(staticLayer, spot.x + Math.cos(angle) * 2.6, spot.y - 7 + Math.sin(angle) * 2.6, 2.2, pc, 0.9);
-      }
-      circle(staticLayer, spot.x, spot.y - 7, 1.6, p.gold, 1);
+      drawFlower(staticLayer, animLayer, flowerSpots[i].x, flowerSpots[i].y, p, i, random, spriteAnims);
     }
 
     // Rocks
     const rockSpots = scatterOnIsland(layout, layout.seed + 13, 4, { innerScale: 0.8, avoidCenter: 0.3 });
     for (const spot of rockSpots) {
-      const rw = 8 + random() * 8;
-      const rh = 6 + random() * 5;
-      ellipse(staticLayer, spot.x + 3, spot.y + 2, rw * 0.9, rh * 0.45, p.grassShadow, 0.4);
-      ellipse(staticLayer, spot.x, spot.y, rw, rh, mixNum(p.stone, p.ink, 0.15), 1);
-      ellipse(staticLayer, spot.x - rw * 0.15, spot.y - rh * 0.25, rw * 0.75, rh * 0.7, p.stone, 1);
-      ellipse(staticLayer, spot.x - rw * 0.25, spot.y - rh * 0.4, rw * 0.4, rh * 0.35, mixNum(p.stone, 0xffffff, 0.3), 0.7);
+      drawRock(staticLayer, detailLayer, spot.x, spot.y, p, random, false);
+    }
+    // Extra mossy rocks
+    const mossyRockSpots = scatterOnIsland(layout, layout.seed + 15, 2, { innerScale: 0.8, avoidCenter: 0.3 });
+    for (const spot of mossyRockSpots) {
+      drawRock(staticLayer, detailLayer, spot.x, spot.y, p, random, true);
     }
 
     // Grass tufts
-    const tuftSpots = scatterOnIsland(layout, layout.seed + 14, 14, { innerScale: 0.75, avoidCenter: 0.1 });
+    const tuftSpots = scatterOnIsland(layout, layout.seed + 14, 22, { innerScale: 0.75, avoidCenter: 0.1 });
     for (const spot of tuftSpots) {
-      const th = 5 + random() * 5;
-      for (let b = -1; b <= 1; b++) {
-        staticLayer.moveTo(spot.x + b * 3, spot.y);
-        staticLayer.quadraticCurveTo(spot.x + b * 4, spot.y - th, spot.x + b * 5, spot.y - th - 2);
-        staticLayer.stroke({ color: mixNum(p.grass, p.forest, 0.25), alpha: 0.8, width: 1.8, cap: 'round' });
-      }
+      drawTuft(staticLayer, animLayer, spot.x, spot.y, p, random, spriteAnims);
     }
+
+    // ── Coastal details (shells, conchs, tide pools) ───────────────
+    const shellSpots = scatterOnIsland(layout, layout.seed + 20, 8, { innerScale: 0.92, avoidCenter: 0.7 });
+    for (const spot of shellSpots) {
+      drawShell(detailLayer, spot.x, spot.y, random);
+    }
+    const conchSpots = scatterOnIsland(layout, layout.seed + 21, 4, { innerScale: 0.95, avoidCenter: 0.8 });
+    for (const spot of conchSpots) {
+      drawConch(detailLayer, spot.x, spot.y, random);
+    }
+    const tidepoolSpots = scatterOnIsland(layout, layout.seed + 22, 4, { innerScale: 0.95, avoidCenter: 0.82 });
+    for (const spot of tidepoolSpots) {
+      drawTidepool(detailLayer, spot.x, spot.y, random);
+    }
+
+    // ── Cliff details (vines + moss patches) ───────────────────────
+    drawCliffDetails(animLayer, detailLayer, beachPts, random, spriteAnims);
 
     // ── Companion island (N-Bang) + bridge ──────────────────────────
     if (layout.companion) {
@@ -828,9 +840,29 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     p: WorldPalette,
     rand: () => number,
     treeList: TreeAnim[],
+    spriteAnimList: SpriteAnim[],
   ): void {
     const kind = rand();
     const scale = 0.85 + rand() * 0.5;
+
+    // ── Sprite path (preferred) ───────────────────────────────────
+    const treeKey: SpriteKey = kind < 0.45 ? 'tree-deciduous' : kind < 0.75 ? 'tree-conifer' : 'tree-palm';
+    const treeTex = getSpriteTexture(treeKey);
+    if (treeTex) {
+      ellipse(g, x + 6 * scale, y + 3, 16 * scale, 6 * scale, p.grassShadow, 0.45);
+      const sprite = new Sprite(treeTex);
+      sprite.anchor.set(0.5, 1);
+      const size = getSpriteSize(treeKey);
+      sprite.width = size.w * scale;
+      sprite.height = size.h * scale;
+      sprite.x = x;
+      sprite.y = y;
+      anim.addChild(sprite);
+      spriteAnimList.push({ sprite, phase: rand() * Math.PI * 2, baseY: y, baseScaleX: sprite.scale.x, baseScaleY: sprite.scale.y, kind: 'tree' });
+      return;
+    }
+
+    // ── Procedural fallback ───────────────────────────────────────
     // Contact shadow (sun from upper-left)
     ellipse(g, x + 6 * scale, y + 3, 16 * scale, 6 * scale, p.grassShadow, 0.45);
 
@@ -918,6 +950,216 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     }
   }
 
+  // ── Sprite helper functions ─────────────────────────────────────
+
+  function drawBush(g: Graphics, anim: Container, x: number, y: number, p: WorldPalette, rand: () => number, spriteAnimList: SpriteAnim[]): void {
+    const scale = 0.8 + rand() * 0.5;
+    const tex = getSpriteTexture('bush');
+    if (tex) {
+      ellipse(g, x + 3, y + 2, 10 * scale, 4 * scale, p.grassShadow, 0.4);
+      const sprite = new Sprite(tex);
+      sprite.anchor.set(0.5, 1);
+      const size = getSpriteSize('bush');
+      sprite.width = size.w * scale;
+      sprite.height = size.h * scale;
+      sprite.x = x;
+      sprite.y = y;
+      anim.addChild(sprite);
+      spriteAnimList.push({ sprite, phase: rand() * Math.PI * 2, baseY: y, baseScaleX: sprite.scale.x, baseScaleY: sprite.scale.y, kind: 'bush' });
+      return;
+    }
+    // Procedural fallback
+    const size = 8 + rand() * 10;
+    ellipse(g, x + 3, y + 2, size * 0.9, size * 0.4, p.grassShadow, 0.4);
+    circle(g, x + size * 0.35, y, size * 0.7, mixNum(p.forest, p.ink, 0.1), 1);
+    circle(g, x, y - size * 0.15, size, mixNum(p.grass, p.forest, 0.35), 1);
+    circle(g, x - size * 0.4, y - size * 0.35, size * 0.6, mixNum(p.grass, p.forest, 0.15), 1);
+    circle(g, x - size * 0.3, y - size * 0.55, size * 0.3, mixNum(p.grass, 0xffffff, 0.25), 0.6);
+  }
+
+  const FLOWER_KEYS: SpriteKey[] = ['flower-coral', 'flower-gold', 'flower-white', 'flower-pink'];
+
+  function drawFlower(g: Graphics, anim: Container, x: number, y: number, p: WorldPalette, index: number, rand: () => number, spriteAnimList: SpriteAnim[]): void {
+    const key = FLOWER_KEYS[index % FLOWER_KEYS.length];
+    const tex = getSpriteTexture(key);
+    if (tex) {
+      const sprite = new Sprite(tex);
+      sprite.anchor.set(0.5, 1);
+      const size = getSpriteSize(key);
+      sprite.width = size.w;
+      sprite.height = size.h;
+      sprite.x = x;
+      sprite.y = y;
+      anim.addChild(sprite);
+      spriteAnimList.push({ sprite, phase: rand() * Math.PI * 2, baseY: y, baseScaleX: sprite.scale.x, baseScaleY: sprite.scale.y, kind: 'flower' });
+      return;
+    }
+    // Procedural fallback
+    const flowerColors = [p.coral, p.gold, p.foam, 0xd98bb6];
+    g.moveTo(x, y);
+    g.quadraticCurveTo(x - 1, y - 5, x, y - 7);
+    g.stroke({ color: mixNum(p.grass, p.forest, 0.3), alpha: 0.8, width: 1.5, cap: 'round' });
+    const pc = flowerColors[index % flowerColors.length];
+    for (let petal = 0; petal < 5; petal++) {
+      const angle = (petal / 5) * Math.PI * 2;
+      circle(g, x + Math.cos(angle) * 2.6, y - 7 + Math.sin(angle) * 2.6, 2.2, pc, 0.9);
+    }
+    circle(g, x, y - 7, 1.6, p.gold, 1);
+  }
+
+  function drawRock(g: Graphics, detail: Container, x: number, y: number, p: WorldPalette, rand: () => number, mossy: boolean): void {
+    const key: SpriteKey = mossy ? 'rock-moss-variant' : 'rock';
+    const tex = getSpriteTexture(key);
+    if (tex) {
+      const sprite = new Sprite(tex);
+      sprite.anchor.set(0.5, 1);
+      const size = getSpriteSize(key);
+      const s = 0.8 + rand() * 0.5;
+      sprite.width = size.w * s;
+      sprite.height = size.h * s;
+      sprite.x = x;
+      sprite.y = y;
+      detail.addChild(sprite);
+      return;
+    }
+    // Procedural fallback
+    const rw = 8 + rand() * 8;
+    const rh = 6 + rand() * 5;
+    ellipse(g, x + 3, y + 2, rw * 0.9, rh * 0.45, p.grassShadow, 0.4);
+    ellipse(g, x, y, rw, rh, mixNum(p.stone, p.ink, 0.15), 1);
+    ellipse(g, x - rw * 0.15, y - rh * 0.25, rw * 0.75, rh * 0.7, p.stone, 1);
+    ellipse(g, x - rw * 0.25, y - rh * 0.4, rw * 0.4, rh * 0.35, mixNum(p.stone, 0xffffff, 0.3), 0.7);
+  }
+
+  function drawTuft(g: Graphics, anim: Container, x: number, y: number, p: WorldPalette, rand: () => number, spriteAnimList: SpriteAnim[]): void {
+    const tex = getSpriteTexture('grass-tuft');
+    if (tex) {
+      const sprite = new Sprite(tex);
+      sprite.anchor.set(0.5, 1);
+      const size = getSpriteSize('grass-tuft');
+      const s = 0.7 + rand() * 0.6;
+      sprite.width = size.w * s;
+      sprite.height = size.h * s;
+      sprite.x = x;
+      sprite.y = y;
+      anim.addChild(sprite);
+      spriteAnimList.push({ sprite, phase: rand() * Math.PI * 2, baseY: y, baseScaleX: sprite.scale.x, baseScaleY: sprite.scale.y, kind: 'tuft' });
+      return;
+    }
+    // Procedural fallback
+    const th = 5 + rand() * 5;
+    for (let b = -1; b <= 1; b++) {
+      g.moveTo(x + b * 3, y);
+      g.quadraticCurveTo(x + b * 4, y - th, x + b * 5, y - th - 2);
+      g.stroke({ color: mixNum(p.grass, p.forest, 0.25), alpha: 0.8, width: 1.8, cap: 'round' });
+    }
+  }
+
+  function drawShell(detail: Container, x: number, y: number, rand: () => number): void {
+    const tex = getSpriteTexture('shell');
+    if (tex) {
+      const sprite = new Sprite(tex);
+      sprite.anchor.set(0.5, 1);
+      const size = getSpriteSize('shell');
+      sprite.width = size.w;
+      sprite.height = size.h;
+      sprite.x = x;
+      sprite.y = y;
+      sprite.rotation = (rand() - 0.5) * 0.6;
+      detail.addChild(sprite);
+    }
+    // No procedural fallback for shells — tiny detail
+  }
+
+  function drawConch(detail: Container, x: number, y: number, rand: () => number): void {
+    const tex = getSpriteTexture('conch');
+    if (tex) {
+      const sprite = new Sprite(tex);
+      sprite.anchor.set(0.5, 1);
+      const size = getSpriteSize('conch');
+      sprite.width = size.w;
+      sprite.height = size.h;
+      sprite.x = x;
+      sprite.y = y;
+      sprite.rotation = (rand() - 0.5) * 0.8;
+      detail.addChild(sprite);
+    }
+  }
+
+  function drawTidepool(detail: Container, x: number, y: number, rand: () => number): void {
+    const tex = getSpriteTexture('tidepool');
+    if (tex) {
+      const sprite = new Sprite(tex);
+      sprite.anchor.set(0.5, 0.5);
+      const size = getSpriteSize('tidepool');
+      const s = 0.8 + rand() * 0.4;
+      sprite.width = size.w * s;
+      sprite.height = size.h * s;
+      sprite.x = x;
+      sprite.y = y;
+      sprite.alpha = 0.85;
+      detail.addChild(sprite);
+    }
+  }
+
+  function drawCliffDetails(anim: Container, detail: Container, beachPts: readonly { readonly x: number; readonly y: number }[], rand: () => number, spriteAnimList: SpriteAnim[]): void {
+    const { cx, rx } = layout;
+    // Vines hanging from cliff top
+    const vineCount = 3 + Math.floor(rand() * 3); // 3-5
+    const vineTex = getSpriteTexture('vine');
+    for (let i = 0; i < vineCount; i++) {
+      const angle = Math.PI * 0.15 + rand() * Math.PI * 0.7; // spread along front cliff
+      const vx = cx + Math.cos(angle) * rx * (0.4 + rand() * 0.4);
+      const vy = layout.cy + Math.sin(angle) * layout.ry + 2;
+      if (vineTex) {
+        const sprite = new Sprite(vineTex);
+        sprite.anchor.set(0.5, 0);
+        const size = getSpriteSize('vine');
+        const s = 0.7 + rand() * 0.6;
+        sprite.width = size.w * s;
+        sprite.height = size.h * s;
+        sprite.x = vx;
+        sprite.y = vy;
+        anim.addChild(sprite);
+        spriteAnimList.push({ sprite, phase: rand() * Math.PI * 2, baseY: vy, baseScaleX: sprite.scale.x, baseScaleY: sprite.scale.y, kind: 'vine' });
+      } else {
+        // Procedural fallback: simple quadratic curve vine
+        const vg = new Graphics();
+        vg.moveTo(0, 0);
+        vg.quadraticCurveTo(3, 12, -2, 24);
+        vg.stroke({ color: 0x397457, alpha: 0.8, width: 2, cap: 'round' });
+        for (let l = 0; l < 4; l++) {
+          circle(vg, (l % 2 === 0 ? -3 : 3), 4 + l * 5, 3, 0x7bbe67, 0.9);
+        }
+        vg.x = vx;
+        vg.y = vy;
+        anim.addChild(vg);
+      }
+    }
+    // Moss patches on cliff face
+    const mossCount = 4 + Math.floor(rand() * 3); // 4-6
+    const mossTex = getSpriteTexture('moss-patch');
+    for (let i = 0; i < mossCount; i++) {
+      const angle = Math.PI * 0.1 + rand() * Math.PI * 0.8;
+      const mx = cx + Math.cos(angle) * rx * (0.3 + rand() * 0.5);
+      const my = layout.cy + Math.sin(angle) * layout.ry + 4 + rand() * (CLIFF_HEIGHT - 8);
+      if (mossTex) {
+        const sprite = new Sprite(mossTex);
+        sprite.anchor.set(0.5, 0.5);
+        const size = getSpriteSize('moss-patch');
+        const s = 0.6 + rand() * 0.6;
+        sprite.width = size.w * s;
+        sprite.height = size.h * s;
+        sprite.x = mx;
+        sprite.y = my;
+        sprite.alpha = 0.7;
+        detail.addChild(sprite);
+      } else {
+        circle(detail as unknown as Graphics, mx, my, 4 + rand() * 4, 0x7bbe67, 0.4);
+      }
+    }
+  }
+
   function addFlag(
     anim: Container,
     x: number,
@@ -976,6 +1218,37 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
       } else {
         tree.canopy.rotation = 0;
         tree.canopy.y = tree.baseY;
+      }
+    }
+
+    // Sprite vegetation/cliff animation
+    for (const sa of spriteAnims) {
+      if (!motionOn) {
+        sa.sprite.rotation = 0;
+        sa.sprite.y = sa.baseY;
+        sa.sprite.scale.set(sa.baseScaleX, sa.baseScaleY);
+        continue;
+      }
+      switch (sa.kind) {
+        case 'tree':
+          sa.sprite.rotation = Math.sin(timeMs / 2800 + sa.phase) * 0.035;
+          sa.sprite.y = sa.baseY + Math.sin(timeMs / 3400 + sa.phase * 1.3) * 1.2;
+          break;
+        case 'bush': {
+          const pulse = 1 + Math.sin(timeMs / 3200 + sa.phase) * 0.04;
+          sa.sprite.scale.set(sa.baseScaleX * pulse, sa.baseScaleY * pulse);
+          break;
+        }
+        case 'flower':
+          sa.sprite.rotation = Math.sin(timeMs / 2200 + sa.phase) * 0.06;
+          sa.sprite.y = sa.baseY + Math.sin(timeMs / 2800 + sa.phase * 1.4) * 0.8;
+          break;
+        case 'tuft':
+          sa.sprite.rotation = Math.sin(timeMs / 1800 + sa.phase) * 0.08;
+          break;
+        case 'vine':
+          sa.sprite.rotation = Math.sin(timeMs / 3000 + sa.phase) * 0.04;
+          break;
       }
     }
 

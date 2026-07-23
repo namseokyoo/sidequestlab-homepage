@@ -121,6 +121,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     // Wayfarers stationed on their home islands
     const displaylab = ISLAND_LAYOUTS.find((l) => l.id === 'displaylab');
     const booksalon = ISLAND_LAYOUTS.find((l) => l.id === 'booksalon');
+    const nbbang = ISLAND_LAYOUTS.find((l) => l.id === 'nbbang');
     if (displaylab) {
       const engineer = createWayfarer('CODE_ENGINEER', displaylab.cx - 20, displaylab.cy + 40, 'wayfarer-engineer');
       engineer.setState('WORKING');
@@ -132,6 +133,14 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
       qa.setState('INSPECTING');
       wayfarers.set('QA_NAVIGATOR', qa);
       wayfarerLayer.addChild(qa.container);
+    }
+
+    // Additional smoke sources (3 total: displaylab chimney, nbbang house, booksalon)
+    if (displaylab) {
+      particles.addSmokeSource(displaylab.cx + displaylab.rx * 0.2, displaylab.cy - displaylab.ry * 0.4);
+    }
+    if (nbbang) {
+      particles.addSmokeSource(nbbang.cx + nbbang.rx * 0.3 + 16, nbbang.cy + nbbang.ry * 0.12 - 24);
     }
 
     repaintAll();
@@ -146,10 +155,25 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     });
 
     // Main loop
+    let lastWalkTrigger = 0;
     app.ticker.add((ticker) => {
       if (destroyed) return;
       const timeMs = ticker.lastTime;
       const deltaMs = ticker.deltaMS;
+
+      // Periodic walk trigger: every 30s, wayfarers walk for 10s
+      if (motionEnabled && timeMs - lastWalkTrigger > 30000) {
+        lastWalkTrigger = timeMs;
+        for (const [role, w] of wayfarers) {
+          const home = role === 'CODE_ENGINEER' ? displaylab : booksalon;
+          if (home) {
+            const angle = Math.random() * Math.PI * 2;
+            const tx = home.cx + Math.cos(angle) * 40;
+            const ty = home.cy + Math.sin(angle) * 30;
+            w.moveTo(tx, ty, 10000);
+          }
+        }
+      }
 
       // Camera tween
       if (cameraTweening) {

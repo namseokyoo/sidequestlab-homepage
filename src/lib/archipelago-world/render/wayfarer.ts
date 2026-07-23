@@ -8,7 +8,7 @@
 import { Container, Graphics, Sprite } from 'pixi.js';
 
 import type { WorldPalette } from '../palette.ts';
-import { getSpriteTexture, onSpriteLoaded, type SpriteKey } from './sprite-assets.ts';
+import { getSpriteTexture, getWalkFrames, onSpriteLoaded, type SpriteKey } from './sprite-assets.ts';
 
 export type WayfarerRole = 'CODE_ENGINEER' | 'QA_NAVIGATOR';
 
@@ -72,6 +72,8 @@ export function createWayfarer(
   let palette: WorldPalette | null = null;
   let nightTint = 0;
   let spriteActive = false;
+  let walkFrames: import('pixi.js').Texture[] | null = null;
+  let walkFrameIndex = 0;
   // Movement
   let moveFrom = { x, y };
   let moveTarget = { x, y };
@@ -103,6 +105,9 @@ export function createWayfarer(
     spriteActive = true;
     syncSpriteVisibility();
     applyNightTint();
+    // Try to load walk frames for this role
+    const walkRole = role === 'CODE_ENGINEER' ? 'engineer' : 'qa';
+    walkFrames = getWalkFrames(walkRole);
   }
 
   function syncSpriteVisibility(): void {
@@ -372,10 +377,30 @@ export function createWayfarer(
       const isWalking = state === 'WALKING' && moving;
       const breathe = Math.sin(timeMs / 1800);
       if (isWalking) {
-        spriteBody.y = Math.abs(walkCycle) * -2.5;
-        spriteBody.rotation = walkCycle * 0.045;
-        spriteBody.scale.set(1 + walkCycle * 0.012, 1 - Math.abs(walkCycle) * 0.025);
+        // Walk-cycle frame animation at 8fps (125ms per frame)
+        if (walkFrames && spriteImg) {
+          const newFrame = Math.floor(timeMs / 125) % 4;
+          if (newFrame !== walkFrameIndex) {
+            walkFrameIndex = newFrame;
+            spriteImg.texture = walkFrames[walkFrameIndex];
+          }
+          spriteBody.y = Math.abs(walkCycle) * -1.5;
+          spriteBody.rotation = 0;
+          spriteBody.scale.set(1, 1);
+        } else {
+          spriteBody.y = Math.abs(walkCycle) * -2.5;
+          spriteBody.rotation = walkCycle * 0.045;
+          spriteBody.scale.set(1 + walkCycle * 0.012, 1 - Math.abs(walkCycle) * 0.025);
+        }
       } else {
+        // Reset to single-pose sprite when not walking
+        if (walkFrames && spriteImg) {
+          const poseKey: SpriteKey = role === 'CODE_ENGINEER' ? 'wayfarer-engineer' : 'wayfarer-qa';
+          const poseTex = getSpriteTexture(poseKey);
+          if (poseTex && spriteImg.texture !== poseTex) {
+            spriteImg.texture = poseTex;
+          }
+        }
         switch (state) {
           case 'WORKING': {
             const hammer = Math.sin(timeMs / 350);

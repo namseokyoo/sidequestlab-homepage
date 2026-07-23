@@ -60,12 +60,17 @@ export function createWaterSystem(): WaterSystem {
 
   // Sparkles
   const sparkles: Sparkle[] = [];
-  for (let i = 0; i < 36; i++) {
+  for (let i = 0; i < 52; i++) {
     const g = new Graphics();
     const sparkle: Sparkle = {
       g,
-      baseX: random() * WORLD_WIDTH,
-      baseY: random() * WORLD_HEIGHT,
+      // Bias 60% near island edges
+      baseX: i < 31
+        ? ISLAND_LAYOUTS[i % ISLAND_LAYOUTS.length].cx + (random() - 0.5) * ISLAND_LAYOUTS[i % ISLAND_LAYOUTS.length].rx * 2.6
+        : random() * WORLD_WIDTH,
+      baseY: i < 31
+        ? ISLAND_LAYOUTS[i % ISLAND_LAYOUTS.length].cy + (random() - 0.5) * ISLAND_LAYOUTS[i % ISLAND_LAYOUTS.length].ry * 2.6
+        : random() * WORLD_HEIGHT,
       phase: random() * Math.PI * 2,
       period: 2200 + random() * 2600,
       size: 1.5 + random() * 2.5,
@@ -120,6 +125,28 @@ export function createWaterSystem(): WaterSystem {
   type FoamDot = { readonly g: Graphics; readonly phase: number; readonly baseX: number; readonly baseY: number };
   const dots: FoamDot[] = [];
   const dotRand = createSeededRandom(808);
+
+  // Wave arcs around islands
+  type WaveArc = { readonly g: Graphics; readonly cx: number; readonly cy: number; readonly rx: number; readonly ry: number; readonly phase: number; readonly period: number };
+  const waveArcs: WaveArc[] = [];
+  const arcRand = createSeededRandom(707);
+  for (const layout of ISLAND_LAYOUTS) {
+    const offsets = [35, 50, 65];
+    for (const off of offsets) {
+      const g = new Graphics();
+      waveArcs.push({
+        g,
+        cx: layout.cx,
+        cy: layout.cy,
+        rx: layout.rx + off,
+        ry: layout.ry + off * 0.8,
+        phase: arcRand() * Math.PI * 2,
+        period: 4000 + arcRand() * 2000,
+      });
+      animLayer.addChild(g);
+    }
+  }
+
   for (const layout of ISLAND_LAYOUTS) {
     const spots = layout.companion
       ? [layout, { cx: layout.companion.cx, cy: layout.companion.cy, rx: layout.companion.rx, ry: layout.companion.ry }]
@@ -237,6 +264,13 @@ export function createWaterSystem(): WaterSystem {
       circle(d.g, 0, 0, 2 + (d.phase % 2), palette.foam, 0.6);
     }
 
+    // Repaint wave arcs
+    for (const arc of waveArcs) {
+      arc.g.clear();
+      arc.g.ellipse(arc.cx, arc.cy, arc.rx, arc.ry);
+      arc.g.stroke({ color: palette.foam, alpha: 0.3, width: 4 + (arc.phase % 4) });
+    }
+
     // Moonlight glade on water (night)
     moonGlade.clear();
     moonGlade.visible = night > 0.3;
@@ -287,9 +321,18 @@ export function createWaterSystem(): WaterSystem {
     // Foam dots drift and pulse
     for (const d of dots) {
       const wave = Math.sin(timeMs / 2400 + d.phase);
-      d.g.x = d.baseX + Math.sin(timeMs / 3800 + d.phase * 2) * 5;
-      d.g.y = d.baseY + Math.cos(timeMs / 3200 + d.phase) * 3;
+      // Radial drift toward/away from nearest island center
+      const radial = Math.sin(timeMs / 3000 + d.phase) * 3;
+      d.g.x = d.baseX + Math.sin(timeMs / 3800 + d.phase * 2) * 5 + radial;
+      d.g.y = d.baseY + Math.cos(timeMs / 3200 + d.phase) * 3 + radial * 0.6;
       d.g.alpha = 0.25 + Math.max(0, wave) * 0.45;
+    }
+    // Wave arcs pulse
+    for (const arc of waveArcs) {
+      const cycle = Math.sin(timeMs / arc.period + arc.phase);
+      arc.g.alpha = 0.1 + Math.max(0, cycle) * 0.4;
+      const offset = cycle * 8;
+      arc.g.scale.set(1 + offset / arc.rx, 1 + offset / arc.ry);
     }
     // Moon glade shimmer
     if (moonGlade.visible) {

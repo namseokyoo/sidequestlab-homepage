@@ -3,11 +3,13 @@
  * butterflies (day), and release sparkles.
  */
 
-import { Container, Graphics } from 'pixi.js';
+import { Container, Graphics, Sprite } from 'pixi.js';
 
+import { ISLAND_LAYOUTS } from '../islands.ts';
 import { createSeededRandom } from '../math.ts';
 import type { WorldPalette } from '../palette.ts';
 import { circle } from '../shapes.ts';
+import { getSpriteTexture } from './sprite-assets.ts';
 
 export type ParticleSystem = {
   readonly container: Container;
@@ -19,6 +21,7 @@ export type ParticleSystem = {
 
 type SmokePuff = {
   readonly g: Graphics;
+  sprite: Sprite | null;
   readonly sourceX: number;
   readonly sourceY: number;
   readonly phase: number;
@@ -44,6 +47,22 @@ type Butterfly = {
   readonly phase: number;
   readonly wanderRadius: number;
   readonly color: number;
+  readonly homeX: number;
+  readonly homeY: number;
+};
+
+type FallingLeaf = {
+  sprite: Sprite | null;
+  fallback: Graphics | null;
+  x: number;
+  y: number;
+  readonly spawnX: number;
+  readonly spawnY: number;
+  readonly vy: number;
+  readonly swayAmp: number;
+  readonly swayPeriod: number;
+  readonly phase: number;
+  readonly rotSpeed: number;
 };
 
 type Sparkle = {
@@ -61,13 +80,15 @@ export function createParticleSystem(): ParticleSystem {
   const smokeLayer = new Container();
   const fireflyLayer = new Container();
   const butterflyLayer = new Container();
+  const leafLayer = new Container();
   const sparkleLayer = new Container();
-  container.addChild(smokeLayer, fireflyLayer, butterflyLayer, sparkleLayer);
+  container.addChild(smokeLayer, fireflyLayer, butterflyLayer, leafLayer, sparkleLayer);
 
   const random = createSeededRandom(2026);
   const smokePuffs: SmokePuff[] = [];
   const fireflies: Firefly[] = [];
   const butterflies: Butterfly[] = [];
+  const leaves: FallingLeaf[] = [];
   const sparkles: Sparkle[] = [];
   let palette: WorldPalette | null = null;
 
@@ -99,6 +120,18 @@ export function createParticleSystem(): ParticleSystem {
   ];
   for (let i = 0; i < butterflySpots.length; i++) {
     const spot = butterflySpots[i];
+    // Assign each butterfly a home island for Lissajous orbiting
+    let homeX = spot.x;
+    let homeY = spot.y;
+    let bestDist = Infinity;
+    for (const isl of ISLAND_LAYOUTS) {
+      const d = Math.hypot(spot.x - isl.cx, spot.y - isl.cy);
+      if (d < bestDist) {
+        bestDist = d;
+        homeX = isl.cx;
+        homeY = isl.cy;
+      }
+    }
     const g = new Container() as unknown as Graphics;
     const wingL = new Graphics();
     const wingR = new Graphics();
@@ -113,8 +146,31 @@ export function createParticleSystem(): ParticleSystem {
       phase: random() * Math.PI * 2,
       wanderRadius: 30 + random() * 50,
       color: butterflyColors[i % butterflyColors.length],
+      homeX,
+      homeY,
     });
     butterflyLayer.addChild(g as unknown as Container);
+  }
+
+  // Pre-create falling leaves (spawn near island tree heights)
+  for (let i = 0; i < 8; i++) {
+    const isl = ISLAND_LAYOUTS[i % ISLAND_LAYOUTS.length];
+    const spawnX = isl.cx + (random() - 0.5) * isl.rx * 1.2;
+    const spawnY = isl.cy - 40 - random() * 25;
+    const leaf: FallingLeaf = {
+      sprite: null,
+      fallback: null,
+      x: spawnX,
+      y: spawnY + random() * 80,
+      spawnX,
+      spawnY,
+      vy: 0.015 + random() * 0.01,
+      swayAmp: 15 + random() * 10,
+      swayPeriod: 2000 + random() * 1000,
+      phase: random() * Math.PI * 2,
+      rotSpeed: 0.0008 + random() * 0.0006,
+    };
+    leaves.push(leaf);
   }
 
   function addSmokeSource(x: number, y: number): void {
@@ -122,6 +178,7 @@ export function createParticleSystem(): ParticleSystem {
       const g = new Graphics();
       smokePuffs.push({
         g,
+        sprite: null,
         sourceX: x,
         sourceY: y,
         phase: i / 5,
@@ -154,10 +211,27 @@ export function createParticleSystem(): ParticleSystem {
 
   function repaint(p: WorldPalette): void {
     palette = p;
+
+    // Smoke puffs — sprite or procedural circle
+    const smokeTex = getSpriteTexture('smoke-puff');
     for (const puff of smokePuffs) {
-      puff.g.clear();
-      circle(puff.g, 0, 0, 5, p.foam, 0.5);
+      if (smokeTex) {
+        if (!puff.sprite) {
+          puff.sprite = new Sprite(smokeTex);
+          puff.sprite.anchor.set(0.5, 0.5);
+          puff.sprite.tint = 0xfff8f0;
+          smokeLayer.addChild(puff.sprite);
+        }
+        puff.g.visible = false;
+        puff.sprite.visible = true;
+      } else {
+        puff.g.clear();
+        circle(puff.g, 0, 0, 5, p.foam, 0.5);
+        puff.g.visible = true;
+        if (puff.sprite) puff.sprite.visible = false;
+      }
     }
+
     for (const f of fireflies) {
       f.g.clear();
       circle(f.g, 0, 0, 2.5, p.lanternGlow, 0.9);
@@ -175,6 +249,32 @@ export function createParticleSystem(): ParticleSystem {
       bodyG.roundRect(-1, -3, 2, 6, 1);
       bodyG.fill({ color: 0x444444, alpha: 0.8 });
     }
+
+    // Falling leaves — sprite or procedural ellipse
+    const leafTex = getSpriteTexture('leaf');
+    for (const leaf of leaves) {
+      if (leafTex) {
+        if (!leaf.sprite) {
+          leaf.sprite = new Sprite(leafTex);
+          leaf.sprite.anchor.set(0.5, 0.5);
+          leaf.sprite.width = 6;
+          leaf.sprite.height = 6;
+          leafLayer.addChild(leaf.sprite);
+        }
+        if (leaf.fallback) leaf.fallback.visible = false;
+        leaf.sprite.visible = true;
+      } else {
+        if (!leaf.fallback) {
+          leaf.fallback = new Graphics();
+          leafLayer.addChild(leaf.fallback);
+        }
+        leaf.fallback.clear();
+        leaf.fallback.ellipse(0, 0, 3.5, 2);
+        leaf.fallback.fill({ color: 0xb8c96a, alpha: 0.85 });
+        leaf.fallback.visible = true;
+        if (leaf.sprite) leaf.sprite.visible = false;
+      }
+    }
   }
 
   function tick(timeMs: number, deltaMs: number, motionOn: boolean, night: number): void {
@@ -183,11 +283,20 @@ export function createParticleSystem(): ParticleSystem {
       const cycle = motionOn
         ? ((timeMs / puff.period + puff.phase) % 1 + 1) % 1
         : 0.3;
-      puff.g.x = puff.sourceX + puff.drift * cycle + (motionOn ? Math.sin(timeMs / 1800 + puff.phase * 10) * 4 : 0);
-      puff.g.y = puff.sourceY - cycle * 46;
-      puff.g.alpha = (1 - cycle) * 0.45;
+      const px = puff.sourceX + puff.drift * cycle + (motionOn ? Math.sin(timeMs / 1800 + puff.phase * 10) * 4 : 0);
+      const py = puff.sourceY - cycle * 46;
       const s = 0.5 + cycle * 1.4;
+      const alpha = (1 - cycle) * 0.45;
+      puff.g.x = px;
+      puff.g.y = py;
+      puff.g.alpha = alpha;
       puff.g.scale.set(s, s);
+      if (puff.sprite) {
+        puff.sprite.x = px;
+        puff.sprite.y = py;
+        puff.sprite.alpha = alpha;
+        puff.sprite.scale.set(s, s);
+      }
     }
 
     // Fireflies — visible at night
@@ -213,8 +322,9 @@ export function createParticleSystem(): ParticleSystem {
     if (butterflyLayer.visible) {
       for (const b of butterflies) {
         if (motionOn) {
-          b.g.x = b.baseX + Math.sin(timeMs / 2600 + b.phase) * b.wanderRadius;
-          b.g.y = b.baseY + Math.cos(timeMs / 3400 + b.phase * 2.1) * b.wanderRadius * 0.5
+          // Island-centered Lissajous orbit
+          b.g.x = b.homeX + Math.sin(timeMs / 2600 + b.phase) * b.wanderRadius * 1.6;
+          b.g.y = b.homeY - 30 + Math.cos(timeMs / 3400 + b.phase * 2.1) * b.wanderRadius * 0.7
             + Math.sin(timeMs / 700 + b.phase) * 4;
         } else {
           b.g.x = b.baseX;
@@ -223,6 +333,36 @@ export function createParticleSystem(): ParticleSystem {
         const flap = motionOn ? Math.sin(timeMs / 90 + b.phase * 20) : 0.4;
         b.wingL.scale.x = 0.3 + Math.abs(flap) * 0.7;
         b.wingR.scale.x = 0.3 + Math.abs(flap) * 0.7;
+      }
+    }
+
+    // Falling leaves — visible during day
+    leafLayer.visible = night < 0.5;
+    leafLayer.alpha = 1 - night * 1.5;
+    if (leafLayer.visible) {
+      for (const leaf of leaves) {
+        if (motionOn) {
+          leaf.y += leaf.vy * deltaMs;
+          leaf.x = leaf.spawnX + Math.sin(timeMs / leaf.swayPeriod + leaf.phase) * leaf.swayAmp;
+          // Respawn at top when fallen too far
+          if (leaf.y > leaf.spawnY + 120) {
+            leaf.y = leaf.spawnY;
+          }
+        }
+        const rot = timeMs * leaf.rotSpeed + leaf.phase;
+        const alpha = Math.max(0, 1 - (leaf.y - leaf.spawnY) / 120);
+        if (leaf.sprite) {
+          leaf.sprite.x = leaf.x;
+          leaf.sprite.y = leaf.y;
+          leaf.sprite.rotation = rot;
+          leaf.sprite.alpha = alpha * 0.9;
+        }
+        if (leaf.fallback) {
+          leaf.fallback.x = leaf.x;
+          leaf.fallback.y = leaf.y;
+          leaf.fallback.rotation = rot;
+          leaf.fallback.alpha = alpha * 0.85;
+        }
       }
     }
 
