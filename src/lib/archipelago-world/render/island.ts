@@ -60,11 +60,13 @@ type LanternGlow = {
 
 /** Lifecycle-driven animated props (crane, antenna, hologram). */
 type LifecycleAnim = {
-  readonly g: Graphics;
+  readonly g: Graphics | Sprite;
   readonly kind: 'crane' | 'antenna' | 'hologram' | 'beacon';
   readonly phase: number;
   readonly baseX: number;
   readonly baseY: number;
+  /** True when `g` is an AI lifecycle sprite (crane) or a sprite-mode overlay (antenna/beacon). */
+  readonly spriteMode?: boolean;
 };
 
 export function createIslandSystem(layout: IslandLayout, lifecycle?: string | null): IslandSystem {
@@ -101,6 +103,7 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
   let landmarkGlow: Graphics | null = null;
   let spriteNight = 0;
   let spriteUnsub: (() => void) | null = null;
+  let lifecycleUnsub: (() => void) | null = null;
 
   /** Which sprite key maps to this island's signature landmark. */
   const landmarkKey: SpriteKey | null =
@@ -185,6 +188,31 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     } else {
       spriteUnsub = onSpriteLoaded(landmarkKey, (texture) => {
         if (texture) applyLandmarkSprite(texture);
+      });
+    }
+  }
+
+  // ── AI lifecycle sprite subscription ────────────────────────────
+  // When the lifecycle sprite for this island's state loads late, repaint
+  // so the procedural prop swaps out for the AI sprite (same pattern as
+  // the landmark sprite above).
+
+  /** Which AI lifecycle sprite (if any) matches this island's lifecycle state. */
+  function lifecycleSpriteKey(): SpriteKey | null {
+    if (!lifecycle) return null;
+    const lc = lifecycle.toUpperCase();
+    if (lc === 'BUILDING' || lc === 'DEPLOYING') return 'lifecycle-crane';
+    if (lc === 'OPERATING' || lc === 'MAINTENANCE') return 'lifecycle-antenna';
+    if (lc === 'TESTING' || lc === 'REVIEWING') return 'lifecycle-beacon';
+    // PLANNING/DESIGNING/IDEA hologram stays fully procedural.
+    return null;
+  }
+
+  {
+    const lcKey = lifecycleSpriteKey();
+    if (lcKey && !getSpriteTexture(lcKey)) {
+      lifecycleUnsub = onSpriteLoaded(lcKey, (texture) => {
+        if (texture) repaintLandmarkFallback();
       });
     }
   }
@@ -497,17 +525,64 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     // The island's silhouette language communicates project state at a
     // glance: construction gear while building, signal hardware while
     // operating, a holographic blueprint while planning.
+    // AI sprites replace procedural art when loaded; procedural fallback
+    // renders immediately and is swapped out via onSpriteLoaded repaint.
     if (lifecycle) {
       const lc = lifecycle.toUpperCase();
       if (lc === 'BUILDING' || lc === 'DEPLOYING') {
-        drawCrane(animLayer, cx + rx * 0.52, cy - ry * 0.28, p);
+        const craneX = cx + rx * 0.52;
+        const craneY = cy - ry * 0.28;
+        const craneTex = getSpriteTexture('lifecycle-crane');
+        if (craneTex) {
+          const craneSprite = makeLifecycleSprite(craneTex, 'lifecycle-crane', craneX, craneY, 62, night);
+          animLayer.addChild(craneSprite);
+          lifecycleAnims.push({ g: craneSprite, kind: 'crane', phase: 0, baseX: craneX, baseY: craneY, spriteMode: true });
+        } else {
+          drawCrane(animLayer, craneX, craneY, p);
+        }
         drawScaffold(staticLayer, cx - rx * 0.48, cy + ry * 0.1, p);
       } else if (lc === 'OPERATING' || lc === 'MAINTENANCE') {
-        drawAntenna(animLayer, cx - rx * 0.42, cy - ry * 0.38, p);
+        const antX = cx - rx * 0.42;
+        const antY = cy - ry * 0.38;
+        const antTex = getSpriteTexture('lifecycle-antenna');
+        if (antTex) {
+          const antSprite = makeLifecycleSprite(antTex, 'lifecycle-antenna', antX, antY, 48, night);
+          animLayer.addChild(antSprite);
+          // Pulsing signal ring overlay on top of the static sprite
+          const ringG = new Graphics();
+          ringG.x = antX;
+          ringG.y = antY;
+          for (let i = 1; i <= 3; i++) {
+            ringG.arc(0, -48 * 0.82, 6 + i * 7, -Math.PI * 0.7, -Math.PI * 0.3);
+            ringG.stroke({ color: 0x4dabf7, alpha: 0.45 - i * 0.1, width: 2 });
+          }
+          animLayer.addChild(ringG);
+          lifecycleAnims.push({ g: ringG, kind: 'antenna', phase: 0, baseX: antX, baseY: antY, spriteMode: true });
+        } else {
+          drawAntenna(animLayer, antX, antY, p);
+        }
       } else if (lc === 'PLANNING' || lc === 'DESIGNING' || lc === 'IDEA') {
         drawHologram(animLayer, cx, cy - ry * 0.15, rx, ry, p);
       } else if (lc === 'TESTING' || lc === 'REVIEWING') {
-        drawScanBeacon(animLayer, cx + rx * 0.45, cy - ry * 0.2, p);
+        const bcnX = cx + rx * 0.45;
+        const bcnY = cy - ry * 0.2;
+        const bcnTex = getSpriteTexture('lifecycle-beacon');
+        if (bcnTex) {
+          const bcnSprite = makeLifecycleSprite(bcnTex, 'lifecycle-beacon', bcnX, bcnY, 30, night);
+          animLayer.addChild(bcnSprite);
+          // Rotating sweep overlay on top of the static sprite
+          const sweepG = new Graphics();
+          sweepG.x = bcnX;
+          sweepG.y = bcnY;
+          sweepG.moveTo(0, -30 * 0.72);
+          sweepG.arc(0, -30 * 0.72, 18, -0.35, 0.35);
+          sweepG.closePath();
+          sweepG.fill({ color: 0x4dabf7, alpha: 0.35 });
+          animLayer.addChild(sweepG);
+          lifecycleAnims.push({ g: sweepG, kind: 'beacon', phase: 0, baseX: bcnX, baseY: bcnY, spriteMode: true });
+        } else {
+          drawScanBeacon(animLayer, bcnX, bcnY, p);
+        }
       }
     }
   }
@@ -901,6 +976,34 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
   }
 
   // ── Shared painters ─────────────────────────────────────────────
+
+  /**
+   * Build an AI lifecycle sprite (crane/antenna/beacon) anchored bottom-center
+   * at (x, y), scaled to `targetH` world units tall, with the same night tint
+   * the landmark sprite uses. Mirrors the pavilion/landmark sprite pattern.
+   */
+  function makeLifecycleSprite(
+    texture: import('pixi.js').Texture,
+    key: SpriteKey,
+    x: number,
+    y: number,
+    targetH: number,
+    night: number,
+  ): Sprite {
+    const sprite = new Sprite(texture);
+    sprite.anchor.set(0.5, 1); // base at anchor
+    const scale = targetH / texture.height;
+    sprite.width = texture.width * scale;
+    sprite.height = targetH;
+    sprite.x = x;
+    sprite.y = y;
+    sprite.label = `lifecycle-sprite-${key}`;
+    const r = Math.round(255 - night * 55);
+    const g = Math.round(255 - night * 35);
+    const b = Math.round(255 - night * 5);
+    sprite.tint = (r << 16) | (g << 8) | b;
+    return sprite;
+  }
 
   // ── Lifecycle status prop painters ──────────────────────────────
 
@@ -1620,17 +1723,27 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
       }
       switch (la.kind) {
         case 'crane': {
-          // Slow jib swing + hook bob
-          la.g.rotation = Math.sin(timeMs / 4000) * 0.06;
+          if (la.spriteMode) {
+            // Gentle sway for the AI crane sprite
+            la.g.rotation = Math.sin(timeMs / 4000) * 0.02;
+          } else {
+            // Slow jib swing + hook bob
+            la.g.rotation = Math.sin(timeMs / 4000) * 0.06;
+          }
           break;
         }
         case 'antenna': {
-          // Blinking beacon light
-          const blink = Math.sin(timeMs / 500) > 0 ? 1 : 0.25;
-          la.g.alpha = blink;
-          // Rings pulse outward
-          const ringPulse = 1 + Math.sin(timeMs / 900) * 0.08;
-          la.g.scale.set(ringPulse, ringPulse);
+          if (la.spriteMode) {
+            // Pulse the overlay ring alpha (sprite stays static)
+            la.g.alpha = 0.25 + Math.abs(Math.sin(timeMs / 900)) * 0.25;
+          } else {
+            // Blinking beacon light
+            const blink = Math.sin(timeMs / 500) > 0 ? 1 : 0.25;
+            la.g.alpha = blink;
+            // Rings pulse outward
+            const ringPulse = 1 + Math.sin(timeMs / 900) * 0.08;
+            la.g.scale.set(ringPulse, ringPulse);
+          }
           break;
         }
         case 'hologram': {
@@ -1641,10 +1754,15 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
           break;
         }
         case 'beacon': {
-          // Rotating sweep glow
-          const sweep = (timeMs / 1400) % (Math.PI * 2);
-          la.g.rotation = Math.sin(sweep) * 0.15;
-          la.g.alpha = 0.7 + Math.sin(timeMs / 350) * 0.3;
+          if (la.spriteMode) {
+            // Rotate the sweep overlay around the dome
+            la.g.rotation = (timeMs / 1400) % (Math.PI * 2);
+          } else {
+            // Rotating sweep glow
+            const sweep = (timeMs / 1400) % (Math.PI * 2);
+            la.g.rotation = Math.sin(sweep) * 0.15;
+            la.g.alpha = 0.7 + Math.sin(timeMs / 350) * 0.3;
+          }
           break;
         }
       }
@@ -1659,6 +1777,7 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     dispose: () => {
       spriteUnsub?.();
       terrainUnsub?.();
+      lifecycleUnsub?.();
       removeLandmarkSprite();
       terrainLayer.removeChildren().forEach((c) => c.destroy({ children: true }));
       terrainSprite = null;

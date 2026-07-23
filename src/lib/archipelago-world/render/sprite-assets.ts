@@ -45,7 +45,10 @@ export type SpriteKey =
   | 'island-large'
   | 'island-medium'
   | 'island-small'
-  | 'island-tiny';
+  | 'island-tiny'
+  | 'lifecycle-crane'
+  | 'lifecycle-antenna'
+  | 'lifecycle-beacon';
 
 const SPRITE_MANIFEST: Record<SpriteKey, string> = {
   'wayfarer-engineer': '/images/archipelago/sprites/wayfarer-engineer.png',
@@ -84,6 +87,9 @@ const SPRITE_MANIFEST: Record<SpriteKey, string> = {
   'island-medium': '/images/archipelago/sprites/island-medium.png',
   'island-small': '/images/archipelago/sprites/island-small.png',
   'island-tiny': '/images/archipelago/sprites/island-tiny.png',
+  'lifecycle-crane': '/images/archipelago/sprites/lifecycle-crane.png',
+  'lifecycle-antenna': '/images/archipelago/sprites/lifecycle-antenna.png',
+  'lifecycle-beacon': '/images/archipelago/sprites/lifecycle-beacon.png',
 };
 
 /** Normalized display dimensions (world units) for each sprite key. */
