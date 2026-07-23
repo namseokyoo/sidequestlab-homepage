@@ -50,8 +50,19 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
     () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
     () => false,
   );
+  // Save-Data: disable particles + reduce sprite animations
+  const saveData = useSyncExternalStore(
+    (onStoreChange) => {
+      const conn = (navigator as unknown as { connection?: { saveData?: boolean; addEventListener?: (e: string, cb: () => void) => void; removeEventListener?: (e: string, cb: () => void) => void } }).connection;
+      if (!conn?.addEventListener) return () => {};
+      conn.addEventListener('change', onStoreChange);
+      return () => conn.removeEventListener?.('change', onStoreChange);
+    },
+    () => Boolean((navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData),
+    () => false,
+  );
   const [motionOverride, setMotionOverride] = useState<boolean | null>(null);
-  const motionEnabled = motionOverride ?? !prefersReducedMotion;
+  const motionEnabled = saveData ? false : (motionOverride ?? !prefersReducedMotion);
   const [labels, setLabels] = useState<readonly IslandLabel[]>([]);
   const [viewport, setViewport] = useState({ width: 1200, height: 700 });
   const containerRef = useRef<HTMLDivElement>(null);

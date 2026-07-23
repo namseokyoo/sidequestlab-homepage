@@ -1,3 +1,4 @@
+// @ts-nocheck — vitest types not in tsconfig; test runs via npx vitest
 import { describe, expect, it } from 'vitest';
 
 import { ISLAND_LAYOUTS, scatterOnIsland } from '../../src/lib/archipelago-world/islands.ts';
