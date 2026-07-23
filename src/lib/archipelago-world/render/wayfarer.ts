@@ -109,6 +109,8 @@ export function createWayfarer(
     const show = spriteActive;
     legL.visible = !show;
     legR.visible = !show;
+    armL.visible = !show;
+    armR.visible = !show;
     torso.visible = !show;
     head.visible = !show;
     toolG.visible = !show;
@@ -356,6 +358,53 @@ export function createWayfarer(
       armR.rotation = 0;
       head.y = 0;
       body.y = 0;
+      spriteBody.y = 0;
+      spriteBody.rotation = 0;
+      spriteBody.scale.set(1, 1);
+      return;
+    }
+
+    // ── Sprite mode: animate the whole sprite as one body ─────────
+    // Procedural limbs are hidden; the sprite itself bounces, sways,
+    // and tilts per state so the character still feels alive.
+    if (spriteActive) {
+      const walkCycle = Math.sin(timeMs / 110);
+      const isWalking = state === 'WALKING' && moving;
+      const breathe = Math.sin(timeMs / 1800);
+      if (isWalking) {
+        spriteBody.y = Math.abs(walkCycle) * -2.5;
+        spriteBody.rotation = walkCycle * 0.045;
+        spriteBody.scale.set(1 + walkCycle * 0.012, 1 - Math.abs(walkCycle) * 0.025);
+      } else {
+        switch (state) {
+          case 'WORKING': {
+            const hammer = Math.sin(timeMs / 350);
+            spriteBody.y = Math.max(0, hammer) * -2.2;
+            spriteBody.rotation = hammer * 0.045;
+            spriteBody.scale.set(1, 1);
+            break;
+          }
+          case 'INSPECTING': {
+            const look = Math.sin(timeMs / 2400);
+            spriteBody.rotation = look * 0.06;
+            spriteBody.y = breathe * -0.9;
+            spriteBody.scale.set(1, 1 + breathe * 0.008);
+            break;
+          }
+          case 'WAVING': {
+            const wave = Math.sin(timeMs / 150);
+            spriteBody.y = Math.abs(wave) * -3.2;
+            spriteBody.rotation = wave * 0.09;
+            spriteBody.scale.set(1, 1);
+            break;
+          }
+          default: {
+            spriteBody.y = breathe * -1.1;
+            spriteBody.rotation = Math.sin(timeMs / 4000) * 0.025;
+            spriteBody.scale.set(1, 1 + breathe * 0.012);
+          }
+        }
+      }
       return;
     }
 
