@@ -58,7 +58,16 @@ type LanternGlow = {
   readonly phase: number;
 };
 
-export function createIslandSystem(layout: IslandLayout): IslandSystem {
+/** Lifecycle-driven animated props (crane, antenna, hologram). */
+type LifecycleAnim = {
+  readonly g: Graphics;
+  readonly kind: 'crane' | 'antenna' | 'hologram' | 'beacon';
+  readonly phase: number;
+  readonly baseX: number;
+  readonly baseY: number;
+};
+
+export function createIslandSystem(layout: IslandLayout, lifecycle?: string | null): IslandSystem {
   const container = new Container();
   container.label = `island-${layout.id}`;
 
@@ -66,16 +75,24 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
   const animLayer = new Container();
   /** Static sprite details (rocks, shells, tide pools, moss patches). */
   const detailLayer = new Container();
-  container.addChild(staticLayer, detailLayer, animLayer);
+  /** AI terrain sprite — replaces procedural terrain blobs when loaded. */
+  const terrainLayer = new Container();
+  container.addChild(terrainLayer, staticLayer, detailLayer, animLayer);
 
   const trees: TreeAnim[] = [];
   const spriteAnims: SpriteAnim[] = [];
   const flags: FlagAnim[] = [];
   const windows: WindowGlow[] = [];
   const lanterns: LanternGlow[] = [];
+  const lifecycleAnims: LifecycleAnim[] = [];
   let boat: Graphics | null = null;
   let boatBaseY = 0;
   const smokeSources: { x: number; y: number }[] = [];
+
+  // ── AI terrain sprite state ─────────────────────────────────────
+  let terrainSprite: Sprite | null = null;
+  let terrainNight = 0;
+  let terrainUnsub: (() => void) | null = null;
 
   // ── AI landmark sprite state ────────────────────────────────────
   // When a sprite texture is available it replaces the procedural
@@ -91,7 +108,9 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
       ? 'landmark-lighthouse'
       : layout.id === 'booksalon'
         ? 'landmark-booksalon'
-        : null;
+        : layout.id === 'nbbang'
+          ? 'landmark-pavilion'
+          : null;
 
   /** World-space anchor for the landmark sprite (feet/base position). */
   function landmarkAnchor(): { x: number; y: number; h: number } {
@@ -99,11 +118,15 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     if (layout.id === 'displaylab') {
       return { x: cx + rx * 0.35, y: cy - ry * 0.35 + 12, h: 100 };
     }
+    if (layout.id === 'nbbang') {
+      return { x: cx + rx * 0.15, y: cy - ry * 0.35 + 12, h: 96 };
+    }
     // booksalon reading house
     return { x: cx - rx * 0.05, y: cy - ry * 0.2 + 4, h: 92 };
   }
 
-  function applyLandmarkSprite(texture: import('pixi.js').Texture): void {
+  /** Attach (or re-attach) the landmark sprite without triggering a repaint. */
+  function attachLandmarkSprite(texture: import('pixi.js').Texture): void {
     removeLandmarkSprite();
     const anchor = landmarkAnchor();
     landmarkSprite = new Sprite(texture);
@@ -123,6 +146,11 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
 
     animLayer.addChild(landmarkGlow, landmarkSprite);
     updateLandmarkNight(spriteNight);
+  }
+
+  /** Attach the landmark sprite and repaint so procedural art hides itself. */
+  function applyLandmarkSprite(texture: import('pixi.js').Texture): void {
+    attachLandmarkSprite(texture);
     repaintLandmarkFallback();
   }
 
@@ -161,17 +189,80 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     }
   }
 
+  // ── AI terrain sprite ───────────────────────────────────────────
+  // The terrain sprite replaces the procedural blob terrain (water
+  // shadow, wet sand, cliff, beach, terrace, grass, patches) with a
+  // hand-painted AC-style island base. Structures (paths, piers,
+  // landmarks, vegetation) still render on top.
+
+  /** Pick a terrain sprite variant by island size. */
+  const terrainKey: SpriteKey =
+    layout.rx >= 300
+      ? 'island-large'
+      : layout.rx >= 230
+        ? 'island-medium'
+        : 'island-small';
+
+  function updateTerrainNight(): void {
+    terrainNight = spriteNight;
+    if (!terrainSprite) return;
+    const r = Math.round(255 - terrainNight * 55);
+    const g = Math.round(255 - terrainNight * 35);
+    const b = Math.round(255 - terrainNight * 5);
+    terrainSprite.tint = (r << 16) | (g << 8) | b;
+  }
+
+  /** Attach the terrain sprite without triggering a repaint. */
+  function attachTerrainSprite(texture: import('pixi.js').Texture): void {
+    terrainLayer.removeChildren().forEach((c) => c.destroy({ children: true }));
+    terrainSprite = new Sprite(texture);
+    // Anchor slightly above center — the cliff face occupies the bottom
+    terrainSprite.anchor.set(0.5, 0.42);
+    const targetW = layout.rx * 2.35;
+    const scale = targetW / texture.width;
+    terrainSprite.width = targetW;
+    terrainSprite.height = texture.height * scale;
+    terrainSprite.x = layout.cx;
+    terrainSprite.y = layout.cy + 6;
+    terrainSprite.label = `terrain-sprite-${layout.id}`;
+    terrainLayer.addChild(terrainSprite);
+    updateTerrainNight();
+  }
+
+  /** Attach the terrain sprite and repaint so procedural terrain hides. */
+  function applyTerrainSprite(texture: import('pixi.js').Texture): void {
+    attachTerrainSprite(texture);
+    repaintLandmarkFallback();
+  }
+
+  {
+    const existingTerrain = getSpriteTexture(terrainKey);
+    if (existingTerrain) {
+      applyTerrainSprite(existingTerrain);
+    } else {
+      terrainUnsub = onSpriteLoaded(terrainKey, (texture) => {
+        if (texture) applyTerrainSprite(texture);
+      });
+    }
+  }
+
   function repaint(p: WorldPalette, night: number, textures?: TerrainTextures): void {
     lastRepaintArgs = { p, night, textures };
     updateLandmarkNight(night);
+    updateTerrainNight();
     staticLayer.clear();
     animLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
     detailLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
+    // Terrain sprite persists across repaints — only clear when absent
+    if (!terrainSprite) {
+      terrainLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
+    }
     trees.length = 0;
     spriteAnims.length = 0;
     flags.length = 0;
     windows.length = 0;
     lanterns.length = 0;
+    lifecycleAnims.length = 0;
     boat = null;
     smokeSources.length = 0;
     landmarkSprite = null;
@@ -179,63 +270,68 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
 
     const random = createSeededRandom(layout.seed);
     const { cx, cy, rx, ry } = layout;
+    const terrainOn = terrainSprite !== null;
 
-    // ── Terrain layers ──────────────────────────────────────────────
-    // Water shadow beneath island
-    ellipse(staticLayer, cx + 10, cy + 18, rx * 1.1, ry * 1.1, p.waterDeep, 0.4);
-
-    // Wet sand ring (tidal zone)
-    const wetBlob = generateBlob(cx, cy + 5, rx * 1.04, ry * 1.04, layout.seed + 1, { noise: 0.12 });
-    drawBlob(staticLayer, wetBlob);
-    staticLayer.fill({ color: mixNum(p.sand, p.waterLight, 0.35), alpha: 1 });
-
-    // Cliff face — extruded below the beach outline for visible height
+    // beachPts is needed by cliff details and structures regardless
     const beachPts = generateBlob(cx, cy, rx, ry, layout.seed + 2, { noise: 0.13 });
-    const cliffPts = beachPts.map((pt) => ({ x: pt.x, y: pt.y + CLIFF_HEIGHT }));
-    staticLayer.moveTo(beachPts[0].x, beachPts[0].y);
-    for (const pt of cliffPts) staticLayer.lineTo(pt.x, pt.y);
-    for (let i = beachPts.length - 1; i >= 0; i--) staticLayer.lineTo(beachPts[i].x, beachPts[i].y);
-    staticLayer.closePath();
-    staticLayer.fill(textures ? { texture: textures.cliff } : { color: mixNum(p.sand, p.forest, 0.45) });
-    // Cliff shading overlay
-    staticLayer.moveTo(beachPts[0].x, beachPts[0].y);
-    for (const pt of cliffPts) staticLayer.lineTo(pt.x, pt.y);
-    for (let i = beachPts.length - 1; i >= 0; i--) staticLayer.lineTo(beachPts[i].x, beachPts[i].y);
-    staticLayer.closePath();
-    staticLayer.fill({ color: p.ink, alpha: 0.12 });
 
-    // Sand beach (top surface)
-    drawBlob(staticLayer, beachPts);
-    staticLayer.fill(textures ? { texture: textures.sand } : { color: p.sand });
+    if (!terrainOn) {
+      // ── Procedural terrain layers (fallback) ─────────────────────
+      // Water shadow beneath island
+      ellipse(staticLayer, cx + 10, cy + 18, rx * 1.1, ry * 1.1, p.waterDeep, 0.4);
 
-    // Cliff rim highlight (sunlit edge between beach and cliff face)
-    drawBlob(staticLayer, beachPts);
-    staticLayer.stroke({ color: mixNum(p.sand, 0xffffff, 0.35), alpha: 0.5, width: 3 });
+      // Wet sand ring (tidal zone)
+      const wetBlob = generateBlob(cx, cy + 5, rx * 1.04, ry * 1.04, layout.seed + 1, { noise: 0.12 });
+      drawBlob(staticLayer, wetBlob);
+      staticLayer.fill({ color: mixNum(p.sand, p.waterLight, 0.35), alpha: 1 });
 
-    // Terrace step (mid band between beach and plateau)
-    const terraceBlob = generateBlob(cx, cy - 5, rx * 0.86, ry * 0.86, layout.seed + 3, { noise: 0.12 });
-    drawBlob(staticLayer, terraceBlob);
-    staticLayer.fill({ color: mixNum(p.sand, p.grass, 0.35), alpha: 1 });
+      // Cliff face — extruded below the beach outline for visible height
+      const cliffPts = beachPts.map((pt) => ({ x: pt.x, y: pt.y + CLIFF_HEIGHT }));
+      staticLayer.moveTo(beachPts[0].x, beachPts[0].y);
+      for (const pt of cliffPts) staticLayer.lineTo(pt.x, pt.y);
+      for (let i = beachPts.length - 1; i >= 0; i--) staticLayer.lineTo(beachPts[i].x, beachPts[i].y);
+      staticLayer.closePath();
+      staticLayer.fill(textures ? { texture: textures.cliff } : { color: mixNum(p.sand, p.forest, 0.45) });
+      // Cliff shading overlay
+      staticLayer.moveTo(beachPts[0].x, beachPts[0].y);
+      for (const pt of cliffPts) staticLayer.lineTo(pt.x, pt.y);
+      for (let i = beachPts.length - 1; i >= 0; i--) staticLayer.lineTo(beachPts[i].x, beachPts[i].y);
+      staticLayer.closePath();
+      staticLayer.fill({ color: p.ink, alpha: 0.12 });
 
-    // Grass plateau
-    const grassBlob = generateBlob(cx, cy - 10, rx * 0.78, ry * 0.78, layout.seed + 4, { noise: 0.15 });
-    drawBlob(staticLayer, grassBlob);
-    staticLayer.fill(textures ? { texture: textures.grass } : { color: p.grass });
+      // Sand beach (top surface)
+      drawBlob(staticLayer, beachPts);
+      staticLayer.fill(textures ? { texture: textures.sand } : { color: p.sand });
 
-    // Grass rim highlight
-    drawBlob(staticLayer, grassBlob);
-    staticLayer.stroke({ color: mixNum(p.grass, 0xffffff, 0.25), alpha: 0.4, width: 2.5 });
+      // Cliff rim highlight (sunlit edge between beach and cliff face)
+      drawBlob(staticLayer, beachPts);
+      staticLayer.stroke({ color: mixNum(p.sand, 0xffffff, 0.35), alpha: 0.5, width: 3 });
 
-    // Grass highlight patches
-    const patches = scatterOnIsland(layout, layout.seed + 5, 6, { innerScale: 0.6 });
-    for (const patch of patches) {
-      ellipse(staticLayer, patch.x, patch.y - 6, 18 + random() * 22, 8 + random() * 8, mixNum(p.grass, 0xffffff, 0.18), 0.5);
-    }
+      // Terrace step (mid band between beach and plateau)
+      const terraceBlob = generateBlob(cx, cy - 5, rx * 0.86, ry * 0.86, layout.seed + 3, { noise: 0.12 });
+      drawBlob(staticLayer, terraceBlob);
+      staticLayer.fill({ color: mixNum(p.sand, p.grass, 0.35), alpha: 1 });
 
-    // Grass shadow patches (lower-right, sun from upper-left)
-    const shadows = scatterOnIsland(layout, layout.seed + 6, 5, { innerScale: 0.65 });
-    for (const s of shadows) {
-      ellipse(staticLayer, s.x + 6, s.y + 4, 14 + random() * 16, 6 + random() * 6, p.grassShadow, 0.45);
+      // Grass plateau
+      const grassBlob = generateBlob(cx, cy - 10, rx * 0.78, ry * 0.78, layout.seed + 4, { noise: 0.15 });
+      drawBlob(staticLayer, grassBlob);
+      staticLayer.fill(textures ? { texture: textures.grass } : { color: p.grass });
+
+      // Grass rim highlight
+      drawBlob(staticLayer, grassBlob);
+      staticLayer.stroke({ color: mixNum(p.grass, 0xffffff, 0.25), alpha: 0.4, width: 2.5 });
+
+      // Grass highlight patches
+      const patches = scatterOnIsland(layout, layout.seed + 5, 6, { innerScale: 0.6 });
+      for (const patch of patches) {
+        ellipse(staticLayer, patch.x, patch.y - 6, 18 + random() * 22, 8 + random() * 8, mixNum(p.grass, 0xffffff, 0.18), 0.5);
+      }
+
+      // Grass shadow patches (lower-right, sun from upper-left)
+      const shadows = scatterOnIsland(layout, layout.seed + 6, 5, { innerScale: 0.65 });
+      for (const s of shadows) {
+        ellipse(staticLayer, s.x + 6, s.y + 4, 14 + random() * 16, 6 + random() * 6, p.grassShadow, 0.45);
+      }
     }
 
     // ── Paths ───────────────────────────────────────────────────────
@@ -267,12 +363,13 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     // ── Project-specific landmarks ──────────────────────────────────
     if (layout.id === 'displaylab') drawDisplayLab(staticLayer, animLayer, layout, p, night, random);
     else if (layout.id === 'booksalon') drawBookSalon(staticLayer, animLayer, layout, p, night, random);
-    else drawNbbang(staticLayer, animLayer, layout, p, night, random);
+    else if (layout.id === 'nbbang') drawNbbang(staticLayer, animLayer, layout, p, night, random);
+    else drawGenericOutpost(staticLayer, animLayer, layout, p, night, random);
 
     // Re-attach landmark sprite on top of freshly rebuilt layers
     if (landmarkKey) {
       const tex = getSpriteTexture(landmarkKey);
-      if (tex) applyLandmarkSprite(tex);
+      if (tex) attachLandmarkSprite(tex);
     }
 
     // ── Vegetation ──────────────────────────────────────────────────
@@ -330,20 +427,34 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     // ── Companion island (N-Bang) + bridge ──────────────────────────
     if (layout.companion) {
       const c = layout.companion;
-      ellipse(staticLayer, c.cx + 6, c.cy + 10, c.rx * 1.06, c.ry * 1.06, p.waterDeep, 0.4);
-      const cCliffH = Math.round(CLIFF_HEIGHT * 0.7);
-      const cBeach = generateBlob(c.cx, c.cy + 2, c.rx * 1.01, c.ry * 1.01, c.seed + 1, { noise: 0.12 });
-      const cCliff = cBeach.map((pt) => ({ x: pt.x, y: pt.y + cCliffH }));
-      staticLayer.moveTo(cBeach[0].x, cBeach[0].y);
-      for (const pt of cCliff) staticLayer.lineTo(pt.x, pt.y);
-      for (let i = cBeach.length - 1; i >= 0; i--) staticLayer.lineTo(cBeach[i].x, cBeach[i].y);
-      staticLayer.closePath();
-      staticLayer.fill(textures ? { texture: textures.cliff } : { color: mixNum(p.sand, p.forest, 0.45) });
-      drawBlob(staticLayer, cBeach);
-      staticLayer.fill(textures ? { texture: textures.sand } : { color: p.sand });
-      const cGrass = generateBlob(c.cx, c.cy - 4, c.rx * 0.82, c.ry * 0.82, c.seed + 2, { noise: 0.14 });
-      drawBlob(staticLayer, cGrass);
-      staticLayer.fill(textures ? { texture: textures.grass } : { color: p.grass });
+      const tinyTex = getSpriteTexture('island-tiny');
+      if (tinyTex) {
+        const tiny = new Sprite(tinyTex);
+        tiny.anchor.set(0.5, 0.42);
+        const tw = c.rx * 2.35;
+        const ts = tw / tinyTex.width;
+        tiny.width = tw;
+        tiny.height = tinyTex.height * ts;
+        tiny.x = c.cx;
+        tiny.y = c.cy + 4;
+        tiny.tint = terrainSprite ? terrainSprite.tint : 0xffffff;
+        detailLayer.addChild(tiny);
+      } else {
+        ellipse(staticLayer, c.cx + 6, c.cy + 10, c.rx * 1.06, c.ry * 1.06, p.waterDeep, 0.4);
+        const cCliffH = Math.round(CLIFF_HEIGHT * 0.7);
+        const cBeach = generateBlob(c.cx, c.cy + 2, c.rx * 1.01, c.ry * 1.01, c.seed + 1, { noise: 0.12 });
+        const cCliff = cBeach.map((pt) => ({ x: pt.x, y: pt.y + cCliffH }));
+        staticLayer.moveTo(cBeach[0].x, cBeach[0].y);
+        for (const pt of cCliff) staticLayer.lineTo(pt.x, pt.y);
+        for (let i = cBeach.length - 1; i >= 0; i--) staticLayer.lineTo(cBeach[i].x, cBeach[i].y);
+        staticLayer.closePath();
+        staticLayer.fill(textures ? { texture: textures.cliff } : { color: mixNum(p.sand, p.forest, 0.45) });
+        drawBlob(staticLayer, cBeach);
+        staticLayer.fill(textures ? { texture: textures.sand } : { color: p.sand });
+        const cGrass = generateBlob(c.cx, c.cy - 4, c.rx * 0.82, c.ry * 0.82, c.seed + 2, { noise: 0.14 });
+        drawBlob(staticLayer, cGrass);
+        staticLayer.fill(textures ? { texture: textures.grass } : { color: p.grass });
+      }
 
       // Small house cluster on companion
       drawHouse(staticLayer, c.cx - 20, c.cy - 18, 34, 26, p, night, windows, random, 0);
@@ -376,10 +487,28 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     }
 
     // ── Night overlay tint ──────────────────────────────────────────
-    if (night > 0.01) {
+    if (night > 0.01 && !terrainOn) {
       const overlay = generateBlob(cx, cy, rx * 1.05, ry * 1.05, layout.seed + 20, { noise: 0.1 });
       drawBlob(staticLayer, overlay);
       staticLayer.fill({ color: 0x0e2a33, alpha: p.nightOverlayAlpha * 0.5 });
+    }
+
+    // ── Lifecycle status props ──────────────────────────────────────
+    // The island's silhouette language communicates project state at a
+    // glance: construction gear while building, signal hardware while
+    // operating, a holographic blueprint while planning.
+    if (lifecycle) {
+      const lc = lifecycle.toUpperCase();
+      if (lc === 'BUILDING' || lc === 'DEPLOYING') {
+        drawCrane(animLayer, cx + rx * 0.52, cy - ry * 0.28, p);
+        drawScaffold(staticLayer, cx - rx * 0.48, cy + ry * 0.1, p);
+      } else if (lc === 'OPERATING' || lc === 'MAINTENANCE') {
+        drawAntenna(animLayer, cx - rx * 0.42, cy - ry * 0.38, p);
+      } else if (lc === 'PLANNING' || lc === 'DESIGNING' || lc === 'IDEA') {
+        drawHologram(animLayer, cx, cy - ry * 0.15, rx, ry, p);
+      } else if (lc === 'TESTING' || lc === 'REVIEWING') {
+        drawScanBeacon(animLayer, cx + rx * 0.45, cy - ry * 0.2, p);
+      }
     }
   }
 
@@ -719,7 +848,187 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     addFlag(anim, lx, ly - 56, p.coral, rand, flags);
   }
 
+  /**
+   * Generic outpost for islands without bespoke landmark art.
+   * A compact camp: workshop hut, signal flag, lantern, and crates —
+   * enough personality to feel inhabited while staying neutral.
+   */
+  function drawGenericOutpost(
+    g: Graphics,
+    anim: Container,
+    isl: IslandLayout,
+    p: WorldPalette,
+    night: number,
+    rand: () => number,
+  ): void {
+    const { cx, cy, rx, ry } = isl;
+
+    // Workshop hut
+    const hx = cx - rx * 0.1;
+    const hy = cy - ry * 0.15;
+    drawHouse(g, hx, hy, 48, 36, p, night, windows, rand, Math.floor(rand() * 2));
+    smokeSources.push({ x: hx + 16, y: hy - 30 });
+
+    // Supply crates
+    for (let i = 0; i < 3; i++) {
+      const bx = cx + rx * 0.25 + i * 12;
+      const by = cy + ry * 0.15 - (i % 2) * 8;
+      roundedBox(g, bx - 6, by - 6, 12, 12, 2, i % 2 === 0 ? p.wood : p.woodDark, 1);
+      g.rect(bx - 6, by - 1, 12, 2);
+      g.fill({ color: mixNum(p.wood, 0xffffff, 0.25), alpha: 0.5 });
+    }
+
+    // Lantern post
+    const lx = cx - rx * 0.35;
+    const ly = cy + ry * 0.25;
+    g.rect(lx - 1.5, ly - 18, 3, 18);
+    g.fill({ color: p.woodDark, alpha: 1 });
+    const glow = new Graphics();
+    roundedBox(glow, lx - 5, ly - 26, 10, 9, 3, p.lanternGlow, night > 0.3 ? 0.95 : 0.6);
+    circle(glow, lx, ly - 22, night > 0.3 ? 13 : 5, p.lanternGlow, night > 0.3 ? 0.25 : 0.08);
+    anim.addChild(glow);
+    lanterns.push({ g: glow, phase: rand() * Math.PI * 2 });
+
+    // Signpost
+    const sx = cx + rx * 0.05;
+    const sy = cy + ry * 0.32;
+    g.rect(sx - 1.5, sy - 16, 3, 16);
+    g.fill({ color: p.woodDark, alpha: 1 });
+    g.rect(sx - 12, sy - 14, 24, 7);
+    g.fill({ color: p.wood, alpha: 1 });
+
+    addFlag(anim, hx + 28, hy - 40, p.gold, rand, flags);
+  }
+
   // ── Shared painters ─────────────────────────────────────────────
+
+  // ── Lifecycle status prop painters ──────────────────────────────
+
+  /** Construction crane — signals active building. */
+  function drawCrane(anim: Container, x: number, y: number, p: WorldPalette): void {
+    const g = new Graphics();
+    g.x = x;
+    g.y = y;
+    // Mast
+    g.rect(-3, -52, 6, 52);
+    g.fill({ color: p.gold, alpha: 1 });
+    // Counter-jib
+    g.rect(-28, -52, 28, 4);
+    g.fill({ color: p.gold, alpha: 1 });
+    g.rect(-28, -56, 8, 8);
+    g.fill({ color: mixNum(p.gold, p.ink, 0.3), alpha: 1 });
+    // Jib
+    g.rect(0, -52, 38, 4);
+    g.fill({ color: p.gold, alpha: 1 });
+    // Cable + hook
+    g.moveTo(30, -48);
+    g.lineTo(30, -28);
+    g.stroke({ color: p.ink, alpha: 0.7, width: 1.5 });
+    g.rect(27, -28, 6, 5);
+    g.fill({ color: p.ink, alpha: 0.8 });
+    // Cab
+    g.rect(-6, -58, 12, 8);
+    g.fill({ color: p.coral, alpha: 1 });
+    anim.addChild(g);
+    lifecycleAnims.push({ g, kind: 'crane', phase: 0, baseX: x, baseY: y });
+  }
+
+  /** Scaffolding on the island edge — under-construction feel. */
+  function drawScaffold(g: Graphics, x: number, y: number, p: WorldPalette): void {
+    const w = 36;
+    const h = 30;
+    // Verticals
+    for (let i = 0; i <= 2; i++) {
+      g.rect(x + i * (w / 2) - 1.5, y - h, 3, h);
+      g.fill({ color: mixNum(p.wood, 0x888888, 0.4), alpha: 0.9 });
+    }
+    // Horizontals
+    for (let j = 0; j <= 2; j++) {
+      g.rect(x - 2, y - h + j * (h / 2), w + 4, 2.5);
+      g.fill({ color: mixNum(p.wood, 0x888888, 0.3), alpha: 0.85 });
+    }
+    // Diagonal brace
+    g.moveTo(x, y);
+    g.lineTo(x + w, y - h);
+    g.stroke({ color: mixNum(p.wood, 0x888888, 0.5), alpha: 0.6, width: 2 });
+  }
+
+  /** Signal antenna with pulsing rings — signals live operation. */
+  function drawAntenna(anim: Container, x: number, y: number, p: WorldPalette): void {
+    const g = new Graphics();
+    g.x = x;
+    g.y = y;
+    // Pole
+    g.rect(-2, -36, 4, 36);
+    g.fill({ color: mixNum(p.stone, 0xffffff, 0.2), alpha: 1 });
+    // Dish
+    g.ellipse(0, -36, 8, 5);
+    g.fill({ color: p.paper, alpha: 1 });
+    g.ellipse(0, -36, 8, 5);
+    g.stroke({ color: p.muted, alpha: 0.8, width: 1.5 });
+    // Signal rings (animated in tick)
+    for (let i = 1; i <= 3; i++) {
+      g.arc(0, -38, 6 + i * 7, -Math.PI * 0.7, -Math.PI * 0.3);
+      g.stroke({ color: 0x4dabf7, alpha: 0.5 - i * 0.12, width: 2 });
+    }
+    // Blinking light
+    g.circle(0, -40, 3);
+    g.fill({ color: p.coral, alpha: 1 });
+    anim.addChild(g);
+    lifecycleAnims.push({ g, kind: 'antenna', phase: 0, baseX: x, baseY: y });
+  }
+
+  /** Holographic blueprint grid — signals planning/design phase. */
+  function drawHologram(anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette): void {
+    const g = new Graphics();
+    g.x = cx;
+    g.y = cy;
+    const hw = rx * 0.5;
+    const hh = ry * 0.35;
+    // Grid lines
+    for (let i = -3; i <= 3; i++) {
+      g.moveTo(i * (hw / 3), -hh);
+      g.lineTo(i * (hw / 3), hh);
+      g.stroke({ color: 0x4dabf7, alpha: 0.2, width: 1 });
+    }
+    for (let j = -2; j <= 2; j++) {
+      g.moveTo(-hw, j * (hh / 2));
+      g.lineTo(hw, j * (hh / 2));
+      g.stroke({ color: 0x4dabf7, alpha: 0.2, width: 1 });
+    }
+    // Blueprint outline (dashed island shape)
+    g.ellipse(0, 0, hw * 0.8, hh * 0.8);
+    g.stroke({ color: 0x4dabf7, alpha: 0.5, width: 2 });
+    // Corner markers
+    for (const [mx, my] of [[-hw, -hh], [hw, -hh], [-hw, hh], [hw, hh]] as const) {
+      g.rect(mx - 3, my - 3, 6, 6);
+      g.fill({ color: 0x4dabf7, alpha: 0.6 });
+    }
+    anim.addChild(g);
+    lifecycleAnims.push({ g, kind: 'hologram', phase: 0, baseX: cx, baseY: cy });
+  }
+
+  /** Scanning beacon with rotating sweep — signals testing/review. */
+  function drawScanBeacon(anim: Container, x: number, y: number, p: WorldPalette): void {
+    const g = new Graphics();
+    g.x = x;
+    g.y = y;
+    // Tripod base
+    g.moveTo(0, 0);
+    g.lineTo(-8, 12);
+    g.moveTo(0, 0);
+    g.lineTo(8, 12);
+    g.moveTo(0, 0);
+    g.lineTo(0, 14);
+    g.stroke({ color: p.woodDark, alpha: 1, width: 2.5 });
+    // Beacon dome
+    g.circle(0, -4, 7);
+    g.fill({ color: p.gold, alpha: 0.9 });
+    g.circle(0, -4, 4);
+    g.fill({ color: 0xffffff, alpha: 0.7 });
+    anim.addChild(g);
+    lifecycleAnims.push({ g, kind: 'beacon', phase: 0, baseX: x, baseY: y });
+  }
 
   function drawHouse(
     g: Graphics,
@@ -1155,7 +1464,12 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
         sprite.alpha = 0.7;
         detail.addChild(sprite);
       } else {
-        circle(detail as unknown as Graphics, mx, my, 4 + rand() * 4, 0x7bbe67, 0.4);
+        const mossG = new Graphics();
+        mossG.circle(0, 0, 4 + rand() * 4);
+        mossG.fill({ color: 0x7bbe67, alpha: 0.4 });
+        mossG.x = mx;
+        mossG.y = my;
+        detail.addChild(mossG);
       }
     }
   }
@@ -1296,6 +1610,45 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
         l.g.scale.set(1, 1);
       }
     }
+
+    // Lifecycle status prop animations
+    for (const la of lifecycleAnims) {
+      if (!motionOn) {
+        la.g.alpha = 1;
+        la.g.rotation = 0;
+        continue;
+      }
+      switch (la.kind) {
+        case 'crane': {
+          // Slow jib swing + hook bob
+          la.g.rotation = Math.sin(timeMs / 4000) * 0.06;
+          break;
+        }
+        case 'antenna': {
+          // Blinking beacon light
+          const blink = Math.sin(timeMs / 500) > 0 ? 1 : 0.25;
+          la.g.alpha = blink;
+          // Rings pulse outward
+          const ringPulse = 1 + Math.sin(timeMs / 900) * 0.08;
+          la.g.scale.set(ringPulse, ringPulse);
+          break;
+        }
+        case 'hologram': {
+          // Flickering holographic shimmer
+          const flicker = 0.55 + Math.sin(timeMs / 300) * 0.12 + Math.sin(timeMs / 1700) * 0.18;
+          la.g.alpha = Math.max(0.2, Math.min(0.85, flicker));
+          la.g.scale.y = 1 + Math.sin(timeMs / 2200) * 0.04;
+          break;
+        }
+        case 'beacon': {
+          // Rotating sweep glow
+          const sweep = (timeMs / 1400) % (Math.PI * 2);
+          la.g.rotation = Math.sin(sweep) * 0.15;
+          la.g.alpha = 0.7 + Math.sin(timeMs / 350) * 0.3;
+          break;
+        }
+      }
+    }
   }
 
   return {
@@ -1305,7 +1658,10 @@ export function createIslandSystem(layout: IslandLayout): IslandSystem {
     smokeSources,
     dispose: () => {
       spriteUnsub?.();
+      terrainUnsub?.();
       removeLandmarkSprite();
+      terrainLayer.removeChildren().forEach((c) => c.destroy({ children: true }));
+      terrainSprite = null;
     },
   };
 }

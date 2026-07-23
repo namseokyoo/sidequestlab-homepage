@@ -9,6 +9,9 @@ const COPY = {
     harborLogSubtitle: '프로젝트 횡단 최근 활동',
     dayLabel: '낮',
     nightLabel: '밤',
+    zoomIn: '확대',
+    zoomOut: '축소',
+    resetView: '전체 보기로 돌아가기',
     choose: '탐험할 프로젝트 섬 선택',
     selected: '선택한 섬',
     overview: '전체 군도',
@@ -48,6 +51,9 @@ const COPY = {
     harborLogSubtitle: 'Recent activity across projects',
     dayLabel: 'Day',
     nightLabel: 'Night',
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+    resetView: 'Reset to overview',
     choose: 'Choose a project island to explore',
     selected: 'Selected island',
     overview: 'Full archipelago',
@@ -89,6 +95,9 @@ export type ArchipelagoV2Copy = {
   readonly harborLogSubtitle: string;
   readonly dayLabel: string;
   readonly nightLabel: string;
+  readonly zoomIn: string;
+  readonly zoomOut: string;
+  readonly resetView: string;
   readonly choose: string;
   readonly selected: string;
   readonly overview: string;

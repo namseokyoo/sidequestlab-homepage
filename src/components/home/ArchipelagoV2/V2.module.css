@@ -197,6 +197,43 @@
   transform: scale(0.95);
 }
 
+/* ── Camera zoom cluster ─────────────────────────────────────── */
+
+.zoomCluster {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 30;
+}
+
+.zoomBtn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--panel-bg);
+  box-shadow: var(--panel-shadow);
+  cursor: pointer;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+  color: inherit;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.zoomBtn:hover {
+  transform: scale(1.1);
+}
+
+.zoomBtn:active {
+  transform: scale(0.92);
+}
+
 /* ── Island labels ───────────────────────────────────────────── */
 
 .islandLabels {
@@ -255,6 +292,120 @@
 .islandLabel:focus-visible {
   outline: 3px solid var(--arch-foam);
   outline-offset: 2px;
+}
+
+/* ── Island project cards ────────────────────────────────────── */
+
+.islandCard {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: auto;
+  animation: cardFloat 3s ease-in-out infinite;
+}
+
+.islandCardBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 14px 10px;
+  border: 2px solid var(--arch-ink);
+  border-radius: 12px 12px 12px 4px;
+  background: var(--arch-paper);
+  color: var(--arch-ink);
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(23, 52, 58, 0.3), 0 6px 16px rgba(23, 52, 58, 0.12);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  min-width: 110px;
+}
+
+.islandCardBtn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 6px 0 rgba(23, 52, 58, 0.25), 0 10px 24px rgba(23, 52, 58, 0.15);
+}
+
+.islandCardBtn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.islandCardBtn:focus-visible {
+  outline: 3px solid var(--arch-foam);
+  outline-offset: 2px;
+}
+
+.islandCard[data-selected='true'] .islandCardBtn {
+  border-color: var(--arch-coral);
+  box-shadow: 0 3px 0 var(--arch-coral), 0 6px 16px rgba(238, 116, 89, 0.2);
+}
+
+.islandCardName {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.islandCardBadge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--arch-muted, #557379);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.islandCardBadge[data-lifecycle='BUILDING'],
+.islandCardBadge[data-lifecycle='DEPLOYING'] {
+  background: var(--arch-coral, #ee7459);
+}
+
+.islandCardBadge[data-lifecycle='OPERATING'],
+.islandCardBadge[data-lifecycle='MAINTENANCE'] {
+  background: #397457;
+}
+
+.islandCardBadge[data-lifecycle='TESTING'],
+.islandCardBadge[data-lifecycle='REVIEWING'] {
+  background: var(--arch-gold, #e5aa45);
+  color: var(--arch-ink);
+}
+
+.islandCardBadge[data-lifecycle='PLANNING'],
+.islandCardBadge[data-lifecycle='DESIGNING'],
+.islandCardBadge[data-lifecycle='IDEA'] {
+  background: #4dabf7;
+}
+
+.islandCardProgress {
+  display: block;
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(23, 52, 58, 0.12);
+  overflow: hidden;
+}
+
+.islandCardProgressFill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--arch-coral, #ee7459);
+  transition: width 600ms ease;
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: translate(-50%, -100%) translateY(0); }
+  50% { transform: translate(-50%, -100%) translateY(-4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .islandCard {
+    animation: none;
+  }
 }
 
 /* ── Project overlay ─────────────────────────────────────────── */

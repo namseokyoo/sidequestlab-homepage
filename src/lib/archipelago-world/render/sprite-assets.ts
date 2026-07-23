@@ -41,7 +41,11 @@ export type SpriteKey =
   | 'vine'
   | 'moss-patch'
   | 'leaf'
-  | 'smoke-puff';
+  | 'smoke-puff'
+  | 'island-large'
+  | 'island-medium'
+  | 'island-small'
+  | 'island-tiny';
 
 const SPRITE_MANIFEST: Record<SpriteKey, string> = {
   'wayfarer-engineer': '/images/archipelago/sprites/wayfarer-engineer.png',
@@ -76,6 +80,10 @@ const SPRITE_MANIFEST: Record<SpriteKey, string> = {
   'moss-patch': '/images/archipelago/sprites/moss-patch.png',
   'leaf': '/images/archipelago/sprites/leaf.png',
   'smoke-puff': '/images/archipelago/sprites/smoke-puff.png',
+  'island-large': '/images/archipelago/sprites/island-large.png',
+  'island-medium': '/images/archipelago/sprites/island-medium.png',
+  'island-small': '/images/archipelago/sprites/island-small.png',
+  'island-tiny': '/images/archipelago/sprites/island-tiny.png',
 };
 
 /** Normalized display dimensions (world units) for each sprite key. */

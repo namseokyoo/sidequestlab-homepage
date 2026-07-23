@@ -21,7 +21,8 @@ import {
   type FocusBox,
   type VoyageWaypoint,
 } from './camera.ts';
-import { ISLAND_LAYOUTS, WORLD_HEIGHT, WORLD_WIDTH, islandFocusZoom, type IslandKind } from './islands.ts';
+import { buildIslandLayouts, WORLD_HEIGHT, WORLD_WIDTH, islandFocusZoom, type IslandKind, type IslandLayout } from './islands.ts';
+import { clamp } from './math.ts';
 import { buildWorldPalette, type WorldPalette } from './palette.ts';
 import { createIslandSystem, type IslandSystem } from './render/island.ts';
 import { createParticleSystem } from './render/particles.ts';
@@ -38,6 +39,10 @@ export type EngineOptions = {
   readonly resolution?: number;
   readonly initialNight?: number;
   readonly motionEnabled?: boolean;
+  /** Project ids to render as islands. Defaults to the founding fleet. */
+  readonly islandIds?: readonly string[];
+  /** Lifecycle state per island id (e.g. BUILDING, OPERATING). */
+  readonly islandLifecycles?: Readonly<Record<string, string>>;
 };
 
 export type WorldEngine = {
@@ -49,6 +54,8 @@ export type WorldEngine = {
   readonly setMotionEnabled: (enabled: boolean) => void;
   readonly focusIsland: (id: IslandKind, focusBox: FocusBox) => void;
   readonly showOverview: () => void;
+  readonly zoomBy: (factor: number, centerScreen?: { readonly x: number; readonly y: number }) => void;
+  readonly panBy: (dxScreen: number, dyScreen: number) => void;
   readonly setVoyageProgress: (progress: number) => void;
   readonly setVoyageWaypoints: (waypoints: readonly VoyageWaypoint[]) => void;
   readonly setWayfarerState: (role: WayfarerRole, state: WayfarerState) => void;
@@ -72,10 +79,17 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
   let cameraTo: CameraState = { ...OVERVIEW_CAMERA };
   let cameraTweenStart = 0;
   let cameraTweenDuration = 0;
-  let cameraTweening = false;
+ let cameraTweening = false;
   let voyageWaypoints: readonly VoyageWaypoint[] = [];
   const tickCallbacks: ((camera: CameraState, night: number) => void)[] = [];
   let terrainTextures: TerrainTextures | null = null;
+  let initialized = false;
+  let introStart = 0;
+  const INTRO_REVEAL_STAGGER = 380;
+  const INTRO_REVEAL_MS = 750;
+
+  const MIN_ZOOM = 0.55;
+  const MAX_ZOOM = 3.5;
 
   const world = new Container();
   world.label = 'world';
@@ -85,6 +99,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
   const particles = createParticleSystem();
   const islands: Map<IslandKind, IslandSystem> = new Map();
   const wayfarers: Map<WayfarerRole, WayfarerSystem> = new Map();
+  let islandLayouts: readonly IslandLayout[] = [];
 
   // Layer order: sky backdrop → water → cloud shadows → islands → particles → sky overlay (clouds/gulls)
   const islandLayer = new Container();
@@ -100,17 +115,20 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     backgroundColor: 0x257e83,
     antialias: true,
     autoDensity: true,
-  }).then(() => {
-    if (destroyed) return;
+ }).then(() => {
+   if (destroyed) return;
+    initialized = true;
 
-    terrainTextures = createTerrainTextures(app.renderer, buildWorldPalette(night));
+   terrainTextures = createTerrainTextures(app.renderer, buildWorldPalette(night));
 
     app.stage.addChild(world);
     world.addChild(sky.container, water.container, sky.shadowLayer, islandLayer, wayfarerLayer, particles.container);
 
     // Build islands
-    for (const layout of ISLAND_LAYOUTS) {
-      const system = createIslandSystem(layout);
+    islandLayouts = buildIslandLayouts(options.islandIds ?? ['displaylab', 'booksalon', 'nbbang']);
+    for (const layout of islandLayouts) {
+      const lifecycle = options.islandLifecycles?.[layout.id] ?? null;
+      const system = createIslandSystem(layout, lifecycle);
       islands.set(layout.id, system);
       islandLayer.addChild(system.container);
       for (const source of system.smokeSources) {
@@ -118,33 +136,46 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
       }
     }
 
-    // Wayfarers stationed on their home islands
-    const displaylab = ISLAND_LAYOUTS.find((l) => l.id === 'displaylab');
-    const booksalon = ISLAND_LAYOUTS.find((l) => l.id === 'booksalon');
-    const nbbang = ISLAND_LAYOUTS.find((l) => l.id === 'nbbang');
-    if (displaylab) {
-      const engineer = createWayfarer('CODE_ENGINEER', displaylab.cx - 20, displaylab.cy + 40, 'wayfarer-engineer');
+    // Wayfarers stationed on the first two islands (dynamic)
+    const firstIsland = islandLayouts[0] ?? null;
+    const secondIsland = islandLayouts[1] ?? null;
+    if (firstIsland) {
+      const engineer = createWayfarer('CODE_ENGINEER', firstIsland.cx - 20, firstIsland.cy + 40, 'wayfarer-engineer');
       engineer.setState('WORKING');
       wayfarers.set('CODE_ENGINEER', engineer);
       wayfarerLayer.addChild(engineer.container);
     }
-    if (booksalon) {
-      const qa = createWayfarer('QA_NAVIGATOR', booksalon.cx + 60, booksalon.cy + 30, 'wayfarer-qa');
+    if (secondIsland) {
+      const qa = createWayfarer('QA_NAVIGATOR', secondIsland.cx + 60, secondIsland.cy + 30, 'wayfarer-qa');
       qa.setState('INSPECTING');
       wayfarers.set('QA_NAVIGATOR', qa);
       wayfarerLayer.addChild(qa.container);
     }
 
-    // Additional smoke sources (3 total: displaylab chimney, nbbang house, booksalon)
-    if (displaylab) {
-      particles.addSmokeSource(displaylab.cx + displaylab.rx * 0.2, displaylab.cy - displaylab.ry * 0.4);
+    // Additional smoke sources on the first and third islands
+    if (firstIsland) {
+      particles.addSmokeSource(firstIsland.cx + firstIsland.rx * 0.2, firstIsland.cy - firstIsland.ry * 0.4);
     }
-    if (nbbang) {
-      particles.addSmokeSource(nbbang.cx + nbbang.rx * 0.3 + 16, nbbang.cy + nbbang.ry * 0.12 - 24);
+    const thirdIsland = islandLayouts[2] ?? null;
+    if (thirdIsland) {
+      particles.addSmokeSource(thirdIsland.cx + thirdIsland.rx * 0.3 + 16, thirdIsland.cy + thirdIsland.ry * 0.12 - 24);
     }
 
     repaintAll();
     applyCamera();
+
+    // ── Intro sequence: rise from the sea, islands reveal one by one ─
+    if (motionEnabled) {
+      camera = { x: 0.5, y: 0.66, zoom: 0.58 };
+      applyCamera();
+      introStart = performance.now();
+      for (const layout of islandLayouts) {
+        const system = islands.get(layout.id);
+        if (system) system.container.alpha = 0;
+      }
+      wayfarerLayer.alpha = 0;
+      tweenTo({ ...OVERVIEW_CAMERA }, 2800);
+    }
 
     // Load AI sprites in the background — procedural art is already
     // visible; sprites swap in as each texture arrives.
@@ -165,7 +196,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
       if (motionEnabled && timeMs - lastWalkTrigger > 30000) {
         lastWalkTrigger = timeMs;
         for (const [role, w] of wayfarers) {
-          const home = role === 'CODE_ENGINEER' ? displaylab : booksalon;
+          const home = role === 'CODE_ENGINEER' ? firstIsland : secondIsland;
           if (home) {
             const angle = Math.random() * Math.PI * 2;
             const tx = home.cx + Math.cos(angle) * 40;
@@ -181,6 +212,32 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
         camera = tweenCamera(cameraFrom, cameraTo, t);
         if (t >= 1) cameraTweening = false;
         applyCamera();
+      }
+
+      // Intro island reveal: each island surfaces with a gentle rise
+      if (introStart > 0) {
+        const elapsed = performance.now() - introStart;
+        islandLayouts.forEach((layout, i) => {
+          const system = islands.get(layout.id);
+          if (!system) return;
+          const local = clamp((elapsed - i * INTRO_REVEAL_STAGGER) / INTRO_REVEAL_MS, 0, 1);
+          const eased = 1 - Math.pow(1 - local, 3);
+          system.container.alpha = eased;
+          system.container.y = (1 - eased) * 36;
+        });
+        const wfLocal = clamp((elapsed - islandLayouts.length * INTRO_REVEAL_STAGGER) / INTRO_REVEAL_MS, 0, 1);
+        wayfarerLayer.alpha = wfLocal;
+        if (elapsed > islandLayouts.length * INTRO_REVEAL_STAGGER + INTRO_REVEAL_MS + 200) {
+          introStart = 0;
+          for (const layout of islandLayouts) {
+            const system = islands.get(layout.id);
+            if (system) {
+              system.container.alpha = 1;
+              system.container.y = 0;
+            }
+          }
+          wayfarerLayer.alpha = 1;
+        }
       }
 
       sky.tick(timeMs, deltaMs, motionEnabled);
@@ -213,12 +270,25 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
   }
 
   function applyCamera(): void {
+    camera = clampCamera(camera);
     const scale = camera.zoom;
     world.scale.set(scale, scale);
     const viewW = viewportW / scale;
     const viewH = viewportH / scale;
     world.x = -(camera.x * WORLD_WIDTH - viewW / 2) * scale;
     world.y = -(camera.y * WORLD_HEIGHT - viewH / 2) * scale;
+  }
+
+  /** Keep the viewport inside world bounds and zoom within limits. */
+  function clampCamera(cam: CameraState): CameraState {
+    const zoom = clamp(cam.zoom, MIN_ZOOM, MAX_ZOOM);
+    const viewW = viewportW / zoom;
+    const viewH = viewportH / zoom;
+    const minX = viewW >= WORLD_WIDTH ? 0.5 : viewW / (2 * WORLD_WIDTH);
+    const maxX = viewW >= WORLD_WIDTH ? 0.5 : 1 - viewW / (2 * WORLD_WIDTH);
+    const minY = viewH >= WORLD_HEIGHT ? 0.5 : viewH / (2 * WORLD_HEIGHT);
+    const maxY = viewH >= WORLD_HEIGHT ? 0.5 : 1 - viewH / (2 * WORLD_HEIGHT);
+    return { x: clamp(cam.x, minX, maxX), y: clamp(cam.y, minY, maxY), zoom };
   }
 
   function tweenTo(target: CameraState, durationMs: number): void {
@@ -249,13 +319,15 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
       app.destroy(true, { children: true, texture: true });
     },
 
-    resize(width: number, height: number): void {
-      if (destroyed) return;
-      viewportW = width;
-      viewportH = height;
-      app.renderer.resize(width, height);
-      applyCamera();
-    },
+   resize(width: number, height: number): void {
+     if (destroyed) return;
+     viewportW = width;
+     viewportH = height;
+      if (initialized) {
+        app.renderer.resize(width, height);
+      }
+     applyCamera();
+   },
 
     setNight(next: number): void {
       const clamped = Math.max(0, Math.min(1, next));
@@ -281,7 +353,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     },
 
     focusIsland(id: IslandKind, focusBox: FocusBox): void {
-      const layout = ISLAND_LAYOUTS.find((l) => l.id === id);
+      const layout = islandLayouts.find((l) => l.id === id);
       const islandCap = layout
         ? islandFocusZoom(layout, { width: viewportW, height: viewportH })
         : focusBox.scaleCap;
@@ -304,6 +376,38 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
 
     showOverview(): void {
       tweenTo({ ...OVERVIEW_CAMERA }, FOCUS_TRANSITION_MS);
+    },
+
+    zoomBy(factor: number, centerScreen?: { readonly x: number; readonly y: number }): void {
+      if (destroyed) return;
+      cameraTweening = false;
+      const prev = clampCamera(camera);
+      const zoom = clamp(prev.zoom * factor, MIN_ZOOM, MAX_ZOOM);
+      if (centerScreen) {
+        // Keep the world point under the cursor fixed while zooming
+        const wx = prev.x * WORLD_WIDTH + (centerScreen.x - viewportW / 2) / prev.zoom;
+        const wy = prev.y * WORLD_HEIGHT + (centerScreen.y - viewportH / 2) / prev.zoom;
+        camera = clampCamera({
+          x: (wx - (centerScreen.x - viewportW / 2) / zoom) / WORLD_WIDTH,
+          y: (wy - (centerScreen.y - viewportH / 2) / zoom) / WORLD_HEIGHT,
+          zoom,
+        });
+      } else {
+        camera = clampCamera({ ...prev, zoom });
+      }
+      applyCamera();
+    },
+
+    panBy(dxScreen: number, dyScreen: number): void {
+      if (destroyed) return;
+      cameraTweening = false;
+      const prev = clampCamera(camera);
+      camera = clampCamera({
+        x: prev.x - dxScreen / (prev.zoom * WORLD_WIDTH),
+        y: prev.y - dyScreen / (prev.zoom * WORLD_HEIGHT),
+        zoom: prev.zoom,
+      });
+      applyCamera();
     },
 
     setVoyageWaypoints(waypoints: readonly VoyageWaypoint[]): void {

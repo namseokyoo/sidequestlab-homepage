@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 
 import type { ArchipelagoView } from '../Archipelago/types';
 import { worldToScreen } from '@/lib/archipelago-world/camera';
-import { ISLAND_LAYOUTS, WORLD_HEIGHT, WORLD_WIDTH, type IslandKind } from '@/lib/archipelago-world/islands';
+import { buildIslandLayouts, WORLD_HEIGHT, WORLD_WIDTH, type IslandKind } from '@/lib/archipelago-world/islands';
 import type { FocusBox } from '@/lib/archipelago-world/camera';
 
 import { DayNightDial } from './DayNightDial';
@@ -21,6 +21,9 @@ type ArchipelagoV2ExperienceProps = {
 type IslandLabel = {
   readonly projectId: string;
   readonly name: string;
+  readonly lifecycle: string;
+  readonly lifecycleLabel: string;
+  readonly progressPercent: number;
   readonly x: number;
   readonly y: number;
   readonly visible: boolean;
@@ -38,6 +41,12 @@ function toFocusBox(project: ArchipelagoView['projects'][number]): FocusBox {
 
 export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) {
   const copy = getArchipelagoV2Copy(view.locale);
+  const islandIds = useMemo(() => view.projects.map((p) => p.id), [view.projects]);
+  const islandLayouts = useMemo(() => buildIslandLayouts(islandIds), [islandIds]);
+  const islandLifecycles = useMemo(
+    () => Object.fromEntries(view.projects.map((p) => [p.id, p.lifecycle])),
+    [view.projects],
+  );
   const [handle, setHandle] = useState<PixiWorldSceneHandle | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [night, setNight] = useState(0);
@@ -85,9 +94,9 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
     if (!handle) return;
     return handle.onTick((camera) => {
       const next: IslandLabel[] = view.projects.map((project) => {
-        const layout = ISLAND_LAYOUTS.find((l) => l.id === project.id);
+        const layout = islandLayouts.find((l) => l.id === project.id);
         if (!layout) {
-          return { projectId: project.id, name: project.name, x: -999, y: -999, visible: false };
+          return { projectId: project.id, name: project.name, lifecycle: project.lifecycle, lifecycleLabel: '', progressPercent: project.progressPercent, x: -999, y: -999, visible: false };
         }
         const screen = worldToScreen(
           { x: layout.cx / WORLD_WIDTH, y: (layout.cy - layout.ry - 30) / WORLD_HEIGHT },
@@ -100,14 +109,17 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
         return {
           projectId: project.id,
           name: project.name,
+          lifecycle: project.lifecycle,
+          lifecycleLabel: copy.projectStates[project.lifecycle] ?? project.lifecycle,
+          progressPercent: project.progressPercent,
           x: screen.x,
           y: screen.y,
-          visible: inView && camera.zoom < 1.4,
+          visible: inView && camera.zoom < 2.2,
         };
       });
       setLabels(next);
     });
-  }, [handle, view.projects, viewport]);
+  }, [handle, view.projects, viewport, islandLayouts]);
 
   const selectProject = useCallback((projectId: string) => {
     const project = view.projects.find((p) => p.id === projectId);
@@ -149,6 +161,8 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
         <PixiWorldScene
           onReady={setHandle}
           motionEnabled={motionEnabled}
+          islandIds={islandIds}
+          islandLifecycles={islandLifecycles}
           className={styles.worldCanvas}
         />
 
@@ -177,21 +191,63 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
           </button>
         </div>
 
+        {/* Camera controls — bottom right */}
+        <div className={styles.zoomCluster}>
+          <button
+            type="button"
+            className={styles.zoomBtn}
+            onClick={() => handle?.zoomBy(1.35)}
+            aria-label={copy.zoomIn}
+          >
+            +
+          </button>
+          <button
+            type="button"
+            className={styles.zoomBtn}
+            onClick={() => handle?.zoomBy(1 / 1.35)}
+            aria-label={copy.zoomOut}
+          >
+            −
+          </button>
+          <button
+            type="button"
+            className={styles.zoomBtn}
+            onClick={returnToOverview}
+            aria-label={copy.resetView}
+          >
+            ⌂
+          </button>
+        </div>
+
         {/* Island name labels (DOM overlay, keyboard accessible) */}
         <div className={styles.islandLabels}>
           {labels.map((label) =>
             label.visible ? (
-              <button
+              <div
                 key={label.projectId}
-                type="button"
-                className={styles.islandLabel}
+                className={styles.islandCard}
                 data-selected={label.projectId === selectedId}
+                data-lifecycle={label.lifecycle}
                 style={{ left: label.x, top: label.y }}
-                onClick={() => selectProject(label.projectId)}
-                aria-pressed={label.projectId === selectedId}
               >
-                {label.name}
-              </button>
+                <button
+                  type="button"
+                  className={styles.islandCardBtn}
+                  onClick={() => selectProject(label.projectId)}
+                  aria-pressed={label.projectId === selectedId}
+                >
+                  <span className={styles.islandCardName}>{label.name}</span>
+                  <span className={styles.islandCardBadge} data-lifecycle={label.lifecycle}>
+                    {label.lifecycleLabel}
+                  </span>
+                  <span className={styles.islandCardProgress}>
+                    <span
+                      className={styles.islandCardProgressFill}
+                      style={{ width: `${label.progressPercent}%` }}
+                    />
+                  </span>
+                </button>
+              </div>
             ) : null,
           )}
         </div>

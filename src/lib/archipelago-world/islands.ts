@@ -14,7 +14,8 @@ export const WORLD_HEIGHT = 1000;
 /** Vertical extrusion height of the main island cliff face. */
 export const CLIFF_HEIGHT = 22;
 
-export type IslandKind = 'displaylab' | 'booksalon' | 'nbbang';
+/** Island identifiers are project ids — the archipelago grows with the fleet. */
+export type IslandKind = string;
 
 export type IslandLayout = {
   readonly id: IslandKind;
@@ -34,36 +35,98 @@ export type IslandLayout = {
   };
 };
 
-export const ISLAND_LAYOUTS: readonly IslandLayout[] = [
-  {
-    id: 'displaylab',
-    cx: 800,
-    cy: 300,
-    rx: 340,
-    ry: 190,
-    seed: 42,
-    rotation: -0.12,
-  },
-  {
-    id: 'booksalon',
-    cx: 400,
-    cy: 660,
-    rx: 285,
-    ry: 180,
-    seed: 77,
-    rotation: 0.08,
-  },
-  {
-    id: 'nbbang',
-    cx: 1190,
-    cy: 680,
-    rx: 250,
-    ry: 162,
-    seed: 123,
-    rotation: 0.15,
+/** Hand-tuned anchor positions for the founding islands. */
+const FOUNDING_LAYOUTS: Record<string, Omit<IslandLayout, 'id'>> = {
+  displaylab: { cx: 800, cy: 300, rx: 340, ry: 190, seed: 42, rotation: -0.12 },
+  booksalon: { cx: 400, cy: 660, rx: 285, ry: 180, seed: 77, rotation: 0.08 },
+  nbbang: {
+    cx: 1190, cy: 680, rx: 250, ry: 162, seed: 123, rotation: 0.15,
     companion: { cx: 1420, cy: 620, rx: 120, ry: 88, seed: 124 },
   },
-];
+};
+
+/** Deterministic hash for seeding island generation from a project id. */
+function hashId(id: string): number {
+  let h = 5381;
+  for (let i = 0; i < id.length; i++) {
+    h = ((h << 5) + h + id.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+const MARGIN = 60;
+
+function overlapsIslands(
+  cx: number, cy: number, rx: number, ry: number,
+  placed: readonly IslandLayout[],
+): boolean {
+  for (const other of placed) {
+    const dx = (cx - other.cx) / (rx + other.rx + MARGIN);
+    const dy = (cy - other.cy) / (ry + other.ry + MARGIN);
+    if (dx * dx + dy * dy < 1) return true;
+  }
+  return false;
+}
+
+/**
+ * Build island layouts for an arbitrary set of project ids.
+ *
+ * Founding projects keep their hand-tuned positions; every additional
+ * project gets a deterministic spiral placement with collision
+ * avoidance, so the archipelago grows gracefully as the fleet expands.
+ */
+export function buildIslandLayouts(projectIds: readonly string[]): readonly IslandLayout[] {
+  const layouts: IslandLayout[] = [];
+
+  for (const id of projectIds) {
+    const founding = FOUNDING_LAYOUTS[id];
+    if (founding) {
+      layouts.push({ id, ...founding });
+      continue;
+    }
+
+    const seed = hashId(id);
+    const rand = createSeededRandom(seed);
+    const rx = 170 + rand() * 110;
+    const ry = 115 + rand() * 65;
+    const rotation = (rand() - 0.5) * 0.3;
+
+    // Golden-angle spiral outward from the world center, with
+    // collision nudging to keep islands from overlapping.
+    const index = layouts.length;
+    let placed = false;
+    for (let ring = 0; ring < 12 && !placed; ring++) {
+      const spiralR = 320 + ring * 155 + rand() * 60;
+      const baseAngle = index * GOLDEN_ANGLE + ring * 0.7;
+      for (let attempt = 0; attempt < 8 && !placed; attempt++) {
+        const angle = baseAngle + attempt * 0.55;
+        const cx = WORLD_WIDTH / 2 + Math.cos(angle) * spiralR * 1.15;
+        const cy = WORLD_HEIGHT / 2 + Math.sin(angle) * spiralR * 0.72;
+        // Keep the island fully inside the world bounds
+        const clampedX = Math.max(rx + 20, Math.min(WORLD_WIDTH - rx - 20, cx));
+        const clampedY = Math.max(ry + 20, Math.min(WORLD_HEIGHT - ry - 40, cy));
+        if (!overlapsIslands(clampedX, clampedY, rx, ry, layouts)) {
+          layouts.push({ id, cx: clampedX, cy: clampedY, rx, ry, seed, rotation });
+          placed = true;
+        }
+      }
+    }
+    // Fallback: place at a jittered corner region
+    if (!placed) {
+      const fx = 100 + rand() * (WORLD_WIDTH - 200);
+      const fy = 100 + rand() * (WORLD_HEIGHT - 200);
+      layouts.push({ id, cx: fx, cy: fy, rx, ry, seed, rotation });
+    }
+  }
+
+  return layouts;
+}
+
+/** Default layouts for the founding fleet (backwards compatible). */
+export const ISLAND_LAYOUTS: readonly IslandLayout[] = buildIslandLayouts(
+  Object.keys(FOUNDING_LAYOUTS),
+);
 
 /**
  * Maximum focus zoom that keeps an entire island (including its cliff
