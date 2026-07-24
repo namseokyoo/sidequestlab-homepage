@@ -10,7 +10,7 @@
 import { createSeededRandom } from './math.ts';
 
 export const WORLD_WIDTH = 2400;
-export const WORLD_HEIGHT = 1000;
+export const WORLD_HEIGHT = 1300;
 
 /** Vertical extrusion height of the main island cliff face. */
 export const CLIFF_HEIGHT = 22;
@@ -110,22 +110,22 @@ export type IslandLayout = {
  * deterministic spiral below.
  */
 const CURATED_LAYOUTS: Record<string, Omit<IslandLayout, 'id' | 'tier'>> = {
-  displaylab: { cx: 1180, cy: 460, rx: 240, ry: 140, seed: 42, rotation: -0.12 },
-  booksalon: { cx: 460, cy: 640, rx: 185, ry: 110, seed: 77, rotation: 0.08 },
+  displaylab: { cx: 1180, cy: 600, rx: 240, ry: 140, seed: 42, rotation: -0.12 },
+  booksalon: { cx: 460, cy: 832, rx: 185, ry: 110, seed: 77, rotation: 0.08 },
   nbbang: {
-    cx: 1900, cy: 580, rx: 170, ry: 100, seed: 123, rotation: 0.15,
-    companion: { cx: 2160, cy: 470, rx: 85, ry: 55, seed: 124 },
+    cx: 1900, cy: 755, rx: 170, ry: 100, seed: 123, rotation: 0.15,
+    companion: { cx: 2160, cy: 613, rx: 85, ry: 55, seed: 124 },
   },
-  pulseup: { cx: 810, cy: 280, rx: 130, ry: 80, seed: 301, rotation: -0.08 },
-  'spectrum-visualizer': { cx: 1560, cy: 250, rx: 125, ry: 78, seed: 302, rotation: 0.1 },
-  'pomodoro-timer': { cx: 250, cy: 340, rx: 115, ry: 72, seed: 303, rotation: -0.05 },
-  thisor: { cx: 700, cy: 850, rx: 110, ry: 70, seed: 304, rotation: 0.12 },
-  livenote: { cx: 2260, cy: 720, rx: 115, ry: 72, seed: 305, rotation: -0.1 },
-  'todo-app': { cx: 1010, cy: 790, rx: 106, ry: 67, seed: 306, rotation: 0.06 },
-  'sidequestlab-homepage': { cx: 2060, cy: 230, rx: 110, ry: 70, seed: 307, rotation: -0.14 },
-  'fdtd-lab-mcp': { cx: 145, cy: 770, rx: 100, ry: 64, seed: 308, rotation: 0.09 },
-  'n8n-automation': { cx: 1750, cy: 810, rx: 106, ry: 67, seed: 309, rotation: -0.07 },
-  'monitoring-system': { cx: 420, cy: 150, rx: 100, ry: 64, seed: 310, rotation: 0.11 },
+  pulseup: { cx: 810, cy: 368, rx: 130, ry: 80, seed: 301, rotation: -0.08 },
+  'spectrum-visualizer': { cx: 1560, cy: 329, rx: 125, ry: 78, seed: 302, rotation: 0.1 },
+  'pomodoro-timer': { cx: 250, cy: 445, rx: 115, ry: 72, seed: 303, rotation: -0.05 },
+  thisor: { cx: 700, cy: 1103, rx: 110, ry: 70, seed: 304, rotation: 0.12 },
+  livenote: { cx: 2260, cy: 935, rx: 115, ry: 72, seed: 305, rotation: -0.1 },
+  'todo-app': { cx: 1010, cy: 1026, rx: 106, ry: 67, seed: 306, rotation: 0.06 },
+  'sidequestlab-homepage': { cx: 2060, cy: 303, rx: 110, ry: 70, seed: 307, rotation: -0.14 },
+  'fdtd-lab-mcp': { cx: 145, cy: 1000, rx: 100, ry: 64, seed: 308, rotation: 0.09 },
+  'n8n-automation': { cx: 1750, cy: 1051, rx: 106, ry: 67, seed: 309, rotation: -0.07 },
+  'monitoring-system': { cx: 420, cy: 200, rx: 100, ry: 64, seed: 310, rotation: 0.11 },
 };
 
 /** Deterministic hash for seeding island generation from a project id. */

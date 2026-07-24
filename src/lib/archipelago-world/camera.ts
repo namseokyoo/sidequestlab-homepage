@@ -27,7 +27,7 @@ export type FocusBox = {
   readonly scaleCap: number;
 };
 
-export const OVERVIEW_CAMERA: CameraState = { x: 0.5, y: 0.5, zoom: 0.62 };
+export const OVERVIEW_CAMERA: CameraState = { x: 0.5, y: 0.5, zoom: 0.66 };
 
 export const FOCUS_TRANSITION_MS = 480;
 export const VOYAGE_SEGMENT_MS = 600;

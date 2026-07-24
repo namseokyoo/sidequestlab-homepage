@@ -61,7 +61,7 @@ type LanternGlow = {
 };
 
 /** Vegetation density multiplier by tier — flagships feel lush, standards sparse. */
-const VEGETATION_SCALE: Record<IslandTier, number> = { flagship: 1.5, core: 1.0, standard: 0.6 };
+const VEGETATION_SCALE: Record<IslandTier, number> = { flagship: 1.3, core: 1.0, standard: 0.6 };
 /** Landmark sprite height multiplier by tier — flagships read as destinations. */
 const LANDMARK_SCALE: Record<IslandTier, number> = { flagship: 1.25, core: 1.0, standard: 0.8 };
 
@@ -425,25 +425,25 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     }
 
     // ── Vegetation ──────────────────────────────────────────────────
-    const treeSpots = scatterOnIsland(layout, layout.seed + 10, vegCount(layout.tier, 6), { innerScale: 0.75, avoidCenter: 0.25 });
+    const treeSpots = scatterOnIsland(layout, layout.seed + 10, vegCount(layout.tier, 3), { innerScale: 0.75, avoidCenter: 0.25 });
     for (const spot of treeSpots) {
       drawTree(staticLayer, animLayer, spot.x, spot.y, p, random, trees, spriteAnims);
     }
 
     // Bushes
-    const bushSpots = scatterOnIsland(layout, layout.seed + 11, vegCount(layout.tier, 7), { innerScale: 0.78, avoidCenter: 0.2 });
+    const bushSpots = scatterOnIsland(layout, layout.seed + 11, vegCount(layout.tier, 3), { innerScale: 0.78, avoidCenter: 0.2 });
     for (const spot of bushSpots) {
       drawBush(staticLayer, animLayer, spot.x, spot.y, p, random, spriteAnims);
     }
 
     // Flowers
-    const flowerSpots = scatterOnIsland(layout, layout.seed + 12, vegCount(layout.tier, 8), { innerScale: 0.7, avoidCenter: 0.15 });
+    const flowerSpots = scatterOnIsland(layout, layout.seed + 12, vegCount(layout.tier, 4), { innerScale: 0.7, avoidCenter: 0.15 });
     for (let i = 0; i < flowerSpots.length; i++) {
       drawFlower(staticLayer, animLayer, flowerSpots[i].x, flowerSpots[i].y, p, i, random, spriteAnims);
     }
 
     // Rocks
-    const rockSpots = scatterOnIsland(layout, layout.seed + 13, vegCount(layout.tier, 2), { innerScale: 0.8, avoidCenter: 0.3 });
+    const rockSpots = scatterOnIsland(layout, layout.seed + 13, vegCount(layout.tier, 1), { innerScale: 0.8, avoidCenter: 0.3 });
     for (const spot of rockSpots) {
       drawRock(staticLayer, detailLayer, spot.x, spot.y, p, random, false);
     }
@@ -454,7 +454,7 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     }
 
     // Grass tufts
-    const tuftSpots = scatterOnIsland(layout, layout.seed + 14, vegCount(layout.tier, 10), { innerScale: 0.75, avoidCenter: 0.1 });
+    const tuftSpots = scatterOnIsland(layout, layout.seed + 14, vegCount(layout.tier, 5), { innerScale: 0.75, avoidCenter: 0.1 });
     for (const spot of tuftSpots) {
       drawTuft(staticLayer, animLayer, spot.x, spot.y, p, random, spriteAnims);
     }
@@ -1013,16 +1013,28 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     const ink = mixNum(0x17343a, 0x0d2226, night * 0.5);
     const paper = mixNum(0xfff9ec, 0xd8d0c0, night * 0.4);
 
+    // Scale the whole prop up ~2.6× so it reads as a landmark, not a
+    // trinket lost in the vegetation. Everything below is drawn in local
+    // units around (0,0) and the transform does the enlarging.
+    const S = 2.6;
+    g.save();
+    g.translateTransform(px, py);
+    g.scaleTransform(S);
+
+    // Soft pedestal so the prop claims its own patch of ground.
+    g.ellipse(0, 12, 20, 6);
+    g.fill({ color: 0x17343a, alpha: 0.1 });
+
     // Wooden stand (shared by every prop)
-    g.rect(px - 2, py - 4, 4, 16);
+    g.rect(-2, -4, 4, 16);
     g.fill({ color: p.woodDark, alpha: 1 });
-    g.roundRect(px - 16, py - 22, 32, 20, 3);
+    g.roundRect(-16, -22, 32, 20, 3);
     g.fill({ color: p.wood, alpha: 1 });
-    g.roundRect(px - 14, py - 20, 28, 16, 2);
+    g.roundRect(-14, -20, 28, 16, 2);
     g.fill({ color: paper, alpha: 0.95 });
 
-    const bx = px; // board center x
-    const by = py - 12; // board center y
+    const bx = 0; // board center x (local)
+    const by = -12; // board center y (local)
 
     switch (kind) {
       case 'monitor': {
@@ -1174,6 +1186,8 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
         break;
       }
     }
+
+    g.restore();
   }
 
   // ── Shared painters ─────────────────────────────────────────────
