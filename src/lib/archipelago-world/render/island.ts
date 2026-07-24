@@ -962,40 +962,286 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
   ): void {
     const { cx, cy, rx, ry } = isl;
 
-    // Workshop hut
+    // Every non-flagship island gets a unique landmark derived from its
+    // project's signature prop, scaled up to architecture — so each island
+    // reads as its project at a glance instead of a generic outpost.
+    const kind = signaturePropFor(isl.id);
+    switch (kind) {
+      case 'pulse': drawPulseTower(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      case 'spectrum': drawSpectrumLighthouse(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      case 'tomato': drawTomatoGreenhouse(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      case 'scale': drawScalePavilion(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      case 'notebook': drawScriptorium(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      case 'checklist': drawChecklistBoard(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      case 'compass': drawCompassObservatory(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      case 'wave': drawWaveObservatory(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      case 'nodes': drawNodesHub(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      case 'gauge': drawGaugeStation(g, anim, cx, cy, rx, ry, p, night, rand); break;
+      default: drawWorkshopHut(g, anim, cx, cy, rx, ry, p, night, rand); break;
+    }
+  }
+
+  // ── Non-flagship unique landmarks ───────────────────────────────
+  // Each painter draws a distinct silhouette (~60×45 world units) near the
+  // island center, using only palette tokens, with a night variant.
+
+  function drawPulseTower(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const hx = cx - rx * 0.1, hy = cy - ry * 0.15;
+    // Stone monitor tower
+    roundedBox(g, hx - 20, hy - 52, 40, 52, 5, p.stone, 1);
+    roundedBox(g, hx - 16, hy - 46, 32, 26, 3, mixNum(p.ink, 0x1a2f36, 0.5), 1);
+    // ECG trace on the screen
+    const trace = new Graphics();
+    trace.moveTo(hx - 13, hy - 33);
+    trace.lineTo(hx - 6, hy - 33);
+    trace.lineTo(hx - 3, hy - 41);
+    trace.lineTo(hx + 1, hy - 27);
+    trace.lineTo(hx + 4, hy - 33);
+    trace.lineTo(hx + 13, hy - 33);
+    trace.stroke({ color: p.coral, alpha: night > 0.3 ? 1 : 0.85, width: 2.5, cap: 'round', join: 'round' });
+    anim.addChild(trace);
+    // Antenna + blinking tip
+    g.rect(hx - 1.5, hy - 70, 3, 18);
+    g.fill({ color: p.woodDark, alpha: 1 });
+    const tip = new Graphics();
+    circle(tip, hx, hy - 72, night > 0.3 ? 6 : 4, p.coral, night > 0.3 ? 0.9 : 0.6);
+    anim.addChild(tip);
+    windows.push({ g: tip, phase: rand() * Math.PI * 2 });
+    drawHouse(g, cx + rx * 0.28, cy + ry * 0.12, 34, 26, p, night, windows, rand, 1);
+    addFlag(anim, hx + 24, hy - 52, p.coral, rand, flags);
+  }
+
+  function drawSpectrumLighthouse(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const lx = cx - rx * 0.12, ly = cy - ry * 0.1;
+    // Tapered tower
+    g.moveTo(lx - 13, ly + 10);
+    g.quadraticCurveTo(lx - 10, ly - 22, lx - 7, ly - 46);
+    g.quadraticCurveTo(lx, ly - 50, lx + 7, ly - 46);
+    g.quadraticCurveTo(lx + 10, ly - 22, lx + 13, ly + 10);
+    g.closePath();
+    g.fill({ color: p.stone, alpha: 1 });
+    // Spectrum bars as the lamp room
+    const hs = [10, 18, 13, 22, 11];
+    for (let i = 0; i < 5; i++) {
+      const c = i % 2 === 0 ? 0x69cdc4 : p.gold;
+      g.rect(lx - 11 + i * 4.6, ly - 46 - hs[i], 3.6, hs[i]);
+      g.fill({ color: mixNum(c, 0x000000, night * 0.25), alpha: night > 0.3 ? 1 : 0.8 });
+    }
+    if (night > 0.3) {
+      const glow = new Graphics();
+      circle(glow, lx, ly - 56, 16, p.windowGlow, 0.35);
+      anim.addChild(glow);
+      windows.push({ g: glow, phase: rand() * Math.PI * 2 });
+    }
+    drawHouse(g, cx + rx * 0.26, cy + ry * 0.14, 32, 24, p, night, windows, rand, 0);
+    addFlag(anim, lx + 16, ly - 46, p.gold, rand, flags);
+  }
+
+  function drawTomatoGreenhouse(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const gx = cx - rx * 0.1, gy = cy - ry * 0.12;
+    // Glass dome
+    g.moveTo(gx - 26, gy + 8);
+    g.quadraticCurveTo(gx - 26, gy - 30, gx, gy - 34);
+    g.quadraticCurveTo(gx + 26, gy - 30, gx + 26, gy + 8);
+    g.closePath();
+    g.fill({ color: mixNum(0xc8e8f0, p.ink, night * 0.4), alpha: 0.55 });
+    g.moveTo(gx - 26, gy + 8);
+    g.quadraticCurveTo(gx - 26, gy - 30, gx, gy - 34);
+    g.quadraticCurveTo(gx + 26, gy - 30, gx + 26, gy + 8);
+    g.stroke({ color: p.woodDark, alpha: 0.8, width: 2.5 });
+    // Ribs
+    g.moveTo(gx, gy - 34); g.lineTo(gx, gy + 8);
+    g.moveTo(gx - 14, gy - 28); g.quadraticCurveTo(gx - 14, gy - 8, gx - 14, gy + 8);
+    g.moveTo(gx + 14, gy - 28); g.quadraticCurveTo(gx + 14, gy - 8, gx + 14, gy + 8);
+    g.stroke({ color: p.woodDark, alpha: 0.5, width: 1.5 });
+    // Tomato plants inside
+    for (let i = -1; i <= 1; i++) {
+      circle(g, gx + i * 12, gy - 2, 6, p.grass, 0.9);
+      circle(g, gx + i * 12 + 3, gy - 6, 3.5, p.coral, 1);
+    }
+    // Clock gable
+    circle(g, gx, gy - 38, 8, p.paper, 1);
+    g.moveTo(gx, gy - 38); g.lineTo(gx, gy - 43);
+    g.moveTo(gx, gy - 38); g.lineTo(gx + 4, gy - 36);
+    g.stroke({ color: p.ink, alpha: 0.9, width: 1.5 });
+    if (night > 0.3) {
+      const glow = new Graphics();
+      circle(glow, gx, gy - 12, 20, p.lanternGlow, 0.25);
+      anim.addChild(glow);
+      lanterns.push({ g: glow, phase: rand() * Math.PI * 2 });
+    }
+    addFlag(anim, gx + 30, gy - 20, p.coral, rand, flags);
+  }
+
+  function drawScalePavilion(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const sx = cx - rx * 0.1, sy = cy - ry * 0.12;
+    // Open pavilion posts + roof
+    g.rect(sx - 26, sy - 26, 5, 32); g.fill({ color: p.woodDark, alpha: 1 });
+    g.rect(sx + 21, sy - 26, 5, 32); g.fill({ color: p.woodDark, alpha: 1 });
+    g.moveTo(sx - 34, sy - 26);
+    g.quadraticCurveTo(sx, sy - 48, sx + 34, sy - 26);
+    g.closePath();
+    g.fill({ color: p.roofTeal, alpha: 1 });
+    // Central balance scale
+    g.rect(sx - 2, sy - 22, 4, 26); g.fill({ color: p.ink, alpha: 1 });
+    g.moveTo(sx - 18, sy - 18); g.lineTo(sx + 18, sy - 18);
+    g.stroke({ color: p.ink, alpha: 1, width: 2.5 });
+    // Two pans (A / B)
+    g.moveTo(sx - 18, sy - 18); g.lineTo(sx - 22, sy - 8); g.lineTo(sx - 14, sy - 8); g.closePath();
+    g.fill({ color: p.gold, alpha: 1 });
+    g.moveTo(sx + 18, sy - 18); g.lineTo(sx + 14, sy - 8); g.lineTo(sx + 22, sy - 8); g.closePath();
+    g.fill({ color: 0x69cdc4, alpha: 1 });
+    drawHouse(g, cx + rx * 0.28, cy + ry * 0.14, 30, 22, p, night, windows, rand, 0);
+    addFlag(anim, sx, sy - 48, p.gold, rand, flags);
+  }
+
+  function drawScriptorium(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const bx = cx - rx * 0.1, by = cy - ry * 0.12;
+    // Building body
+    roundedBox(g, bx - 24, by - 24, 48, 30, 4, mixNum(p.paper, p.wood, 0.25), 1);
+    // Open-book roof — two curved pages
+    g.moveTo(bx - 30, by - 24);
+    g.quadraticCurveTo(bx - 14, by - 44, bx, by - 30);
+    g.quadraticCurveTo(bx + 14, by - 44, bx + 30, by - 24);
+    g.closePath();
+    g.fill({ color: p.paper, alpha: 1 });
+    g.moveTo(bx, by - 30); g.lineTo(bx, by - 24);
+    g.stroke({ color: p.woodDark, alpha: 0.6, width: 2 });
+    // Page lines on roof
+    for (let i = 0; i < 3; i++) {
+      g.rect(bx - 22 + i * 2, by - 32 + i * 3, 14, 1.5); g.fill({ color: p.muted, alpha: 0.5 });
+      g.rect(bx + 8 - i * 2, by - 32 + i * 3, 14, 1.5); g.fill({ color: p.muted, alpha: 0.5 });
+    }
+    // Door + glowing window
+    roundedBox(g, bx - 6, by - 12, 12, 18, 3, p.woodDark, 1);
+    const win = new Graphics();
+    circle(win, bx + 14, by - 12, 5, night > 0.3 ? p.windowGlow : mixNum(p.windowGlow, p.paper, 0.5), night > 0.3 ? 0.9 : 0.5);
+    anim.addChild(win);
+    windows.push({ g: win, phase: rand() * Math.PI * 2 });
+    addFlag(anim, bx - 28, by - 30, p.gold, rand, flags);
+  }
+
+  function drawChecklistBoard(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const bx = cx - rx * 0.1, by = cy - ry * 0.12;
+    // Tall notice board
+    g.rect(bx - 3, by - 8, 6, 14); g.fill({ color: p.woodDark, alpha: 1 });
+    roundedBox(g, bx - 20, by - 44, 40, 38, 3, p.wood, 1);
+    roundedBox(g, bx - 16, by - 40, 32, 30, 2, p.paper, 1);
+    // Checklist rows with ticks
+    for (let i = 0; i < 3; i++) {
+      const yy = by - 34 + i * 9;
+      g.rect(bx - 12, yy, 6, 6); g.stroke({ color: p.ink, alpha: 0.7, width: 1.2 });
+      g.moveTo(bx - 11, yy + 3); g.lineTo(bx - 9, yy + 5.5); g.lineTo(bx - 5, yy + 0.5);
+      g.stroke({ color: p.grass, alpha: 1, width: 1.8 });
+      g.rect(bx - 2, yy + 1.5, 14, 3); g.fill({ color: p.muted, alpha: 0.5 });
+    }
+    drawHouse(g, cx + rx * 0.27, cy + ry * 0.13, 30, 22, p, night, windows, rand, 1);
+    addFlag(anim, bx + 22, by - 44, p.coral, rand, flags);
+  }
+
+  function drawCompassObservatory(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const ox = cx - rx * 0.1, oy = cy - ry * 0.12;
+    // Cylindrical base
+    roundedBox(g, ox - 18, oy - 26, 36, 32, 6, p.stone, 1);
+    // Dome
+    g.moveTo(ox - 20, oy - 26);
+    g.quadraticCurveTo(ox, oy - 48, ox + 20, oy - 26);
+    g.closePath();
+    g.fill({ color: p.roofCoral, alpha: 1 });
+    // Compass needle on top
+    g.moveTo(ox, oy - 56); g.lineTo(ox - 5, oy - 44); g.lineTo(ox, oy - 47); g.closePath();
+    g.fill({ color: p.coral, alpha: 1 });
+    g.moveTo(ox, oy - 56); g.lineTo(ox + 5, oy - 44); g.lineTo(ox, oy - 47); g.closePath();
+    g.fill({ color: p.paper, alpha: 1 });
+    circle(g, ox, oy - 47, 2.5, p.ink, 1);
+    // Slit window
+    g.rect(ox - 3, oy - 20, 6, 14); g.fill({ color: night > 0.3 ? p.windowGlow : mixNum(p.ink, 0x1a2f36, 0.5), alpha: night > 0.3 ? 0.9 : 1 });
+    drawHouse(g, cx + rx * 0.27, cy + ry * 0.13, 30, 22, p, night, windows, rand, 0);
+    addFlag(anim, ox + 22, oy - 30, p.gold, rand, flags);
+  }
+
+  function drawWaveObservatory(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const wx = cx - rx * 0.12, wy = cy - ry * 0.1;
+    // Parabolic dish on a mast
+    g.rect(wx - 2.5, wy - 20, 5, 26); g.fill({ color: p.woodDark, alpha: 1 });
+    g.moveTo(wx - 22, wy - 38);
+    g.quadraticCurveTo(wx, wy - 16, wx + 22, wy - 38);
+    g.quadraticCurveTo(wx, wy - 28, wx - 22, wy - 38);
+    g.closePath();
+    g.fill({ color: mixNum(p.stone, 0xffffff, 0.3), alpha: 1 });
+    g.moveTo(wx - 22, wy - 38);
+    g.quadraticCurveTo(wx, wy - 16, wx + 22, wy - 38);
+    g.stroke({ color: p.stone, alpha: 1, width: 2 });
+    // Feed horn + emitted waves
+    g.rect(wx - 1.5, wy - 44, 3, 8); g.fill({ color: p.ink, alpha: 1 });
+    for (let i = 1; i <= 3; i++) {
+      g.moveTo(wx - 6 * i, wy - 46 - 4 * i);
+      g.quadraticCurveTo(wx, wy - 50 - 5 * i, wx + 6 * i, wy - 46 - 4 * i);
+      g.stroke({ color: 0x69cdc4, alpha: (night > 0.3 ? 0.8 : 0.5) / i, width: 2 });
+    }
+    drawHouse(g, cx + rx * 0.26, cy + ry * 0.14, 32, 24, p, night, windows, rand, 1);
+    addFlag(anim, wx + 26, wy - 24, p.coral, rand, flags);
+  }
+
+  function drawNodesHub(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const nx = cx - rx * 0.1, ny = cy - ry * 0.12;
+    // Central router tower
+    roundedBox(g, nx - 12, ny - 34, 24, 40, 4, p.stone, 1);
+    roundedBox(g, nx - 8, ny - 28, 16, 10, 2, mixNum(p.ink, 0x1a2f36, 0.5), 1);
+    // Blinking status lights
+    const lights = new Graphics();
+    circle(lights, nx - 4, ny - 23, 2.5, p.grass, night > 0.3 ? 1 : 0.7);
+    circle(lights, nx + 4, ny - 23, 2.5, p.gold, night > 0.3 ? 1 : 0.7);
+    anim.addChild(lights);
+    windows.push({ g: lights, phase: rand() * Math.PI * 2 });
+    // Satellite node pods connected by pipes
+    const pods = [{ dx: -30, dy: 4 }, { dx: 30, dy: 2 }, { dx: 0, dy: 16 }];
+    for (const pod of pods) {
+      g.moveTo(nx, ny - 10);
+      g.quadraticCurveTo(nx + pod.dx * 0.5, ny + pod.dy - 8, nx + pod.dx, ny + pod.dy);
+      g.stroke({ color: p.woodDark, alpha: 0.8, width: 3 });
+      circle(g, nx + pod.dx, ny + pod.dy, 8, p.roofTeal, 1);
+      circle(g, nx + pod.dx, ny + pod.dy, 3.5, p.paper, 0.9);
+    }
+    addFlag(anim, nx + 14, ny - 34, p.gold, rand, flags);
+  }
+
+  function drawGaugeStation(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    const gx = cx - rx * 0.1, gy = cy - ry * 0.12;
+    // Station wall
+    roundedBox(g, gx - 24, gy - 34, 48, 40, 4, mixNum(p.stone, p.paper, 0.2), 1);
+    // Large dial
+    circle(g, gx, gy - 16, 15, p.paper, 1);
+    circle(g, gx, gy - 16, 15, p.ink, 0);
+    g.circle(gx, gy - 16, 15); g.stroke({ color: p.ink, alpha: 0.8, width: 2 });
+    // Tick marks
+    for (let i = 0; i <= 4; i++) {
+      const a = Math.PI * (1 + i / 4);
+      g.moveTo(gx + Math.cos(a) * 11, gy - 16 + Math.sin(a) * 11);
+      g.lineTo(gx + Math.cos(a) * 14, gy - 16 + Math.sin(a) * 14);
+      g.stroke({ color: p.ink, alpha: 0.7, width: 1.5 });
+    }
+    // Needle pointing into the green
+    const na = Math.PI * (1 + 0.72);
+    g.moveTo(gx, gy - 16);
+    g.lineTo(gx + Math.cos(na) * 11, gy - 16 + Math.sin(na) * 11);
+    g.stroke({ color: p.coral, alpha: 1, width: 2.5, cap: 'round' });
+    circle(g, gx, gy - 16, 2.5, p.ink, 1);
+    drawHouse(g, cx + rx * 0.28, cy + ry * 0.13, 30, 22, p, night, windows, rand, 0);
+    addFlag(anim, gx + 26, gy - 34, p.grass, rand, flags);
+  }
+
+  function drawWorkshopHut(g: Graphics, anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette, night: number, rand: () => number): void {
+    // Fallback for unknown project ids (crate) — the original outpost.
     const hx = cx - rx * 0.1;
     const hy = cy - ry * 0.15;
     drawHouse(g, hx, hy, 48, 36, p, night, windows, rand, Math.floor(rand() * 2));
     smokeSources.push({ x: hx + 16, y: hy - 30 });
-
-    // Supply crates
     for (let i = 0; i < 3; i++) {
       const bx = cx + rx * 0.25 + i * 12;
       const by = cy + ry * 0.15 - (i % 2) * 8;
       roundedBox(g, bx - 6, by - 6, 12, 12, 2, i % 2 === 0 ? p.wood : p.woodDark, 1);
-      g.rect(bx - 6, by - 1, 12, 2);
-      g.fill({ color: mixNum(p.wood, 0xffffff, 0.25), alpha: 0.5 });
     }
-
-    // Lantern post
-    const lx = cx - rx * 0.35;
-    const ly = cy + ry * 0.25;
-    g.rect(lx - 1.5, ly - 18, 3, 18);
-    g.fill({ color: p.woodDark, alpha: 1 });
-    const glow = new Graphics();
-    roundedBox(glow, lx - 5, ly - 26, 10, 9, 3, p.lanternGlow, night > 0.3 ? 0.95 : 0.6);
-    circle(glow, lx, ly - 22, night > 0.3 ? 13 : 5, p.lanternGlow, night > 0.3 ? 0.25 : 0.08);
-    anim.addChild(glow);
-    lanterns.push({ g: glow, phase: rand() * Math.PI * 2 });
-
-    // Signpost
-    const sx = cx + rx * 0.05;
-    const sy = cy + ry * 0.32;
-    g.rect(sx - 1.5, sy - 16, 3, 16);
-    g.fill({ color: p.woodDark, alpha: 1 });
-    g.rect(sx - 12, sy - 14, 24, 7);
-    g.fill({ color: p.wood, alpha: 1 });
-
     addFlag(anim, hx + 28, hy - 40, p.gold, rand, flags);
   }
 
