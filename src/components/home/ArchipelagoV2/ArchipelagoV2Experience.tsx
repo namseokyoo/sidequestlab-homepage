@@ -59,39 +59,47 @@ function layoutToFocusBox(layout: IslandLayout, scaleCap: number): FocusBox {
 // Cards are DOM elements anchored at bottom-center (CSS translate(-50%,-100%)).
 // At low zoom, nearby islands project their cards onto overlapping screen
 // regions, so overlapping pairs are pushed apart along the axis of minimum
-// penetration before the labels are committed to state.
-const CARD_W = 134;
-const CARD_H = 80;
+// penetration before the labels are committed to state. Card sizes vary by
+// tier (flagships are wider), so the resolver works per-card.
 const CARD_GAP = 6;
 
 type CardRect = { x: number; y: number; w: number; h: number };
+
+/**
+ * Approximate rendered card size per tier + breakpoint. Must track the
+ * CSS min-widths in V2.module.css so the overlap resolver pushes cards
+ * apart by their real footprint (flagships are wider than standards).
+ */
+function cardSizeFor(tier: IslandTier, viewportWidth: number): { w: number; h: number } {
+  const mobile = viewportWidth <= 640;
+  if (tier === 'flagship') return mobile ? { w: 128, h: 88 } : { w: 150, h: 95 };
+  if (tier === 'core') return mobile ? { w: 110, h: 80 } : { w: 122, h: 84 };
+  return mobile ? { w: 110, h: 76 } : { w: 110, h: 78 };
+}
 
 /** Iteratively push overlapping cards apart. Cards are anchored at bottom-center. */
 function resolveCardOverlaps(
   positions: { x: number; y: number }[],
   visible: boolean[],
-  cardW: number,
-  cardH: number,
+  sizes: { w: number; h: number }[],
   viewport: { width: number; height: number },
   iterations = 20,
 ): { x: number; y: number }[] {
   // Work on a mutable copy; callers keep their input arrays intact.
   const pos = positions.map((p) => ({ ...p }));
   const n = pos.length;
-  const halfW = cardW / 2;
 
-  const rectAt = (p: { x: number; y: number }): CardRect => ({
-    x: p.x - halfW,
-    y: p.y - cardH,
-    w: cardW,
-    h: cardH,
-  });
-  const clampX = (x: number) => Math.min(Math.max(x, halfW), viewport.width - halfW);
-  const clampY = (y: number) => Math.min(Math.max(y, cardH), viewport.height);
+  const rectAt = (i: number): CardRect => {
+    const p = pos[i];
+    const s = sizes[i];
+    return { x: p.x - s.w / 2, y: p.y - s.h, w: s.w, h: s.h };
+  };
+  const clampX = (x: number, halfW: number) => Math.min(Math.max(x, halfW), viewport.width - halfW);
+  const clampY = (y: number, h: number) => Math.min(Math.max(y, h), viewport.height);
   // A card already flush against a viewport edge cannot move further that way;
   // its counterpart then absorbs the whole displacement.
-  const pinnedX = (p: { x: number; y: number }) => p.x - halfW <= 0 || p.x + halfW >= viewport.width;
-  const pinnedY = (p: { x: number; y: number }) => p.y - cardH <= 0 || p.y >= viewport.height;
+  const pinnedX = (i: number) => pos[i].x - sizes[i].w / 2 <= 0 || pos[i].x + sizes[i].w / 2 >= viewport.width;
+  const pinnedY = (i: number) => pos[i].y - sizes[i].h <= 0 || pos[i].y >= viewport.height;
 
   for (let iter = 0; iter < iterations; iter += 1) {
     let moved = false;
@@ -99,8 +107,8 @@ function resolveCardOverlaps(
       if (!visible[i]) continue;
       for (let j = i + 1; j < n; j += 1) {
         if (!visible[j]) continue;
-        const a = rectAt(pos[i]);
-        const b = rectAt(pos[j]);
+        const a = rectAt(i);
+        const b = rectAt(j);
         // Penetration depth per axis, inflated by the required gap.
         const overlapX = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x) + CARD_GAP;
         const overlapY = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y) + CARD_GAP;
@@ -110,13 +118,13 @@ function resolveCardOverlaps(
           // Push apart horizontally: i toward the left, j toward the right
           // (sign flips when i sits to the right of j).
           const sign = pos[i].x <= pos[j].x ? -1 : 1;
-          const iShare = pinnedX(pos[i]) ? 0 : pinnedX(pos[j]) ? 1 : 0.5;
+          const iShare = pinnedX(i) ? 0 : pinnedX(j) ? 1 : 0.5;
           pos[i].x += sign * overlapX * iShare;
           pos[j].x -= sign * overlapX * (1 - iShare);
         } else {
           // Push apart vertically: i upward, j downward (sign flips likewise).
           const sign = pos[i].y <= pos[j].y ? -1 : 1;
-          const iShare = pinnedY(pos[i]) ? 0 : pinnedY(pos[j]) ? 1 : 0.5;
+          const iShare = pinnedY(i) ? 0 : pinnedY(j) ? 1 : 0.5;
           pos[i].y += sign * overlapY * iShare;
           pos[j].y -= sign * overlapY * (1 - iShare);
         }
@@ -126,8 +134,8 @@ function resolveCardOverlaps(
     // Keep every card fully inside the viewport before the next pass.
     for (let k = 0; k < n; k += 1) {
       if (!visible[k]) continue;
-      pos[k].x = clampX(pos[k].x);
-      pos[k].y = clampY(pos[k].y);
+      pos[k].x = clampX(pos[k].x, sizes[k].w / 2);
+      pos[k].y = clampY(pos[k].y, sizes[k].h);
     }
     if (!moved) break; // Stable — no overlapping pairs left.
   }
@@ -258,8 +266,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
       const adjusted = resolveCardOverlaps(
         next.map((label) => ({ x: label.x, y: label.y })),
         next.map((label) => label.visible),
-        CARD_W,
-        CARD_H,
+        next.map((label) => cardSizeFor(label.tier, viewport.width)),
         viewport,
       );
       // Only visible cards move; invisible labels keep x:-999, y:-999.
