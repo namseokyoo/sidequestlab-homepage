@@ -248,7 +248,7 @@
 .zoomCluster {
   position: absolute;
   right: 18px;
-  bottom: 118px;
+  bottom: var(--dock-clearance, 118px);
   display: flex;
   flex-direction: column;
   gap: 6px;

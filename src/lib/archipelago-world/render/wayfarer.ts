@@ -28,10 +28,10 @@ export type IdleBehavior =
   | { readonly type: 'hop'; readonly strength: number }
   | { readonly type: 'none' };
 
-const GLANCE_PERIOD_MS = 9000; // average glance cadence (6–12s band)
-const GLANCE_DUTY_MS = 500; // glance window length
-const HOP_PERIOD_MS = 30000; // average hop cadence (20–40s band)
-const HOP_DUTY_MS = 340; // hop window length
+const GLANCE_PERIOD_MS = 6000; // average glance cadence (4–8s band)
+const GLANCE_DUTY_MS = 700; // glance window length
+const HOP_PERIOD_MS = 22000; // average hop cadence (15–30s band)
+const HOP_DUTY_MS = 380; // hop window length
 
 export function planIdleBehavior(seed: number, timeMs: number): IdleBehavior {
   if (timeMs <= 0) return { type: 'none' };
@@ -508,9 +508,11 @@ export function createWayfarer(
             break;
           }
           default: {
-            spriteBody.y = breathe * -1.1;
-            spriteBody.rotation = Math.sin(timeMs / 4000) * 0.025;
-            spriteBody.scale.set(1, 1 + breathe * 0.012);
+            // Gentle weight-shift sway so idle never looks like a blank stare
+            const sway = Math.sin(timeMs / 2800 + idleSeed);
+            spriteBody.y = breathe * -1.4;
+            spriteBody.rotation = sway * 0.04;
+            spriteBody.scale.set(1 + sway * 0.006, 1 + breathe * 0.014);
           }
         }
       }
