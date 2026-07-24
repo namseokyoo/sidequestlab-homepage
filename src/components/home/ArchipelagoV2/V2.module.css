@@ -354,6 +354,36 @@
   white-space: nowrap;
 }
 
+/* ── Island tier hierarchy ─────────────────────────────────────────
+   Flagships are the three headline projects: larger, bolder cards with
+   a gold accent so they read first at a glance. Core projects are a
+   mid step up from the standard baseline. Geometry is unchanged — the
+   hierarchy lives entirely in the label layer. */
+.islandCardCore .islandCardBtn {
+  min-width: 122px;
+  padding: 8px 16px 10px;
+}
+.islandCardCore .islandCardName {
+  font-size: 0.92rem;
+}
+.islandCardFlagship .islandCardBtn {
+  min-width: 150px;
+  padding: 10px 18px 12px;
+  border-width: 2.5px;
+  background: linear-gradient(180deg, var(--arch-paper) 0%, var(--arch-paper) 72%, rgba(229, 170, 69, 0.16) 100%);
+  box-shadow: 0 3px 0 rgba(23, 52, 58, 0.3), 0 8px 20px rgba(23, 52, 58, 0.16), 0 0 0 1px rgba(229, 170, 69, 0.35);
+}
+.islandCardFlagship .islandCardName {
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+.islandCardFlagship .islandCardBadge {
+  color: var(--arch-gold);
+}
+.islandCardFlagship .islandCardBtn:hover {
+  transform: translateY(-4px) scale(1.05);
+}
+
 .islandCardBadge {
   font-size: 0.62rem;
   font-weight: 700;
@@ -810,6 +840,21 @@
 
   .harborLogList {
     grid-template-columns: 1fr;
+  }
+
+  /* Keep the tier hierarchy but shrink cards so 13 fit on small screens. */
+  .islandCardFlagship .islandCardBtn {
+    min-width: 128px;
+    padding: 8px 14px 10px;
+  }
+  .islandCardFlagship .islandCardName {
+    font-size: 0.95rem;
+  }
+  .islandCardCore .islandCardBtn {
+    min-width: 110px;
+  }
+  .islandCardCore .islandCardName {
+    font-size: 0.85rem;
   }
 }
 

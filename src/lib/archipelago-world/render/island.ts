@@ -8,7 +8,7 @@
 
 import { Container, Graphics, Sprite } from 'pixi.js';
 
-import { CLIFF_HEIGHT, generateBlob, scatterOnIsland, type IslandLayout } from '../islands.ts';
+import { CLIFF_HEIGHT, generateBlob, scatterOnIsland, type IslandLayout, type IslandTier } from '../islands.ts';
 import { createSeededRandom } from '../math.ts';
 import type { WorldPalette } from '../palette.ts';
 import { circle, drawBlob, ellipse, roundedBox, triangle } from '../shapes.ts';
@@ -59,6 +59,15 @@ type LanternGlow = {
   readonly g: Graphics;
   readonly phase: number;
 };
+
+/** Vegetation density multiplier by tier — flagships feel lush, standards sparse. */
+const VEGETATION_SCALE: Record<IslandTier, number> = { flagship: 1.5, core: 1.0, standard: 0.6 };
+/** Landmark sprite height multiplier by tier — flagships read as destinations. */
+const LANDMARK_SCALE: Record<IslandTier, number> = { flagship: 1.25, core: 1.0, standard: 0.8 };
+
+function vegCount(tier: IslandTier, base: number): number {
+  return Math.max(1, Math.round(base * VEGETATION_SCALE[tier]));
+}
 
 /** Lifecycle-driven animated props (crane, antenna, hologram). */
 type LifecycleAnim = {
@@ -128,14 +137,15 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
   /** World-space anchor for the landmark sprite (feet/base position). */
   function landmarkAnchor(): { x: number; y: number; h: number } {
     const { cx, cy, rx, ry } = layout;
+    const hScale = LANDMARK_SCALE[layout.tier];
     if (layout.id === 'displaylab') {
-      return { x: cx + rx * 0.35, y: cy - ry * 0.35 + 12, h: 100 };
+      return { x: cx + rx * 0.35, y: cy - ry * 0.35 + 12, h: 100 * hScale };
     }
     if (layout.id === 'nbbang') {
-      return { x: cx + rx * 0.15, y: cy - ry * 0.35 + 12, h: 96 };
+      return { x: cx + rx * 0.15, y: cy - ry * 0.35 + 12, h: 96 * hScale };
     }
     // booksalon reading house
-    return { x: cx - rx * 0.05, y: cy - ry * 0.2 + 4, h: 92 };
+    return { x: cx - rx * 0.05, y: cy - ry * 0.2 + 4, h: 92 * hScale };
   }
 
   /** Attach (or re-attach) the landmark sprite without triggering a repaint. */
@@ -412,36 +422,36 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     }
 
     // ── Vegetation ──────────────────────────────────────────────────
-    const treeSpots = scatterOnIsland(layout, layout.seed + 10, 12, { innerScale: 0.75, avoidCenter: 0.25 });
+    const treeSpots = scatterOnIsland(layout, layout.seed + 10, vegCount(layout.tier, 12), { innerScale: 0.75, avoidCenter: 0.25 });
     for (const spot of treeSpots) {
       drawTree(staticLayer, animLayer, spot.x, spot.y, p, random, trees, spriteAnims);
     }
 
     // Bushes
-    const bushSpots = scatterOnIsland(layout, layout.seed + 11, 14, { innerScale: 0.78, avoidCenter: 0.2 });
+    const bushSpots = scatterOnIsland(layout, layout.seed + 11, vegCount(layout.tier, 14), { innerScale: 0.78, avoidCenter: 0.2 });
     for (const spot of bushSpots) {
       drawBush(staticLayer, animLayer, spot.x, spot.y, p, random, spriteAnims);
     }
 
     // Flowers
-    const flowerSpots = scatterOnIsland(layout, layout.seed + 12, 20, { innerScale: 0.7, avoidCenter: 0.15 });
+    const flowerSpots = scatterOnIsland(layout, layout.seed + 12, vegCount(layout.tier, 20), { innerScale: 0.7, avoidCenter: 0.15 });
     for (let i = 0; i < flowerSpots.length; i++) {
       drawFlower(staticLayer, animLayer, flowerSpots[i].x, flowerSpots[i].y, p, i, random, spriteAnims);
     }
 
     // Rocks
-    const rockSpots = scatterOnIsland(layout, layout.seed + 13, 4, { innerScale: 0.8, avoidCenter: 0.3 });
+    const rockSpots = scatterOnIsland(layout, layout.seed + 13, vegCount(layout.tier, 4), { innerScale: 0.8, avoidCenter: 0.3 });
     for (const spot of rockSpots) {
       drawRock(staticLayer, detailLayer, spot.x, spot.y, p, random, false);
     }
     // Extra mossy rocks
-    const mossyRockSpots = scatterOnIsland(layout, layout.seed + 15, 2, { innerScale: 0.8, avoidCenter: 0.3 });
+    const mossyRockSpots = scatterOnIsland(layout, layout.seed + 15, vegCount(layout.tier, 2), { innerScale: 0.8, avoidCenter: 0.3 });
     for (const spot of mossyRockSpots) {
       drawRock(staticLayer, detailLayer, spot.x, spot.y, p, random, true);
     }
 
     // Grass tufts
-    const tuftSpots = scatterOnIsland(layout, layout.seed + 14, 22, { innerScale: 0.75, avoidCenter: 0.1 });
+    const tuftSpots = scatterOnIsland(layout, layout.seed + 14, vegCount(layout.tier, 22), { innerScale: 0.75, avoidCenter: 0.1 });
     for (const spot of tuftSpots) {
       drawTuft(staticLayer, animLayer, spot.x, spot.y, p, random, spriteAnims);
     }

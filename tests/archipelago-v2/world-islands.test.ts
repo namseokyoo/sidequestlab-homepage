@@ -9,6 +9,8 @@ import {
   generateBlob,
   islandFocusZoom,
   scatterOnIsland,
+  FLAGSHIP_IDS,
+  islandTier,
 } from '../../src/lib/archipelago-world/islands.ts';
 
 test('Given the island layouts, When inspected, Then the full curated fleet sits within world bounds', () => {
@@ -152,4 +154,41 @@ test('Given islandFocusZoom, When the viewport is small, Then zoom shrinks propo
   const big = islandFocusZoom(layout, { width: 1600, height: 900 });
   const small = islandFocusZoom(layout, { width: 390, height: 844 });
   assert.ok(small < big, 'mobile viewport yields smaller zoom');
+});
+
+test('Given the curated fleet, When tiers are assigned, Then exactly the three flagships are flagship and the split is 3/5/5', () => {
+  const byTier = { flagship: 0, core: 0, standard: 0 };
+  for (const layout of ISLAND_LAYOUTS) {
+    byTier[layout.tier] += 1;
+  }
+  assert.equal(byTier.flagship, 3, 'three flagships');
+  assert.equal(byTier.core, 5, 'five core');
+  assert.equal(byTier.standard, 5, 'five standard');
+  for (const fid of FLAGSHIP_IDS) {
+    const layout = ISLAND_LAYOUTS.find((l) => l.id === fid);
+    assert.equal(layout?.tier, 'flagship', `${fid} is flagship`);
+  }
+});
+
+test('Given islandTier, When called with flagship ids, Then it returns flagship regardless of index', () => {
+  for (const fid of FLAGSHIP_IDS) {
+    assert.equal(islandTier(fid, 0), 'flagship');
+    assert.equal(islandTier(fid, 99), 'flagship');
+  }
+});
+
+test('Given islandTier, When called with non-flagship ids, Then the first five are core and the rest standard', () => {
+  assert.equal(islandTier('pulseup', 0), 'core');
+  assert.equal(islandTier('pulseup', 4), 'core');
+  assert.equal(islandTier('pulseup', 5), 'standard');
+  assert.equal(islandTier('monitoring-system', 9), 'standard');
+});
+
+test('Given tier hierarchy, When geometry is inspected, Then footprints are unchanged so the curated no-overlap layout is preserved', () => {
+  // Flagships keep their curated radii (hierarchy is label/detail, not landmass).
+  const displaylab = ISLAND_LAYOUTS.find((l) => l.id === 'displaylab');
+  assert.equal(displaylab?.rx, 240, 'displaylab rx unchanged');
+  assert.equal(displaylab?.ry, 140, 'displaylab ry unchanged');
+  const booksalon = ISLAND_LAYOUTS.find((l) => l.id === 'booksalon');
+  assert.equal(booksalon?.rx, 185, 'booksalon rx unchanged');
 });

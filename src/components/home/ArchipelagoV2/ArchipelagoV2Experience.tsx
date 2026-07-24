@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 
 import type { ArchipelagoView } from '../Archipelago/types';
 import { worldToScreen } from '@/lib/archipelago-world/camera';
-import { buildIslandLayouts, CLIFF_HEIGHT, WORLD_HEIGHT, WORLD_WIDTH, type IslandKind, type IslandLayout } from '@/lib/archipelago-world/islands';
+import { buildIslandLayouts, CLIFF_HEIGHT, WORLD_HEIGHT, WORLD_WIDTH, type IslandKind, type IslandLayout, type IslandTier } from '@/lib/archipelago-world/islands';
 import type { FocusBox } from '@/lib/archipelago-world/camera';
 
 import { DayNightDial } from './DayNightDial';
@@ -24,6 +24,7 @@ type IslandLabel = {
   readonly lifecycle: string;
   readonly lifecycleLabel: string;
   readonly progressPercent: number;
+  readonly tier: IslandTier;
   readonly x: number;
   readonly y: number;
   readonly visible: boolean;
@@ -227,7 +228,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
       const next: IslandLabel[] = view.projects.map((project) => {
         const layout = islandLayouts.find((l) => l.id === project.id);
         if (!layout) {
-          return { projectId: project.id, name: project.name, lifecycle: project.lifecycle, lifecycleLabel: '', progressPercent: project.progressPercent, x: -999, y: -999, visible: false };
+          return { projectId: project.id, name: project.name, lifecycle: project.lifecycle, lifecycleLabel: '', progressPercent: project.progressPercent, tier: 'standard' as IslandTier, x: -999, y: -999, visible: false };
         }
         const screen = worldToScreen(
           { x: layout.cx / WORLD_WIDTH, y: (layout.cy - layout.ry - 30) / WORLD_HEIGHT },
@@ -243,6 +244,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
           lifecycle: project.lifecycle,
           lifecycleLabel: copy.projectStates[project.lifecycle] ?? project.lifecycle,
           progressPercent: project.progressPercent,
+          tier: layout.tier,
           x: screen.x,
           y: screen.y,
           visible: inView && camera.zoom < 2.2,
@@ -371,9 +373,10 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
             label.visible ? (
               <div
                 key={label.projectId}
-                className={`${styles.islandCard}${label.projectId === pulsingId || label.projectId === selectedId ? ` ${styles.islandCardActive}` : ''}`}
+                className={`${styles.islandCard} ${label.tier === 'flagship' ? styles.islandCardFlagship : label.tier === 'core' ? styles.islandCardCore : ''}${label.projectId === pulsingId || label.projectId === selectedId ? ` ${styles.islandCardActive}` : ''}`}
                 data-selected={label.projectId === selectedId}
                 data-lifecycle={label.lifecycle}
+                data-tier={label.tier}
                 style={{ left: label.x, top: label.y }}
                 onMouseEnter={() => handle?.setHighlightIsland(label.projectId)}
                 onMouseLeave={() => handle?.setHighlightIsland(null)}

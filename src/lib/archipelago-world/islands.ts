@@ -18,6 +18,28 @@ export const CLIFF_HEIGHT = 22;
 /** Island identifiers are project ids — the archipelago grows with the fleet. */
 export type IslandKind = string;
 
+/**
+ * Visual hierarchy tier. Flagship islands are the three headline
+ * projects; they get richer vegetation, larger landmarks, and bolder
+ * name cards. Geometry footprints (rx/ry) stay unchanged so the
+ * curated no-overlap layout is preserved — hierarchy is expressed
+ * through detail density and label weight, not landmass size.
+ */
+export type IslandTier = 'flagship' | 'core' | 'standard';
+
+/** The three headline projects that anchor the archipelago's story. */
+export const FLAGSHIP_IDS: readonly string[] = ['displaylab', 'booksalon', 'nbbang'];
+
+/**
+ * Assign a tier to a project id. Flagships are fixed; the remaining
+ * projects split by build order — the first five non-flagship ids are
+ * 'core', the rest 'standard'. Deterministic for a given id list.
+ */
+export function islandTier(id: string, nonFlagshipIndex: number): IslandTier {
+  if (FLAGSHIP_IDS.includes(id)) return 'flagship';
+  return nonFlagshipIndex <= 4 ? 'core' : 'standard';
+}
+
 export type IslandLayout = {
   readonly id: IslandKind;
   readonly cx: number;
@@ -26,6 +48,8 @@ export type IslandLayout = {
   readonly ry: number;
   readonly seed: number;
   readonly rotation: number;
+  /** Visual hierarchy tier (see islandTier). */
+  readonly tier: IslandTier;
   /** Secondary landmass for split islands (N-Bang). */
   readonly companion?: {
     readonly cx: number;
@@ -43,7 +67,7 @@ export type IslandLayout = {
  * visual gap ≈ 50 world units). New project ids fall through to the
  * deterministic spiral below.
  */
-const CURATED_LAYOUTS: Record<string, Omit<IslandLayout, 'id'>> = {
+const CURATED_LAYOUTS: Record<string, Omit<IslandLayout, 'id' | 'tier'>> = {
   displaylab: { cx: 1180, cy: 460, rx: 240, ry: 140, seed: 42, rotation: -0.12 },
   booksalon: { cx: 460, cy: 640, rx: 185, ry: 110, seed: 77, rotation: 0.08 },
   nbbang: {
@@ -95,11 +119,14 @@ function overlapsIslands(
  */
 export function buildIslandLayouts(projectIds: readonly string[]): readonly IslandLayout[] {
   const layouts: IslandLayout[] = [];
+  let nonFlagshipIndex = 0;
 
   for (const id of projectIds) {
+    const tier = islandTier(id, nonFlagshipIndex);
+    if (!FLAGSHIP_IDS.includes(id)) nonFlagshipIndex += 1;
     const curated = CURATED_LAYOUTS[id];
     if (curated) {
-      layouts.push({ id, ...curated });
+      layouts.push({ ...curated, id, tier });
       continue;
     }
 
@@ -124,7 +151,7 @@ export function buildIslandLayouts(projectIds: readonly string[]): readonly Isla
         const clampedX = Math.max(rx + 20, Math.min(WORLD_WIDTH - rx - 20, cx));
         const clampedY = Math.max(ry + 20, Math.min(WORLD_HEIGHT - ry - 40, cy));
         if (!overlapsIslands(clampedX, clampedY, rx, ry, layouts)) {
-          layouts.push({ id, cx: clampedX, cy: clampedY, rx, ry, seed, rotation });
+          layouts.push({ id, tier, cx: clampedX, cy: clampedY, rx, ry, seed, rotation });
           placed = true;
         }
       }
@@ -133,7 +160,7 @@ export function buildIslandLayouts(projectIds: readonly string[]): readonly Isla
     if (!placed) {
       const fx = 100 + rand() * (WORLD_WIDTH - 200);
       const fy = 100 + rand() * (WORLD_HEIGHT - 200);
-      layouts.push({ id, cx: fx, cy: fy, rx, ry, seed, rotation });
+      layouts.push({ id, tier, cx: fx, cy: fy, rx, ry, seed, rotation });
     }
   }
 
