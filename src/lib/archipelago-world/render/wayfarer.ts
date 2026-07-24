@@ -107,6 +107,45 @@ export function createWayfarer(
   inner.addChild(shadow, body);
   container.addChild(inner);
 
+  // ── Role badge — floating identity marker above the head ────────
+  // A small paper bubble with the role icon so each wayfarer reads
+  // instantly at any zoom level (engineer = gear, QA = magnifier).
+  // Attached to `container` (not `body`) so it never flips with facing.
+  const roleBadge = new Container();
+  const badgeBubble = new Graphics();
+  const badgeIcon = new Graphics();
+  roleBadge.addChild(badgeBubble, badgeIcon);
+  container.addChild(roleBadge);
+  const BADGE_Y = -(BODY_H + LEG_H + HEAD_R * 2 + 14) * WAYFARER_SCALE;
+  roleBadge.y = BADGE_Y;
+  badgeBubble.roundRect(-12, -9, 24, 17, 5);
+  badgeBubble.fill({ color: 0xfff9ec, alpha: 0.95 });
+  badgeBubble.roundRect(-12, -9, 24, 17, 5);
+  badgeBubble.stroke({ color: 0x17343a, alpha: 0.8, width: 1.5 });
+  badgeBubble.moveTo(-3, 8);
+  badgeBubble.lineTo(0, 13);
+  badgeBubble.lineTo(3, 8);
+  badgeBubble.fill({ color: 0xfff9ec, alpha: 0.95 });
+  if (role === 'CODE_ENGINEER') {
+    // Gear icon — engineer identity
+    badgeIcon.circle(0, -1, 3.5);
+    badgeIcon.fill({ color: 0xee7459, alpha: 1 });
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      badgeIcon.rect(Math.cos(a) * 5.2 - 1.2, -1 + Math.sin(a) * 5.2 - 1.2, 2.4, 2.4);
+      badgeIcon.fill({ color: 0xee7459, alpha: 1 });
+    }
+    badgeIcon.circle(0, -1, 1.5);
+    badgeIcon.fill({ color: 0xfff9ec, alpha: 1 });
+  } else {
+    // Magnifier icon — QA identity
+    badgeIcon.circle(-1.5, -2.5, 4);
+    badgeIcon.stroke({ color: 0xe5aa45, alpha: 1, width: 2.2 });
+    badgeIcon.moveTo(1.5, 0.5);
+    badgeIcon.lineTo(5.5, 4.5);
+    badgeIcon.stroke({ color: 0xe5aa45, alpha: 1, width: 2.2, cap: 'round' });
+  }
+
   let state: WayfarerState = 'IDLE';
   let facing: 1 | -1 = 1;
   let palette: WorldPalette | null = null;
@@ -408,6 +447,9 @@ export function createWayfarer(
       spriteBody.scale.set(1, 1);
       return;
     }
+
+    // Role badge gentle bob (motion path only — static when motion off)
+    roleBadge.y = BADGE_Y + Math.sin(timeMs / 1200 + idleSeed) * 1.8;
 
     // ── Sprite mode: animate the whole sprite as one body ─────────
     // Procedural limbs are hidden; the sprite itself bounces, sways,
