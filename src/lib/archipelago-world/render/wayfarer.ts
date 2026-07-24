@@ -432,9 +432,9 @@ export function createWayfarer(
       state = role === 'CODE_ENGINEER' ? 'WORKING' : 'INSPECTING';
     }
 
-    // Sprite art faces LEFT; procedural art is front-facing.
-    // Flip the sign so both face the movement direction correctly.
-    body.scale.x = spriteActive ? -facing : facing;
+    // Sprite art faces RIGHT; procedural art is front-facing (symmetric).
+    // scale.x = facing works for both: 1 → right, -1 → left.
+    body.scale.x = facing;
 
     if (!motionOn) {
       // Static pose
