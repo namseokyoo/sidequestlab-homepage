@@ -424,7 +424,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
             onChange={changeNight}
             dayLabel={copy.dayLabel}
             nightLabel={copy.nightLabel}
-            autoCycle={autoCycle}
+            autoCycle={autoCycle && motionEnabled}
             onAutoToggle={toggleAutoCycle}
             autoCycleLabel={copy.autoCycle}
             autoCycleOnLabel={copy.autoCycleOn}
