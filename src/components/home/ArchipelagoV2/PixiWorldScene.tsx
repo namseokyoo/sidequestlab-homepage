@@ -83,6 +83,9 @@ export function PixiWorldScene({ onReady, motionEnabled, islandIds, islandLifecy
 
     // ── Direct camera input: wheel zoom, drag pan, pinch zoom ────
     const onWheel = (e: WheelEvent) => {
+      // Plain wheel = page scroll (the map must not trap the wheel);
+      // only Ctrl/Cmd + wheel zooms the world camera.
+      if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
       const r = container.getBoundingClientRect();
       const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
