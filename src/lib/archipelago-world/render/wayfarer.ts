@@ -8,11 +8,49 @@
 import { Container, Graphics, Sprite } from 'pixi.js';
 
 import type { WorldPalette } from '../palette.ts';
+import { createSeededRandom } from '../math.ts';
 import { getSpriteTexture, getWalkFrames, onSpriteLoaded, type SpriteKey } from './sprite-assets.ts';
 
 export type WayfarerRole = 'CODE_ENGINEER' | 'QA_NAVIGATOR';
 
 export type WayfarerState = 'IDLE' | 'WALKING' | 'WORKING' | 'INSPECTING' | 'WAVING';
+
+/**
+ * Deterministic idle micro-behavior planner. Pure + unit-testable
+ * (no pixi): given a seed and the current ticker time, decide whether
+ * the wayfarer should glance (a brief head squash) or hop (a small
+ * vertical pop) right now. Glances recur every 6–12s, hops every
+ * 20–40s, with per-wayfarer phase offsets derived from the seed so the
+ * two crew members never move in lockstep.
+ */
+export type IdleBehavior =
+  | { readonly type: 'glance'; readonly strength: number }
+  | { readonly type: 'hop'; readonly strength: number }
+  | { readonly type: 'none' };
+
+const GLANCE_PERIOD_MS = 9000; // average glance cadence (6–12s band)
+const GLANCE_DUTY_MS = 500; // glance window length
+const HOP_PERIOD_MS = 30000; // average hop cadence (20–40s band)
+const HOP_DUTY_MS = 340; // hop window length
+
+export function planIdleBehavior(seed: number, timeMs: number): IdleBehavior {
+  if (timeMs <= 0) return { type: 'none' };
+  const rand = createSeededRandom(seed);
+  const glancePhase = rand() * GLANCE_PERIOD_MS;
+  const hopPhase = rand() * HOP_PERIOD_MS;
+  const glancePos = (timeMs + glancePhase) % GLANCE_PERIOD_MS;
+  const hopPos = (timeMs + hopPhase) % HOP_PERIOD_MS;
+  // Hop wins if both windows overlap (it's the rarer, bigger gesture).
+  if (hopPos < HOP_DUTY_MS) {
+    const u = hopPos / HOP_DUTY_MS;
+    return { type: 'hop', strength: Math.sin(Math.PI * u) };
+  }
+  if (glancePos < GLANCE_DUTY_MS) {
+    const u = glancePos / GLANCE_DUTY_MS;
+    return { type: 'glance', strength: Math.sin(Math.PI * u) };
+  }
+  return { type: 'none' };
+}
 
 export type WayfarerSystem = {
   readonly container: Container;
@@ -42,6 +80,8 @@ export function createWayfarer(
   container.label = `wayfarer-${role.toLowerCase()}`;
   container.x = x;
   container.y = y;
+  /** Per-wayfarer seed for idle micro-behaviors so crew don't sync. */
+  const idleSeed = role === 'CODE_ENGINEER' ? 0x51de : 0x9a77;
 
   const shadow = new Graphics();
   const body = new Container();
@@ -430,6 +470,17 @@ export function createWayfarer(
           }
         }
       }
+      // Idle micro-behaviors overlay: a brief glance (squash) or hop
+      // (pop) so a stationary wayfarer still feels alive. Skipped while
+      // walking or waving.
+      if (!moving && state !== 'WAVING') {
+        const idle = planIdleBehavior(idleSeed, timeMs);
+        if (idle.type === 'hop') {
+          spriteBody.y += -6 * idle.strength;
+        } else if (idle.type === 'glance') {
+          spriteBody.scale.y *= 1 - 0.08 * idle.strength;
+        }
+      }
       return;
     }
 
@@ -501,6 +552,17 @@ export function createWayfarer(
         armR.rotation = -Math.sin(timeMs / 2200) * 0.08;
         body.rotation = 0;
         head.rotation = Math.sin(timeMs / 4000) * 0.05;
+      }
+    }
+
+    // Idle micro-behaviors overlay (procedural body): glance squash or
+    // hop pop, skipped while walking or waving.
+    if (!moving && state !== 'WAVING') {
+      const idle = planIdleBehavior(idleSeed, timeMs);
+      if (idle.type === 'hop') {
+        body.y += -6 * idle.strength;
+      } else if (idle.type === 'glance') {
+        torso.scale.y *= 1 - 0.08 * idle.strength;
       }
     }
   }

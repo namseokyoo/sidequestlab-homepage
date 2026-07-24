@@ -192,22 +192,25 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     });
 
     // Main loop
-    let lastWalkTrigger = 0;
+    /** Next ticker time (ms) at which the crew sets off on a walk. */
+    let nextWalkAt = 14000 + Math.random() * 8000;
     app.ticker.add((ticker) => {
       if (destroyed) return;
       const timeMs = ticker.lastTime;
       const deltaMs = ticker.deltaMS;
 
-      // Periodic walk trigger: every 30s, wayfarers walk for 10s
-      if (motionEnabled && timeMs - lastWalkTrigger > 30000) {
-        lastWalkTrigger = timeMs;
+      // Periodic walk trigger: every 14–22s the crew wanders 60–90u
+      // around home for 6s — frequent enough that the world feels lived-in.
+      if (motionEnabled && timeMs > nextWalkAt) {
+        nextWalkAt = timeMs + 14000 + Math.random() * 8000;
         for (const [role, w] of wayfarers) {
           const home = role === 'CODE_ENGINEER' ? firstIsland : secondIsland;
           if (home) {
             const angle = Math.random() * Math.PI * 2;
-            const tx = home.cx + Math.cos(angle) * 40;
-            const ty = home.cy + Math.sin(angle) * 30;
-            w.moveTo(tx, ty, 10000);
+            const radius = 60 + Math.random() * 30;
+            const tx = home.cx + Math.cos(angle) * radius;
+            const ty = home.cy + Math.sin(angle) * radius * 0.75;
+            w.moveTo(tx, ty, 6000);
           }
         }
       }
