@@ -7,9 +7,13 @@ type DayNightDialProps = {
   readonly onChange: (night: number) => void;
   readonly dayLabel: string;
   readonly nightLabel: string;
+  readonly autoCycle: boolean;
+  readonly onAutoToggle: () => void;
+  readonly autoCycleLabel: string;
+  readonly autoCycleOnLabel: string;
 };
 
-export function DayNightDial({ night, onChange, dayLabel, nightLabel }: DayNightDialProps) {
+export function DayNightDial({ night, onChange, dayLabel, nightLabel, autoCycle, onAutoToggle, autoCycleLabel, autoCycleOnLabel }: DayNightDialProps) {
   const isNight = night > 0.5;
   return (
     <div className={styles.dayNightDial}>
@@ -38,6 +42,18 @@ export function DayNightDial({ night, onChange, dayLabel, nightLabel }: DayNight
         onChange={(event) => onChange(Number(event.target.value) / 100)}
         aria-label={`${dayLabel} ↔ ${nightLabel}`}
       />
+      <button
+        type="button"
+        className={styles.dialAuto}
+        onClick={onAutoToggle}
+        aria-pressed={autoCycle}
+        aria-label={autoCycle ? autoCycleOnLabel : autoCycleLabel}
+        title={autoCycle ? autoCycleOnLabel : autoCycleLabel}
+      >
+        <span className={styles.dialAutoIcon} aria-hidden="true">⟳</span>
+        <span className={styles.dialAutoText}>{autoCycleLabel}</span>
+        {autoCycle ? <span className={styles.dialAutoDot} aria-hidden="true" /> : null}
+      </button>
     </div>
   );
 }

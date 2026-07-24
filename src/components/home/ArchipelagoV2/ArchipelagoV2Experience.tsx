@@ -169,6 +169,10 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
   }, []);
 
   const [night, setNight] = useState(0);
+  /** Smooth night value driven by the auto-cycle loop (avoids 60fps React state churn). */
+  const nightRef = useRef(0);
+  /** When true the world cycles day↔night on its own; any manual dial input turns it off. */
+  const [autoCycle, setAutoCycle] = useState(true);
   const prefersReducedMotion = useSyncExternalStore(
     (onStoreChange) => {
       const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -280,9 +284,53 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
   }, [handle]);
 
   const changeNight = useCallback((value: number) => {
+    // Any manual dial input takes over from the ambient auto-cycle.
+    setAutoCycle(false);
     setNight(value);
+    nightRef.current = value;
     handle?.setNight(value);
   }, [handle]);
+
+  // ── Ambient day/night auto-cycle ────────────────────────────────
+  // When enabled (and motion is allowed), the world drifts through a
+  // full day↔night loop every 120s. The smooth value is written to the
+  // engine each frame via nightRef (cheap: the engine only repaints on
+  // bucket change) and mirrored into React state at a coarse cadence so
+  // the dial thumb tracks without 60fps re-renders.
+  useEffect(() => {
+    if (!autoCycle || !motionEnabled) return;
+    let raf = 0;
+    let last = performance.now();
+    const CYCLE_MS = 120000;
+    // Resume the cycle from the current time-of-day so re-enabling
+    // auto doesn't snap back to dawn.
+    let acc = nightRef.current * CYCLE_MS;
+    let lastStateSync = 0;
+    const step = (now: number) => {
+      acc += now - last;
+      last = now;
+      const value = (acc % CYCLE_MS) / CYCLE_MS;
+      nightRef.current = value;
+      handle?.setNight(value);
+      // Mirror into React state at ~4Hz so the dial thumb tracks the
+      // cycle without re-rendering the tree every frame.
+      if (now - lastStateSync > 250) {
+        lastStateSync = now;
+        setNight(value);
+      }
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [autoCycle, motionEnabled, handle]);
+
+  const toggleAutoCycle = useCallback(() => {
+    setAutoCycle((prev) => {
+      const next = !prev;
+      if (next) setNight(nightRef.current);
+      return next;
+    });
+  }, []);
 
   // Harbor log entries from view data
   const logEntries: readonly HarborLogEntry[] = useMemo(() => {
@@ -328,6 +376,10 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
             onChange={changeNight}
             dayLabel={copy.dayLabel}
             nightLabel={copy.nightLabel}
+            autoCycle={autoCycle}
+            onAutoToggle={toggleAutoCycle}
+            autoCycleLabel={copy.autoCycle}
+            autoCycleOnLabel={copy.autoCycleOn}
           />
           <button
             type="button"

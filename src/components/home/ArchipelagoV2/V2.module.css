@@ -175,6 +175,52 @@
   cursor: pointer;
 }
 
+.dialAuto {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1.5px solid var(--panel-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--arch-ink);
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease;
+}
+.dialAuto:hover {
+  background: rgba(229, 170, 69, 0.14);
+  transform: translateY(-1px);
+}
+.dialAuto[aria-pressed='true'] {
+  border-color: var(--arch-gold);
+  color: var(--arch-gold);
+}
+.dialAutoIcon {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+.dialAuto[aria-pressed='true'] .dialAutoIcon {
+  animation: autoSpin 6s linear infinite;
+}
+.dialAutoDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--arch-gold);
+  animation: autoDotPulse 1.6s ease-in-out infinite;
+}
+@keyframes autoSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes autoDotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}
+
 .motionToggle {
   width: 36px;
   height: 36px;
@@ -452,6 +498,11 @@
   }
 
   .islandCardActive .islandCardBtn {
+    animation: none;
+  }
+
+  .dialAutoIcon,
+  .dialAutoDot {
     animation: none;
   }
 }

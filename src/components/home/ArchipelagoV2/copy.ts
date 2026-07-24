@@ -9,6 +9,8 @@ const COPY = {
     harborLogSubtitle: '프로젝트 횡단 최근 활동',
     dayLabel: '낮',
     nightLabel: '밤',
+    autoCycle: '자동 순환',
+    autoCycleOn: '자동 순환 켜짐',
     zoomIn: '확대',
     zoomOut: '축소',
     resetView: '전체 보기로 돌아가기',
@@ -51,6 +53,8 @@ const COPY = {
     harborLogSubtitle: 'Recent activity across projects',
     dayLabel: 'Day',
     nightLabel: 'Night',
+    autoCycle: 'Auto cycle',
+    autoCycleOn: 'Auto cycle on',
     zoomIn: 'Zoom in',
     zoomOut: 'Zoom out',
     resetView: 'Reset to overview',
@@ -95,6 +99,8 @@ export type ArchipelagoV2Copy = {
   readonly harborLogSubtitle: string;
   readonly dayLabel: string;
   readonly nightLabel: string;
+  readonly autoCycle: string;
+  readonly autoCycleOn: string;
   readonly zoomIn: string;
   readonly zoomOut: string;
   readonly resetView: string;
