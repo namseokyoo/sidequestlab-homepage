@@ -27,6 +27,48 @@ export type IslandKind = string;
  */
 export type IslandTier = 'flagship' | 'core' | 'standard';
 
+/**
+ * Per-project signature prop — a small contextual object rendered near
+ * the landmark so each island reads as its project at a glance, not
+ * just another generic island. Kind drives the procedural drawing in
+ * render/island.ts; unknown project ids fall back to 'crate'.
+ */
+export type SignaturePropKind =
+  | 'monitor'      // displaylab — color-bar test screen
+  | 'books'        // booksalon — stacked books
+  | 'bread'        // nbbang — fresh loaf
+  | 'pulse'        // pulseup — heartbeat trace
+  | 'spectrum'     // spectrum-visualizer — frequency bars
+  | 'tomato'       // pomodoro-timer — timer tomato
+  | 'scale'        // thisor — A/B balance
+  | 'notebook'     // livenote — open notebook + pen
+  | 'checklist'    // todo-app — ticked list
+  | 'compass'      // sidequestlab-homepage — quest compass
+  | 'wave'         // fdtd-lab-mcp — EM wave antenna
+  | 'nodes'        // n8n-automation — connected workflow nodes
+  | 'gauge'        // monitoring-system — dial gauge
+  | 'crate';       // generic fallback for new projects
+
+export const SIGNATURE_PROPS: Record<string, SignaturePropKind> = {
+  displaylab: 'monitor',
+  booksalon: 'books',
+  nbbang: 'bread',
+  pulseup: 'pulse',
+  'spectrum-visualizer': 'spectrum',
+  'pomodoro-timer': 'tomato',
+  thisor: 'scale',
+  livenote: 'notebook',
+  'todo-app': 'checklist',
+  'sidequestlab-homepage': 'compass',
+  'fdtd-lab-mcp': 'wave',
+  'n8n-automation': 'nodes',
+  'monitoring-system': 'gauge',
+};
+
+export function signaturePropFor(id: string): SignaturePropKind {
+  return SIGNATURE_PROPS[id] ?? 'crate';
+}
+
 /** The three headline projects that anchor the archipelago's story. */
 export const FLAGSHIP_IDS: readonly string[] = ['displaylab', 'booksalon', 'nbbang'];
 

@@ -8,7 +8,7 @@
 
 import { Container, Graphics, Sprite } from 'pixi.js';
 
-import { CLIFF_HEIGHT, generateBlob, scatterOnIsland, type IslandLayout, type IslandTier } from '../islands.ts';
+import { CLIFF_HEIGHT, generateBlob, scatterOnIsland, signaturePropFor, type IslandLayout, type IslandTier, type SignaturePropKind } from '../islands.ts';
 import { createSeededRandom } from '../math.ts';
 import type { WorldPalette } from '../palette.ts';
 import { circle, drawBlob, ellipse, roundedBox, triangle } from '../shapes.ts';
@@ -415,6 +415,9 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     else if (layout.id === 'nbbang') drawNbbang(staticLayer, animLayer, layout, p, night, random);
     else drawGenericOutpost(staticLayer, animLayer, layout, p, night, random);
 
+    // ── Signature prop — per-project contextual object ─────────────
+    drawSignatureProp(staticLayer, layout, p, night);
+
     // Re-attach landmark sprite on top of freshly rebuilt layers
     if (landmarkKey) {
       const tex = getSpriteTexture(landmarkKey);
@@ -422,50 +425,50 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     }
 
     // ── Vegetation ──────────────────────────────────────────────────
-    const treeSpots = scatterOnIsland(layout, layout.seed + 10, vegCount(layout.tier, 12), { innerScale: 0.75, avoidCenter: 0.25 });
+    const treeSpots = scatterOnIsland(layout, layout.seed + 10, vegCount(layout.tier, 6), { innerScale: 0.75, avoidCenter: 0.25 });
     for (const spot of treeSpots) {
       drawTree(staticLayer, animLayer, spot.x, spot.y, p, random, trees, spriteAnims);
     }
 
     // Bushes
-    const bushSpots = scatterOnIsland(layout, layout.seed + 11, vegCount(layout.tier, 14), { innerScale: 0.78, avoidCenter: 0.2 });
+    const bushSpots = scatterOnIsland(layout, layout.seed + 11, vegCount(layout.tier, 7), { innerScale: 0.78, avoidCenter: 0.2 });
     for (const spot of bushSpots) {
       drawBush(staticLayer, animLayer, spot.x, spot.y, p, random, spriteAnims);
     }
 
     // Flowers
-    const flowerSpots = scatterOnIsland(layout, layout.seed + 12, vegCount(layout.tier, 20), { innerScale: 0.7, avoidCenter: 0.15 });
+    const flowerSpots = scatterOnIsland(layout, layout.seed + 12, vegCount(layout.tier, 8), { innerScale: 0.7, avoidCenter: 0.15 });
     for (let i = 0; i < flowerSpots.length; i++) {
       drawFlower(staticLayer, animLayer, flowerSpots[i].x, flowerSpots[i].y, p, i, random, spriteAnims);
     }
 
     // Rocks
-    const rockSpots = scatterOnIsland(layout, layout.seed + 13, vegCount(layout.tier, 4), { innerScale: 0.8, avoidCenter: 0.3 });
+    const rockSpots = scatterOnIsland(layout, layout.seed + 13, vegCount(layout.tier, 2), { innerScale: 0.8, avoidCenter: 0.3 });
     for (const spot of rockSpots) {
       drawRock(staticLayer, detailLayer, spot.x, spot.y, p, random, false);
     }
     // Extra mossy rocks
-    const mossyRockSpots = scatterOnIsland(layout, layout.seed + 15, vegCount(layout.tier, 2), { innerScale: 0.8, avoidCenter: 0.3 });
+    const mossyRockSpots = scatterOnIsland(layout, layout.seed + 15, vegCount(layout.tier, 1), { innerScale: 0.8, avoidCenter: 0.3 });
     for (const spot of mossyRockSpots) {
       drawRock(staticLayer, detailLayer, spot.x, spot.y, p, random, true);
     }
 
     // Grass tufts
-    const tuftSpots = scatterOnIsland(layout, layout.seed + 14, vegCount(layout.tier, 22), { innerScale: 0.75, avoidCenter: 0.1 });
+    const tuftSpots = scatterOnIsland(layout, layout.seed + 14, vegCount(layout.tier, 10), { innerScale: 0.75, avoidCenter: 0.1 });
     for (const spot of tuftSpots) {
       drawTuft(staticLayer, animLayer, spot.x, spot.y, p, random, spriteAnims);
     }
 
     // ── Coastal details (shells, conchs, tide pools) ───────────────
-    const shellSpots = scatterOnIsland(layout, layout.seed + 20, 8, { innerScale: 0.92, avoidCenter: 0.7 });
+    const shellSpots = scatterOnIsland(layout, layout.seed + 20, 4, { innerScale: 0.92, avoidCenter: 0.7 });
     for (const spot of shellSpots) {
       drawShell(detailLayer, spot.x, spot.y, random);
     }
-    const conchSpots = scatterOnIsland(layout, layout.seed + 21, 4, { innerScale: 0.95, avoidCenter: 0.8 });
+    const conchSpots = scatterOnIsland(layout, layout.seed + 21, 2, { innerScale: 0.95, avoidCenter: 0.8 });
     for (const spot of conchSpots) {
       drawConch(detailLayer, spot.x, spot.y, random);
     }
-    const tidepoolSpots = scatterOnIsland(layout, layout.seed + 22, 4, { innerScale: 0.95, avoidCenter: 0.82 });
+    const tidepoolSpots = scatterOnIsland(layout, layout.seed + 22, 2, { innerScale: 0.95, avoidCenter: 0.82 });
     for (const spot of tidepoolSpots) {
       drawTidepool(detailLayer, spot.x, spot.y, random);
     }
@@ -994,6 +997,183 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     g.fill({ color: p.wood, alpha: 1 });
 
     addFlag(anim, hx + 28, hy - 40, p.gold, rand, flags);
+  }
+
+  // ── Signature prop painter ──────────────────────────────────────
+  /**
+   * Draw the per-project signature prop on a small wooden sign stand,
+   * placed front-right of the landmark so each island carries its
+   * project's identity at a glance. All props share the same stand
+   * and footprint (~26 world units) for visual consistency.
+   */
+  function drawSignatureProp(g: Graphics, isl: IslandLayout, p: WorldPalette, night: number): void {
+    const kind: SignaturePropKind = signaturePropFor(isl.id);
+    const px = isl.cx + isl.rx * 0.38;
+    const py = isl.cy + isl.ry * 0.32;
+    const ink = mixNum(0x17343a, 0x0d2226, night * 0.5);
+    const paper = mixNum(0xfff9ec, 0xd8d0c0, night * 0.4);
+
+    // Wooden stand (shared by every prop)
+    g.rect(px - 2, py - 4, 4, 16);
+    g.fill({ color: p.woodDark, alpha: 1 });
+    g.roundRect(px - 16, py - 22, 32, 20, 3);
+    g.fill({ color: p.wood, alpha: 1 });
+    g.roundRect(px - 14, py - 20, 28, 16, 2);
+    g.fill({ color: paper, alpha: 0.95 });
+
+    const bx = px; // board center x
+    const by = py - 12; // board center y
+
+    switch (kind) {
+      case 'monitor': {
+        // Color-bar test screen
+        const bars = [0xee7459, 0xe5aa45, 0x7bbe67, 0x69cdc4];
+        for (let i = 0; i < 4; i++) {
+          g.rect(bx - 12 + i * 6, by - 6, 6, 12);
+          g.fill({ color: mixNum(bars[i], 0x000000, night * 0.3), alpha: 1 });
+        }
+        break;
+      }
+      case 'books': {
+        const cols = [0xee7459, 0x397457, 0xe5aa45];
+        for (let i = 0; i < 3; i++) {
+          g.roundRect(bx - 11 + i * 3, by - 7 + i * 3, 18 - i * 4, 4, 1);
+          g.fill({ color: mixNum(cols[i], 0x000000, night * 0.3), alpha: 1 });
+        }
+        break;
+      }
+      case 'bread': {
+        g.ellipse(bx, by, 11, 7);
+        g.fill({ color: mixNum(0xd8944a, 0x000000, night * 0.3), alpha: 1 });
+        g.moveTo(bx - 6, by - 3);
+        g.quadraticCurveTo(bx, by - 7, bx + 6, by - 3);
+        g.stroke({ color: mixNum(0xa06830, 0x000000, night * 0.3), alpha: 1, width: 1.5 });
+        break;
+      }
+      case 'pulse': {
+        g.moveTo(bx - 12, by);
+        g.lineTo(bx - 5, by);
+        g.lineTo(bx - 2, by - 7);
+        g.lineTo(bx + 2, by + 6);
+        g.lineTo(bx + 5, by);
+        g.lineTo(bx + 12, by);
+        g.stroke({ color: mixNum(0xee7459, 0x000000, night * 0.3), alpha: 1, width: 2, cap: 'round', join: 'round' });
+        break;
+      }
+      case 'spectrum': {
+        const hs = [5, 10, 7, 12, 6];
+        for (let i = 0; i < 5; i++) {
+          g.rect(bx - 12 + i * 5, by + 6 - hs[i], 3.5, hs[i]);
+          g.fill({ color: mixNum(i % 2 === 0 ? 0x69cdc4 : 0xe5aa45, 0x000000, night * 0.3), alpha: 1 });
+        }
+        break;
+      }
+      case 'tomato': {
+        g.circle(bx, by + 1, 8);
+        g.fill({ color: mixNum(0xee7459, 0x000000, night * 0.3), alpha: 1 });
+        g.ellipse(bx, by - 7, 3, 2);
+        g.fill({ color: mixNum(0x7bbe67, 0x000000, night * 0.3), alpha: 1 });
+        g.moveTo(bx, by + 1);
+        g.lineTo(bx, by - 4);
+        g.stroke({ color: paper, alpha: 0.9, width: 1.5 });
+        break;
+      }
+      case 'scale': {
+        g.rect(bx - 1, by - 8, 2, 14);
+        g.fill({ color: ink, alpha: 1 });
+        g.moveTo(bx - 10, by - 6);
+        g.lineTo(bx + 10, by - 6);
+        g.stroke({ color: ink, alpha: 1, width: 2 });
+        g.circle(bx - 10, by - 2, 3.5);
+        g.fill({ color: mixNum(0xe5aa45, 0x000000, night * 0.3), alpha: 1 });
+        g.circle(bx + 10, by - 2, 3.5);
+        g.fill({ color: mixNum(0x69cdc4, 0x000000, night * 0.3), alpha: 1 });
+        break;
+      }
+      case 'notebook': {
+        g.roundRect(bx - 10, by - 7, 20, 14, 2);
+        g.fill({ color: paper, alpha: 1 });
+        g.rect(bx - 0.75, by - 7, 1.5, 14);
+        g.fill({ color: ink, alpha: 0.5 });
+        for (let i = 0; i < 3; i++) {
+          g.rect(bx + 3, by - 4 + i * 4, 6, 1.2);
+          g.fill({ color: ink, alpha: 0.5 });
+        }
+        break;
+      }
+      case 'checklist': {
+        for (let i = 0; i < 3; i++) {
+          const yy = by - 5 + i * 5;
+          g.rect(bx - 11, yy, 4, 4);
+          g.stroke({ color: ink, alpha: 0.8, width: 1 });
+          if (i < 2) {
+            g.moveTo(bx - 10.5, yy + 2);
+            g.lineTo(bx - 9, yy + 3.5);
+            g.lineTo(bx - 7, yy + 0.5);
+            g.stroke({ color: mixNum(0x7bbe67, 0x000000, night * 0.3), alpha: 1, width: 1.2 });
+          }
+          g.rect(bx - 4, yy + 1, 14, 1.5);
+          g.fill({ color: ink, alpha: 0.5 });
+        }
+        break;
+      }
+      case 'compass': {
+        g.circle(bx, by, 8);
+        g.stroke({ color: ink, alpha: 0.9, width: 1.5 });
+        g.moveTo(bx, by - 6);
+        g.lineTo(bx + 3, by);
+        g.lineTo(bx, by + 6);
+        g.lineTo(bx - 3, by);
+        g.closePath();
+        g.fill({ color: mixNum(0xee7459, 0x000000, night * 0.3), alpha: 1 });
+        break;
+      }
+      case 'wave': {
+        g.rect(bx - 1, by - 4, 2, 10);
+        g.fill({ color: ink, alpha: 1 });
+        for (let i = 1; i <= 3; i++) {
+          g.arc(bx, by - 4, i * 3.5, -Math.PI * 0.75, -Math.PI * 0.25);
+          g.stroke({ color: mixNum(0x69cdc4, 0x000000, night * 0.3), alpha: 1 - i * 0.2, width: 1.5 });
+        }
+        break;
+      }
+      case 'nodes': {
+        const pts: [number, number][] = [[bx - 9, by - 5], [bx + 7, by - 6], [bx - 2, by + 6]];
+        for (const [ax, ay] of pts) {
+          for (const [bx2, by2] of pts) {
+            if (ax !== bx2 || ay !== by2) {
+              g.moveTo(ax, ay);
+              g.lineTo(bx2, by2);
+              g.stroke({ color: ink, alpha: 0.4, width: 1 });
+            }
+          }
+        }
+        const nCols = [0xee7459, 0xe5aa45, 0x69cdc4];
+        pts.forEach(([nx, ny], i) => {
+          g.circle(nx, ny, 3.5);
+          g.fill({ color: mixNum(nCols[i], 0x000000, night * 0.3), alpha: 1 });
+        });
+        break;
+      }
+      case 'gauge': {
+        g.arc(bx, by + 2, 8, Math.PI, Math.PI * 2);
+        g.stroke({ color: ink, alpha: 0.9, width: 1.5 });
+        g.moveTo(bx, by + 2);
+        g.lineTo(bx + 5, by - 4);
+        g.stroke({ color: mixNum(0xee7459, 0x000000, night * 0.3), alpha: 1, width: 2, cap: 'round' });
+        g.circle(bx, by + 2, 1.5);
+        g.fill({ color: ink, alpha: 1 });
+        break;
+      }
+      default: {
+        // Crate fallback
+        g.roundRect(bx - 7, by - 6, 14, 12, 2);
+        g.fill({ color: mixNum(p.wood, 0x000000, night * 0.3), alpha: 1 });
+        g.rect(bx - 7, by - 1, 14, 2);
+        g.fill({ color: mixNum(p.woodDark, 0x000000, night * 0.3), alpha: 0.7 });
+        break;
+      }
+    }
   }
 
   // ── Shared painters ─────────────────────────────────────────────
