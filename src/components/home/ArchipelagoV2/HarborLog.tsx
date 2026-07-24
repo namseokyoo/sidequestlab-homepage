@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import styles from './V2.module.css';
 import {
@@ -29,6 +29,9 @@ type HarborLogProps = {
   readonly entries: readonly HarborLogEntry[];
   readonly title: string;
   readonly subtitle: string;
+  readonly summary: string;
+  readonly showAllLabel: string;
+  readonly showLessLabel: string;
   readonly onSelectProject: (projectId: string) => void;
   readonly selectedProjectId: string | null;
 };
@@ -43,15 +46,31 @@ const LIFECYCLE_ICONS: Record<string, ReactNode> = {
   REVIEWING: <IconClipboard size={15} />,
 };
 
-export function HarborLog({ entries, title, subtitle, onSelectProject, selectedProjectId }: HarborLogProps) {
+/** Number of most-recent entries shown before the "show all" toggle. */
+const COLLAPSED_COUNT = 5;
+
+export function HarborLog({ entries, title, subtitle, summary, showAllLabel, showLessLabel, onSelectProject, selectedProjectId }: HarborLogProps) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? entries : entries.slice(0, COLLAPSED_COUNT);
   return (
     <nav className={styles.harborLog} aria-label={title}>
       <div className={styles.harborLogHeader}>
         <h2 className={styles.harborLogTitle}>{title}</h2>
         <p className={styles.harborLogSubtitle}>{subtitle}</p>
+        <span className={styles.harborLogSummary}>{summary}</span>
+        {entries.length > COLLAPSED_COUNT ? (
+          <button
+            type="button"
+            className={styles.harborLogToggle}
+            aria-expanded={expanded}
+            onClick={() => setExpanded((prev) => !prev)}
+          >
+            {expanded ? showLessLabel : `${showAllLabel} (${entries.length})`}
+          </button>
+        ) : null}
       </div>
       <ul className={styles.harborLogList}>
-        {entries.map((entry, index) => (
+        {visible.map((entry, index) => (
           <li key={entry.projectId} style={{ '--log-delay': `${550 + index * 60}ms` } as import('react').CSSProperties}>
             <button
               type="button"

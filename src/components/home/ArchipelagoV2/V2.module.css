@@ -100,6 +100,89 @@
   max-width: 38ch;
 }
 
+/* ── Fleet aggregate strip (dashboard layer) ─────────────────── */
+
+.fleetStats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+  pointer-events: auto;
+  animation: revealSlideDown 700ms 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fleetStatsTotal {
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: var(--arch-paper);
+  text-shadow: 0 1px 4px rgba(23, 52, 58, 0.6);
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--arch-ink) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--arch-foam) 30%, transparent);
+}
+.fleetStatsTotal strong {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  margin-right: 4px;
+  color: var(--arch-gold);
+}
+
+.fleetStatChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--arch-foam) 30%, transparent);
+  background: color-mix(in srgb, var(--arch-ink) 72%, transparent);
+  color: var(--arch-foam);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+.fleetStatChip strong {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.fleetStatChip:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--arch-foam) 55%, transparent);
+}
+.fleetStatChip:focus-visible {
+  outline: 2px solid var(--arch-foam);
+  outline-offset: 2px;
+}
+.fleetStatChip[data-active='true'] {
+  background: var(--arch-coral);
+  border-color: var(--arch-coral);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(238, 116, 89, 0.4);
+}
+.fleetStatChip[data-group='operating'] strong { color: var(--arch-gold); }
+.fleetStatChip[data-group='building'] strong { color: var(--arch-coral); }
+.fleetStatChip[data-group='verifying'] strong { color: #69cdc4; }
+.fleetStatChip[data-group='planning'] strong { color: #4dabf7; }
+.fleetStatChip[data-active='true'] strong { color: #fff; }
+
+.fleetStatIcon {
+  display: inline-flex;
+  opacity: 0.85;
+}
+
+.fleetStatsLatest {
+  font-size: 0.68rem;
+  color: color-mix(in srgb, var(--arch-foam) 80%, transparent);
+  text-shadow: 0 1px 4px rgba(23, 52, 58, 0.6);
+  padding: 4px 8px;
+}
+.fleetStatsLatest time {
+  font-family: var(--font-mono);
+  color: var(--arch-gold);
+}
+
 /* ── Day/night + motion controls ─────────────────────────────── */
 
 .dialPosition {
@@ -400,6 +483,16 @@
   border-color: var(--arch-gold);
   box-shadow: 0 0 0 3px rgba(229, 170, 69, 0.5), 0 3px 0 rgba(23, 52, 58, 0.3);
   animation: cardPulse 600ms ease 2;
+}
+
+/* Fleet-filter dimming: cards outside the active lifecycle group fade
+   so the highlighted islands read as the current selection. */
+.islandCardDimmed {
+  opacity: 0.35;
+  filter: saturate(0.5);
+}
+.islandCardDimmed .islandCardBtn {
+  transform: scale(0.96);
 }
 
 .islandCardName {
@@ -778,7 +871,7 @@
   right: 0;
   bottom: 0;
   z-index: 20;
-  padding: 10px 16px 12px;
+  padding: 10px 70px 12px 16px;
   background: color-mix(in srgb, var(--panel-bg) 88%, transparent);
   backdrop-filter: blur(6px);
   border-top: 2px solid var(--panel-border);
@@ -818,6 +911,36 @@
   margin: 0;
   font-size: 0.72rem;
   color: var(--arch-muted);
+}
+
+.harborLogSummary {
+  font-size: 0.68rem;
+  font-weight: 650;
+  color: var(--arch-muted);
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--arch-muted) 12%, transparent);
+}
+
+.harborLogToggle {
+  margin-left: auto;
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, var(--arch-muted) 40%, transparent);
+  border-radius: 14px;
+  background: transparent;
+  color: var(--arch-muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+.harborLogToggle:hover {
+  color: var(--arch-coral);
+  border-color: var(--arch-coral);
+}
+.harborLogToggle:focus-visible {
+  outline: 2px solid var(--arch-coral);
+  outline-offset: 2px;
 }
 
 .harborLogList {

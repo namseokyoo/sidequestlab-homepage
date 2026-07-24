@@ -8,11 +8,13 @@ import { buildIslandLayouts, CLIFF_HEIGHT, WORLD_HEIGHT, WORLD_WIDTH, type Islan
 import type { FocusBox } from '@/lib/archipelago-world/camera';
 
 import { DayNightDial } from './DayNightDial';
+import { FleetStats } from './FleetStats';
 import { HarborLog, type HarborLogEntry } from './HarborLog';
 import { IconHome, IconMinus, IconPause, IconPlay, IconPlus } from './icons';
 import { PixiWorldScene, type PixiWorldSceneHandle } from './PixiWorldScene';
 import { ProjectOverlay } from './ProjectOverlay';
 import { getArchipelagoV2Copy } from './copy';
+import { projects as projectCatalog } from '@/lib/projects';
 import styles from './V2.module.css';
 
 type ArchipelagoV2ExperienceProps = {
@@ -153,7 +155,96 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
     () => Object.fromEntries(view.projects.map((p) => [p.id, p.lifecycle])),
     [view.projects],
   );
+
+  // ── Dashboard aggregates ────────────────────────────────────────
+  // Last-updated date per project (from the shared catalog, read-only)
+  // so the harbor log can sort by recency and the stats strip can show
+  // a real "latest activity" date.
   const [handle, setHandle] = useState<PixiWorldSceneHandle | null>(null);
+  const projectDates = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of projectCatalog) {
+      map.set(p.id, p.showcase?.updatedAt ?? p.startDate ?? '');
+    }
+    return map;
+  }, []);
+
+  const sortedProjects = useMemo(
+    () =>
+      [...view.projects].sort((a, b) => {
+        const da = projectDates.get(a.id) ?? '';
+        const db = projectDates.get(b.id) ?? '';
+        return db.localeCompare(da);
+      }),
+    [view.projects, projectDates],
+  );
+
+  const fleetStats = useMemo(() => {
+    const groups: { key: string; label: string; lifecycles: readonly string[]; count: number }[] = [
+      { key: 'operating', label: copy.statOperating, lifecycles: ['OPERATING', 'MAINTENANCE'], count: 0 },
+      { key: 'building', label: copy.statBuilding, lifecycles: ['BUILDING', 'DEPLOYING'], count: 0 },
+      { key: 'verifying', label: copy.statVerifying, lifecycles: ['TESTING', 'REVIEWING'], count: 0 },
+      { key: 'planning', label: copy.statPlanning, lifecycles: ['PLANNING', 'DESIGNING', 'IDEA'], count: 0 },
+    ];
+    for (const project of view.projects) {
+      const group = groups.find((g) => g.lifecycles.includes(project.lifecycle));
+      if (group) group.count += 1;
+    }
+    let latest = '';
+    for (const project of view.projects) {
+      const d = projectDates.get(project.id) ?? '';
+      if (d > latest) latest = d;
+    }
+    return { groups, latest };
+  }, [view.projects, copy, projectDates]);
+
+  const logSummary = useMemo(
+    () => fleetStats.groups.filter((g) => g.count > 0).map((g) => `${g.label} ${g.count}`).join(' · '),
+    [fleetStats.groups],
+  );
+
+  const latestDateLabel = useMemo(() => {
+    if (!fleetStats.latest) return '—';
+    return new Intl.DateTimeFormat(view.locale === 'ko' ? 'ko-KR' : 'en-US', {
+      dateStyle: 'medium',
+      timeZone: 'UTC',
+    }).format(new Date(`${fleetStats.latest}T00:00:00Z`));
+  }, [fleetStats.latest, view.locale]);
+
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
+
+  const toggleGroup = useCallback(
+    (key: string) => {
+      const next = activeGroup === key ? null : key;
+      setActiveGroup(next);
+      if (next === null) {
+        handle?.setHighlightIslands(null);
+        return;
+      }
+      const group = fleetStats.groups.find((g) => g.key === next);
+      const ids = group
+        ? view.projects.filter((p) => group.lifecycles.includes(p.lifecycle)).map((p) => p.id)
+        : [];
+      handle?.setHighlightIslands(ids);
+    },
+    [activeGroup, handle, fleetStats.groups, view.projects],
+  );
+
+  const activeLifecycles = useMemo(
+    () => (activeGroup ? fleetStats.groups.find((g) => g.key === activeGroup)?.lifecycles ?? null : null),
+    [activeGroup, fleetStats.groups],
+  );
+
+  /** Restore the fleet-filter glow after a card hover ends. */
+  const restoreGroupHighlight = useCallback(() => {
+    if (!activeLifecycles) {
+      handle?.setHighlightIsland(null);
+      return;
+    }
+    handle?.setHighlightIslands(
+      view.projects.filter((p) => activeLifecycles.includes(p.lifecycle)).map((p) => p.id),
+    );
+  }, [activeLifecycles, handle, view.projects]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [pulsingId, setPulsingId] = useState<string | null>(null);
   const pulseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -345,8 +436,10 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
 
   // Harbor log entries from view data. Held in state (not a memo) so a
   // live activity pulse can mark one entry fresh + "just now" in place.
+  // Sorted by last-updated date (newest first) so the log reads as a
+  // real activity feed, not a fixed project list.
   const [logEntries, setLogEntries] = useState<readonly HarborLogEntry[]>(() =>
-    view.projects.map((project) => ({
+    sortedProjects.map((project) => ({
       projectId: project.id,
       projectName: project.name,
       action: copy.logActions[project.lifecycle] ?? project.lifecycle,
@@ -359,7 +452,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
   // Keep the log in sync when the underlying view data changes.
   useEffect(() => {
     setLogEntries(
-      view.projects.map((project) => ({
+      sortedProjects.map((project) => ({
         projectId: project.id,
         projectName: project.name,
         action: copy.logActions[project.lifecycle] ?? project.lifecycle,
@@ -368,7 +461,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
         version: project.version,
       })),
     );
-  }, [view.projects, copy.logActions]);
+  }, [sortedProjects, copy.logActions]);
 
   // ── Live activity pulse ─────────────────────────────────────────
   // Every 18s one project (rotating deterministically) fires a card
@@ -419,6 +512,17 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
           <p className={styles.eyebrow}>{copy.eyebrow}</p>
           <h1 className={styles.worldTitle}>{copy.title}</h1>
           <p className={styles.worldIntro}>{copy.intro}</p>
+
+          {/* Fleet aggregate strip — the dashboard's "what's happening now" */}
+          <FleetStats
+            total={view.projects.length}
+            totalLabel={copy.fleetTotal}
+            groups={fleetStats.groups}
+            latestLabel={copy.fleetLatest}
+            latestDate={latestDateLabel}
+            activeGroup={activeGroup}
+            onGroupToggle={toggleGroup}
+          />
         </header>
 
         {/* Day/night dial — top right */}
@@ -477,13 +581,13 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
             label.visible ? (
               <div
                 key={label.projectId}
-                className={`${styles.islandCard} ${label.tier === 'flagship' ? styles.islandCardFlagship : label.tier === 'core' ? styles.islandCardCore : ''}${label.projectId === pulsingId || label.projectId === selectedId ? ` ${styles.islandCardActive}` : ''}`}
+                className={`${styles.islandCard} ${label.tier === 'flagship' ? styles.islandCardFlagship : label.tier === 'core' ? styles.islandCardCore : ''}${label.projectId === pulsingId || label.projectId === selectedId ? ` ${styles.islandCardActive}` : ''}${activeLifecycles && !activeLifecycles.includes(label.lifecycle) ? ` ${styles.islandCardDimmed}` : ''}`}
                 data-selected={label.projectId === selectedId}
                 data-lifecycle={label.lifecycle}
                 data-tier={label.tier}
                 style={{ left: label.x, top: label.y, '--card-delay': `${350 + index * 70}ms` } as CSSProperties}
                 onMouseEnter={() => handle?.setHighlightIsland(label.projectId)}
-                onMouseLeave={() => handle?.setHighlightIsland(null)}
+                onMouseLeave={restoreGroupHighlight}
               >
                 <button
                   type="button"
@@ -551,6 +655,9 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
           entries={logEntries}
           title={copy.harborLogTitle}
           subtitle={copy.harborLogSubtitle}
+          summary={logSummary}
+          showAllLabel={copy.showAll}
+          showLessLabel={copy.showLess}
           onSelectProject={selectProject}
           selectedProjectId={selectedId}
         />

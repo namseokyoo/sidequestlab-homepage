@@ -7,6 +7,14 @@ const COPY = {
     intro: '세 개의 프로젝트 섬이 지금 이 순간에도 개발되고 있습니다. 월드를 탐험하거나, 항해 일지에서 최근 활동을 확인하세요.',
     harborLogTitle: '항해 일지',
     harborLogSubtitle: '프로젝트 횡단 최근 활동',
+    fleetTotal: '프로젝트',
+    fleetLatest: '최근 활동',
+    statOperating: '운영',
+    statBuilding: '개발',
+    statVerifying: '검증',
+    statPlanning: '계획',
+    showAll: '전체 보기',
+    showLess: '접기',
     dayLabel: '낮',
     nightLabel: '밤',
     autoCycle: '자동 순환',
@@ -52,6 +60,14 @@ const COPY = {
     intro: 'Three project islands are being developed right now. Explore the world, or check the harbor log for recent activity.',
     harborLogTitle: 'Harbor Log',
     harborLogSubtitle: 'Recent activity across projects',
+    fleetTotal: 'projects',
+    fleetLatest: 'Latest activity',
+    statOperating: 'operating',
+    statBuilding: 'building',
+    statVerifying: 'verifying',
+    statPlanning: 'planning',
+    showAll: 'Show all',
+    showLess: 'Show less',
     dayLabel: 'Day',
     nightLabel: 'Night',
     autoCycle: 'Auto cycle',
@@ -99,6 +115,14 @@ export type ArchipelagoV2Copy = {
   readonly intro: string;
   readonly harborLogTitle: string;
   readonly harborLogSubtitle: string;
+  readonly fleetTotal: string;
+  readonly fleetLatest: string;
+  readonly statOperating: string;
+  readonly statBuilding: string;
+  readonly statVerifying: string;
+  readonly statPlanning: string;
+  readonly showAll: string;
+  readonly showLess: string;
   readonly dayLabel: string;
   readonly nightLabel: string;
   readonly autoCycle: string;

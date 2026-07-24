@@ -63,6 +63,8 @@ export type WorldEngine = {
   readonly waveWayfarers: () => void;
   /** Highlight one island with a glow ring; null clears all glows. */
   readonly setHighlightIsland: (id: string | null) => void;
+  /** Highlight a set of islands (fleet filter); null clears all glows. */
+  readonly setHighlightIslands: (ids: readonly string[] | null) => void;
   readonly burstAt: (x: number, y: number) => void;
   readonly getCamera: () => CameraState;
   readonly getViewport: () => { width: number; height: number };
@@ -455,6 +457,13 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     setHighlightIsland(id: string | null): void {
       for (const [islandId, system] of islands) {
         system.setGlow(id !== null && islandId === id);
+      }
+    },
+
+    setHighlightIslands(ids: readonly string[] | null): void {
+      const set = ids === null ? null : new Set(ids);
+      for (const [islandId, system] of islands) {
+        system.setGlow(set !== null && set.has(islandId));
       }
     },
 
