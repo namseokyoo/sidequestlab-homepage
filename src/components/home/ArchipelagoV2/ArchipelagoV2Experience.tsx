@@ -22,6 +22,7 @@ type ArchipelagoV2ExperienceProps = {
 type IslandLabel = {
   readonly projectId: string;
   readonly name: string;
+  readonly summary: string;
   readonly lifecycle: string;
   readonly lifecycleLabel: string;
   readonly progressPercent: number;
@@ -73,9 +74,9 @@ type CardRect = { x: number; y: number; w: number; h: number };
  */
 function cardSizeFor(tier: IslandTier, viewportWidth: number): { w: number; h: number } {
   const mobile = viewportWidth <= 640;
-  if (tier === 'flagship') return mobile ? { w: 128, h: 88 } : { w: 150, h: 95 };
-  if (tier === 'core') return mobile ? { w: 110, h: 80 } : { w: 122, h: 84 };
-  return mobile ? { w: 110, h: 76 } : { w: 110, h: 78 };
+  if (tier === 'flagship') return mobile ? { w: 158, h: 112 } : { w: 186, h: 118 };
+  if (tier === 'core') return mobile ? { w: 136, h: 104 } : { w: 164, h: 110 };
+  return mobile ? { w: 128, h: 98 } : { w: 150, h: 102 };
 }
 
 /** Iteratively push overlapping cards apart. Cards are anchored at bottom-center. */
@@ -241,7 +242,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
       const next: IslandLabel[] = view.projects.map((project) => {
         const layout = islandLayouts.find((l) => l.id === project.id);
         if (!layout) {
-          return { projectId: project.id, name: project.name, lifecycle: project.lifecycle, lifecycleLabel: '', progressPercent: project.progressPercent, tier: 'standard' as IslandTier, x: -999, y: -999, visible: false };
+          return { projectId: project.id, name: project.name, summary: project.summary, lifecycle: project.lifecycle, lifecycleLabel: '', progressPercent: project.progressPercent, tier: 'standard' as IslandTier, x: -999, y: -999, visible: false };
         }
         const screen = worldToScreen(
           { x: layout.cx / WORLD_WIDTH, y: (layout.cy - layout.ry - 30) / WORLD_HEIGHT },
@@ -254,6 +255,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
         return {
           projectId: project.id,
           name: project.name,
+          summary: project.summary,
           lifecycle: project.lifecycle,
           lifecycleLabel: copy.projectStates[project.lifecycle] ?? project.lifecycle,
           progressPercent: project.progressPercent,
@@ -488,8 +490,10 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
                   className={styles.islandCardBtn}
                   onClick={() => selectProject(label.projectId)}
                   aria-pressed={label.projectId === selectedId}
+                  aria-label={`${label.name} — ${label.summary}`}
                 >
                   <span className={styles.islandCardName}>{label.name}</span>
+                  <span className={styles.islandCardSummary}>{label.summary}</span>
                   <span className={styles.islandCardBadge} data-lifecycle={label.lifecycle}>
                     {label.lifecycleLabel}
                   </span>

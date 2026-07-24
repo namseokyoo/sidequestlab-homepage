@@ -370,7 +370,7 @@
   cursor: pointer;
   box-shadow: 0 3px 0 rgba(23, 52, 58, 0.3), 0 6px 16px rgba(23, 52, 58, 0.12);
   transition: transform 180ms ease, box-shadow 180ms ease;
-  width: 118px;
+  width: 150px;
   animation: cardReveal 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--card-delay, 300ms);
 }
@@ -413,20 +413,47 @@
   text-overflow: ellipsis;
 }
 
+/* One-sentence project purpose — the answer to "what is this island?"
+   Flagships always show 2 lines; core/standard show 1 line at rest and
+   expand to 2 on hover/selection so the overview map stays readable. */
+.islandCardSummary {
+  font-size: 0.6875rem;
+  font-weight: 450;
+  line-height: 1.35;
+  color: var(--arch-muted);
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: keep-all;
+  max-width: 100%;
+}
+
+.islandCardCore .islandCardSummary,
+.islandCard:not(.islandCardCore):not(.islandCardFlagship) .islandCardSummary {
+  -webkit-line-clamp: 1;
+}
+.islandCardCore .islandCardBtn:hover .islandCardSummary,
+.islandCard:not(.islandCardCore):not(.islandCardFlagship) .islandCardBtn:hover .islandCardSummary,
+.islandCard[data-selected='true'] .islandCardSummary {
+  -webkit-line-clamp: 2;
+}
+
 /* ── Island tier hierarchy ─────────────────────────────────────────
    Flagships are the three headline projects: larger, bolder cards with
    a gold accent so they read first at a glance. Core projects are a
    mid step up from the standard baseline. Geometry is unchanged — the
    hierarchy lives entirely in the label layer. */
 .islandCardCore .islandCardBtn {
-  width: 132px;
+  width: 164px;
   padding: 8px 16px 10px;
 }
 .islandCardCore .islandCardName {
   font-size: 0.92rem;
 }
 .islandCardFlagship .islandCardBtn {
-  width: 158px;
+  width: 186px;
   padding: 10px 18px 12px;
   border-width: 2.5px;
   background: linear-gradient(180deg, var(--arch-paper) 0%, var(--arch-paper) 72%, rgba(229, 170, 69, 0.16) 100%);
