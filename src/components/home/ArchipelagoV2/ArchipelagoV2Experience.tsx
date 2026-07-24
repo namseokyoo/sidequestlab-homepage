@@ -193,9 +193,15 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
   }, []);
 
   // Camera tick → update DOM label positions
+  const lastLabelCamera = useRef<{ x: number; y: number; zoom: number } | null>(null);
   useEffect(() => {
     if (!handle) return;
     return handle.onTick((camera) => {
+      // Skip when the camera is stationary — label positions only change
+      // with camera movement, so idle frames need no recomputation.
+      const prev = lastLabelCamera.current;
+      if (prev && prev.x === camera.x && prev.y === camera.y && prev.zoom === camera.zoom) return;
+      lastLabelCamera.current = { x: camera.x, y: camera.y, zoom: camera.zoom };
       const next: IslandLabel[] = view.projects.map((project) => {
         const layout = islandLayouts.find((l) => l.id === project.id);
         if (!layout) {

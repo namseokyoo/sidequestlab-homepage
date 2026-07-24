@@ -20,6 +20,7 @@ export type BoatSystem = {
   readonly tick: (timeMs: number, deltaMs: number, motionOn: boolean) => void;
   readonly repaint: (palette: WorldPalette) => void;
   readonly setRoutes: (layouts: readonly IslandLayout[]) => void;
+  readonly dispose: () => void;
 };
 
 type Vec2 = { readonly x: number; readonly y: number };
@@ -35,6 +36,7 @@ type Boat = {
   readonly holder: Container;
   readonly fallback: Graphics;
   sprite: Sprite | null;
+  unsubSprite: (() => void) | null;
   routeIndex: number;
   t: number;
   direction: 1 | -1;
@@ -182,6 +184,7 @@ export function createBoatSystem(): BoatSystem {
       holder,
       fallback,
       sprite: null,
+      unsubSprite: null,
       routeIndex,
       t,
       direction,
@@ -196,16 +199,21 @@ export function createBoatSystem(): BoatSystem {
     if (existing) {
       applySpriteTexture(boat, existing);
     } else {
-      onSpriteLoaded('boat-sail', (texture) => {
+      boat.unsubSprite = onSpriteLoaded('boat-sail', (texture) => {
         if (texture) applySpriteTexture(boat, texture);
       });
     }
     return boat;
   }
 
+  function destroyBoat(boat: Boat): void {
+    boat.unsubSprite?.();
+    boat.holder.destroy({ children: true });
+  }
+
   function setRoutes(layouts: readonly IslandLayout[]): void {
     routes = buildRoutes(layouts);
-    for (const boat of boats) boatLayer.removeChild(boat.holder);
+    for (const boat of boats) destroyBoat(boat);
     boats.length = 0;
     if (routes.length === 0) return;
 
@@ -306,5 +314,12 @@ export function createBoatSystem(): BoatSystem {
     }
   }
 
-  return { container, tick, repaint, setRoutes };
+  function dispose(): void {
+    for (const boat of boats) destroyBoat(boat);
+    boats.length = 0;
+    for (const w of wakes) w.g.destroy();
+    wakes.length = 0;
+  }
+
+  return { container, tick, repaint, setRoutes, dispose };
 }

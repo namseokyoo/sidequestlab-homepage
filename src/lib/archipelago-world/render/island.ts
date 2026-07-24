@@ -1656,8 +1656,8 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     const glowBase = glowRing.alpha + (glowTarget - glowRing.alpha) * 0.12;
     glowRing.alpha =
       glowTarget > 0 && motionOn
-        ? glowBase + Math.sin(timeMs / 400) * 0.15
-        : glowBase;
+        ? Math.min(1, Math.max(0, glowBase + Math.sin(timeMs / 400) * 0.15))
+        : Math.min(1, Math.max(0, glowBase));
 
     // Tree sway
     for (const tree of trees) {

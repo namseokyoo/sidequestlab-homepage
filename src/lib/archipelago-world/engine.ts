@@ -327,6 +327,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     destroy(): void {
       destroyed = true;
       tickCallbacks.length = 0;
+      boats.dispose();
       for (const system of islands.values()) {
         system.dispose?.();
       }
