@@ -68,6 +68,14 @@ function layoutToFocusBox(layout: IslandLayout, scaleCap: number): FocusBox {
 // tier (flagships are wider), so the resolver works per-card.
 const CARD_GAP = 6;
 
+/**
+ * Lifecycles that count as "work happening now" for the activity pulse
+ * rotation — motion should signify where development is active, not
+ * sweep every island uniformly (DESIGN.md §8: motion is not a
+ * constant screensaver).
+ */
+const ACTIVE_PULSE_LIFECYCLES = new Set(['BUILDING', 'DEPLOYING', 'TESTING']);
+
 type CardRect = { x: number; y: number; w: number; h: number };
 
 /**
@@ -391,6 +399,9 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
     if (!project || !layout || !handle) return;
     setSelectedId(projectId);
     handle.focusIsland(project.id as IslandKind, layoutToFocusBox(layout, project.presentation.focusScaleCap));
+    // The Wayfarers greet the visitor as the camera arrives — selection
+    // is a meaningful world action, not just a camera move (DESIGN.md §8).
+    handle.waveWayfarers();
   }, [handle, view.projects, islandLayouts]);
 
   const returnToOverview = useCallback(() => {
@@ -477,16 +488,21 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
   }, [sortedProjects, copy.logActions]);
 
   // ── Live activity pulse ─────────────────────────────────────────
-  // Every 18s one project (rotating deterministically) fires a card
-  // pulse, an in-world particle burst over its island, and a "just now"
-  // flash on its harbor-log entry — so the dashboard visibly breathes.
+  // Every 45s one project fires a card pulse, an in-world particle burst,
+  // and a "just now" flash on its harbor-log entry. The rotation prefers
+  // actively-developed projects (BUILDING/DEPLOYING) so motion signifies
+  // where work is happening, not a uniform screensaver (DESIGN.md §8).
   useEffect(() => {
     if (!motionEnabled || !handle) return;
     let tick = 0;
     const id = setInterval(() => {
       const projects = view.projects;
       if (projects.length === 0) return;
-      const project = projects[tick % projects.length];
+      // Active projects pulse first; the rest fill in afterwards.
+      const active = projects.filter((p) => ACTIVE_PULSE_LIFECYCLES.has(p.lifecycle));
+      const rest = projects.filter((p) => !ACTIVE_PULSE_LIFECYCLES.has(p.lifecycle));
+      const ordered = [...active, ...rest];
+      const project = ordered[tick % ordered.length];
       tick += 1;
       setPulsingId(project.id);
       setLogEntries((prev) =>
@@ -498,7 +514,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
       );
       const layout = islandLayouts.find((l) => l.id === project.id);
       if (layout) handle.burstAt(layout.cx, layout.cy - layout.ry);
-    }, 18000);
+    }, 45000);
     return () => clearInterval(id);
   }, [motionEnabled, handle, view.projects, islandLayouts, copy.justNow]);
 
