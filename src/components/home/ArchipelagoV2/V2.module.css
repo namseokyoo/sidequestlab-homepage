@@ -248,7 +248,7 @@
 .zoomCluster {
   position: absolute;
   right: 18px;
-  bottom: 18px;
+  bottom: 118px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -711,25 +711,30 @@
 /* ── Harbor Log ──────────────────────────────────────────────── */
 
 .harborLog {
-  position: relative;
-  z-index: 10;
-  padding: 28px clamp(20px, 5vw, 56px) 32px;
-  background: var(--panel-bg);
-  border-top: 3px solid var(--arch-ink);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  padding: 10px 16px 12px;
+  background: color-mix(in srgb, var(--panel-bg) 88%, transparent);
+  backdrop-filter: blur(6px);
+  border-top: 2px solid var(--panel-border);
+  box-shadow: 0 -6px 20px rgba(23, 52, 58, 0.18);
 }
 
 .harborLogHeader {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
 .harborLogTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-size: 1rem;
   font-weight: 900;
   letter-spacing: -0.01em;
 }
@@ -740,7 +745,7 @@
 
 .harborLogSubtitle {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.72rem;
   color: var(--arch-muted);
 }
 
@@ -748,19 +753,28 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 12px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  padding-bottom: 2px;
+}
+
+.harborLogList > li {
+  flex: 0 0 auto;
+  width: 232px;
+  scroll-snap-align: start;
 }
 
 .harborLogEntry {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   width: 100%;
-  padding: 14px 16px;
-  border: 2px solid var(--panel-border);
-  border-radius: 12px 12px 12px 3px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--panel-border);
+  border-radius: 10px 10px 10px 3px;
   background: rgba(255, 249, 236, 0.7);
   cursor: pointer;
   text-align: left;
@@ -809,12 +823,12 @@
 
 .harborLogIcon {
   flex-shrink: 0;
-  width: 42px;
-  height: 42px;
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
-  font-size: 1.25rem;
-  border-radius: 10px;
+  font-size: 1rem;
+  border-radius: 8px;
   background: rgba(232, 201, 131, 0.35);
   border: 1.5px solid var(--panel-border);
 }
@@ -827,9 +841,9 @@
 .harborLogName {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 800;
   color: var(--arch-ink);
 }
@@ -847,8 +861,11 @@
 .harborLogAction {
   display: block;
   margin-top: 2px;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: var(--arch-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .harborLogTime {
@@ -911,7 +928,11 @@
   }
 
   .harborLogList {
-    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .harborLogList > li {
+    width: 200px;
   }
 
   /* Keep the tier hierarchy but shrink cards so 13 fit on small screens. */

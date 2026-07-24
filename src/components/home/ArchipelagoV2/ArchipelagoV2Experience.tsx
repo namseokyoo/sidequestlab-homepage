@@ -540,16 +540,16 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
 
         {/* Screen-reader scene description */}
         <p className="sr-only">{copy.sceneDescription}</p>
-      </div>
 
-      {/* ── Harbor Log ──────────────────────────────────────────── */}
-      <HarborLog
-        entries={logEntries}
-        title={copy.harborLogTitle}
-        subtitle={copy.harborLogSubtitle}
-        onSelectProject={selectProject}
-        selectedProjectId={selectedId}
-      />
+        {/* ── Harbor Log — docked at the bottom of the world stage ── */}
+        <HarborLog
+          entries={logEntries}
+          title={copy.harborLogTitle}
+          subtitle={copy.harborLogSubtitle}
+          onSelectProject={selectProject}
+          selectedProjectId={selectedId}
+        />
+      </div>
 
       {/* ── Semantic project list (accessibility, no-JS fallback) ── */}
       <nav className={styles.semanticList} aria-label={copy.choose}>
