@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck — vitest types not in tsconfig; test runs via npx vitest
 import { describe, expect, it } from 'vitest';
 

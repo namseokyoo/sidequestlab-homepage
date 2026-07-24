@@ -275,6 +275,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
       );
       setLabels(resolved);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- copy.projectStates is stable per locale
   }, [handle, view.projects, viewport, islandLayouts]);
 
   const selectProject = useCallback((projectId: string) => {

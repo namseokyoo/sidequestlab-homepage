@@ -583,7 +583,7 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
           drawAntenna(animLayer, antX, antY, p);
         }
       } else if (lc === 'PLANNING' || lc === 'DESIGNING' || lc === 'IDEA') {
-        drawHologram(animLayer, cx, cy - ry * 0.15, rx, ry, p);
+        drawHologram(animLayer, cx, cy - ry * 0.15, rx, ry);
       } else if (lc === 'TESTING' || lc === 'REVIEWING') {
         const bcnX = cx + rx * 0.45;
         const bcnY = cy - ry * 0.2;
@@ -1103,7 +1103,7 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
   }
 
   /** Holographic blueprint grid — signals planning/design phase. */
-  function drawHologram(anim: Container, cx: number, cy: number, rx: number, ry: number, p: WorldPalette): void {
+  function drawHologram(anim: Container, cx: number, cy: number, rx: number, ry: number): void {
     const g = new Graphics();
     g.x = cx;
     g.y = cy;
