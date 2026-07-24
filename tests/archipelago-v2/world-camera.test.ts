@@ -5,6 +5,7 @@ import {
   FOCUS_TRANSITION_MS,
   OVERVIEW_CAMERA,
   focusCameraTarget,
+  screenToWorld,
   tweenCamera,
   voyageCameraAt,
   worldToScreen,
@@ -12,7 +13,9 @@ import {
 } from '../../src/lib/archipelago-world/camera.ts';
 import { WORLD_HEIGHT, WORLD_WIDTH } from '../../src/lib/archipelago-world/islands.ts';
 
-const LAYOUT = { width: WORLD_WIDTH, height: WORLD_HEIGHT };
+// worldToScreen/screenToWorld take the *viewport* size (matching the
+// engine's applyCamera convention). Tests use a representative stage.
+const VIEWPORT = { width: 1440, height: 640 };
 
 test('Given the camera contract, When transitions are configured, Then duration stays within 240–600ms', () => {
   assert.ok(FOCUS_TRANSITION_MS >= 240 && FOCUS_TRANSITION_MS <= 600);
@@ -21,7 +24,7 @@ test('Given the camera contract, When transitions are configured, Then duration 
 test('Given a focus box, When the camera target is computed, Then zoom respects the scale cap', () => {
   const target = focusCameraTarget(
     { x: 0.28, y: 0.1, width: 0.44, height: 0.38, scaleCap: 1.9 },
-    LAYOUT,
+    { width: WORLD_WIDTH, height: WORLD_HEIGHT },
   );
   assert.ok(target.zoom >= 1);
   assert.ok(target.zoom <= 1.9);
@@ -30,7 +33,7 @@ test('Given a focus box, When the camera target is computed, Then zoom respects 
 test('Given a tiny focus box, When the camera target is computed, Then zoom never exceeds the cap', () => {
   const target = focusCameraTarget(
     { x: 0.4, y: 0.4, width: 0.05, height: 0.05, scaleCap: 2.0 },
-    LAYOUT,
+    { width: WORLD_WIDTH, height: WORLD_HEIGHT },
   );
   assert.ok(target.zoom <= 2.0);
 });
@@ -38,7 +41,7 @@ test('Given a tiny focus box, When the camera target is computed, Then zoom neve
 test('Given an out-of-range focus box center, When the camera target is computed, Then position is clamped to [0, 1]', () => {
   const target = focusCameraTarget(
     { x: -0.5, y: 1.5, width: 0.3, height: 0.3, scaleCap: 2 },
-    LAYOUT,
+    { width: WORLD_WIDTH, height: WORLD_HEIGHT },
   );
   assert.ok(target.x >= 0 && target.x <= 1);
   assert.ok(target.y >= 0 && target.y <= 1);
@@ -63,22 +66,41 @@ test('Given a camera tween, When t is out of range, Then it clamps rather than e
   assert.ok(Math.abs(above.x - 1) < 1e-10);
 });
 
-test('Given the overview camera, When the world center is projected, Then it lands at the screen center', () => {
-  const screen = worldToScreen({ x: 0.5, y: 0.48 }, OVERVIEW_CAMERA, LAYOUT);
-  assert.ok(Math.abs(screen.x - WORLD_WIDTH / 2) < 1);
-  assert.ok(Math.abs(screen.y - WORLD_HEIGHT / 2) < 1);
+test('Given any camera, When the camera center is projected, Then it lands at the viewport center', () => {
+  for (const camera of [OVERVIEW_CAMERA, { x: 0.3, y: 0.7, zoom: 1.4 }, { x: 0.8, y: 0.2, zoom: 2.5 }]) {
+    const screen = worldToScreen({ x: camera.x, y: camera.y }, camera, VIEWPORT);
+    assert.ok(Math.abs(screen.x - VIEWPORT.width / 2) < 1e-6, `x centered at zoom ${camera.zoom}`);
+    assert.ok(Math.abs(screen.y - VIEWPORT.height / 2) < 1e-6, `y centered at zoom ${camera.zoom}`);
+  }
 });
 
 test('Given a zoomed camera, When a world point is projected, Then screen coordinates scale accordingly', () => {
   const camera = { x: 0.5, y: 0.5, zoom: 2 };
-  const center = worldToScreen({ x: 0.5, y: 0.5 }, camera, LAYOUT);
-  assert.ok(Math.abs(center.x - WORLD_WIDTH / 2) < 1);
+  const center = worldToScreen({ x: 0.5, y: 0.5 }, camera, VIEWPORT);
+  assert.ok(Math.abs(center.x - VIEWPORT.width / 2) < 1);
   // A point offset in world space moves twice as far on screen at zoom 2
-  const offset = worldToScreen({ x: 0.6, y: 0.5 }, camera, LAYOUT);
+  const offset = worldToScreen({ x: 0.6, y: 0.5 }, camera, VIEWPORT);
   const expected = 0.1 * WORLD_WIDTH * 2;
   assert.ok(Math.abs(offset.x - center.x - expected) < 1);
 });
 
+test('Given screen coordinates, When converted to world and back, Then the round trip is stable', () => {
+  const camera = { x: 0.42, y: 0.61, zoom: 1.35 };
+  for (const screen of [{ x: 0, y: 0 }, { x: 720, y: 320 }, { x: 1440, y: 640 }, { x: 133, y: 501 }]) {
+    const world = screenToWorld(screen, camera, VIEWPORT);
+    const back = worldToScreen(world, camera, VIEWPORT);
+    assert.ok(Math.abs(back.x - screen.x) < 1e-6, `x round trip for ${screen.x},${screen.y}`);
+    assert.ok(Math.abs(back.y - screen.y) < 1e-6, `y round trip for ${screen.x},${screen.y}`);
+  }
+});
+
+test('Given worldToScreen and screenToWorld, Then screenToWorld is the exact inverse', () => {
+  const camera = { x: 0.5, y: 0.5, zoom: 0.62 };
+  const world = { x: 0.79, y: 0.33 };
+  const round = screenToWorld(worldToScreen(world, camera, VIEWPORT), camera, VIEWPORT);
+  assert.ok(Math.abs(round.x - world.x) < 1e-9);
+  assert.ok(Math.abs(round.y - world.y) < 1e-9);
+});
 test('Given voyage waypoints, When progress is 0 or 1, Then the camera sits at the first or last waypoint', () => {
   const waypoints: readonly VoyageWaypoint[] = [
     { x: 0.2, y: 0.3, projectId: null },

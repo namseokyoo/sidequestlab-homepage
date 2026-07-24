@@ -42,7 +42,7 @@
 .worldStage {
   position: relative;
   flex: 1;
-  min-height: 520px;
+  min-height: 640px;
   overflow: hidden;
 }
 
@@ -773,7 +773,7 @@
 
 @media (max-width: 1023px) {
   .worldStage {
-    min-height: 440px;
+    min-height: 520px;
   }
 
   .worldHeader {

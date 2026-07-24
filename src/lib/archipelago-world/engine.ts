@@ -172,7 +172,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
 
     // ── Intro sequence: rise from the sea, islands reveal one by one ─
     if (motionEnabled) {
-      camera = { x: 0.5, y: 0.66, zoom: 0.58 };
+      camera = { x: 0.5, y: 0.5, zoom: 0.58 };
       applyCamera();
       introStart = performance.now();
       for (const layout of islandLayouts) {

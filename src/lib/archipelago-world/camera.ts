@@ -6,6 +6,7 @@
  */
 
 import { clamp, easeInOutCubic, lerp } from './math.ts';
+import { WORLD_HEIGHT, WORLD_WIDTH } from './islands.ts';
 
 export type CameraState = {
   readonly x: number;
@@ -26,7 +27,7 @@ export type FocusBox = {
   readonly scaleCap: number;
 };
 
-export const OVERVIEW_CAMERA: CameraState = { x: 0.5, y: 0.48, zoom: 1 };
+export const OVERVIEW_CAMERA: CameraState = { x: 0.5, y: 0.5, zoom: 0.62 };
 
 export const FOCUS_TRANSITION_MS = 480;
 export const VOYAGE_SEGMENT_MS = 600;
@@ -61,21 +62,21 @@ export function tweenCamera(from: CameraState, to: CameraState, t: number): Came
 
 /**
  * Convert a normalized world point to screen pixels given the current
- * camera and layout. Used to position DOM overlays over the canvas.
+ * camera and viewport. Used to position DOM overlays over the canvas.
+ *
+ * This must mirror the engine's `applyCamera` exactly: at zoom 1 the
+ * viewport shows `viewport.width` world units (a 1:1 pixel mapping),
+ * so a world point's screen offset scales with `WORLD_WIDTH * zoom`
+ * around the viewport centre.
  */
 export function worldToScreen(
   point: { readonly x: number; readonly y: number },
   camera: CameraState,
-  layout: WorldLayout,
+  viewport: WorldLayout,
 ): { x: number; y: number } {
-  const scale = camera.zoom;
-  const viewW = layout.width / scale;
-  const viewH = layout.height / scale;
-  const left = camera.x * layout.width - viewW / 2;
-  const top = camera.y * layout.height - viewH / 2;
   return {
-    x: (point.x * layout.width - left) * scale,
-    y: (point.y * layout.height - top) * scale,
+    x: (point.x - camera.x) * WORLD_WIDTH * camera.zoom + viewport.width / 2,
+    y: (point.y - camera.y) * WORLD_HEIGHT * camera.zoom + viewport.height / 2,
   };
 }
 
@@ -86,16 +87,11 @@ export function worldToScreen(
 export function screenToWorld(
   screen: { readonly x: number; readonly y: number },
   camera: CameraState,
-  layout: WorldLayout,
+  viewport: WorldLayout,
 ): { x: number; y: number } {
-  const scale = camera.zoom;
-  const viewW = layout.width / scale;
-  const viewH = layout.height / scale;
-  const left = camera.x * layout.width - viewW / 2;
-  const top = camera.y * layout.height - viewH / 2;
   return {
-    x: (screen.x / scale + left) / layout.width,
-    y: (screen.y / scale + top) / layout.height,
+    x: (screen.x - viewport.width / 2) / (WORLD_WIDTH * camera.zoom) + camera.x,
+    y: (screen.y - viewport.height / 2) / (WORLD_HEIGHT * camera.zoom) + camera.y,
   };
 }
 

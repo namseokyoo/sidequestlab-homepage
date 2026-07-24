@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 
 import type { ArchipelagoView } from '../Archipelago/types';
 import { worldToScreen } from '@/lib/archipelago-world/camera';
-import { buildIslandLayouts, WORLD_HEIGHT, WORLD_WIDTH, type IslandKind } from '@/lib/archipelago-world/islands';
+import { buildIslandLayouts, CLIFF_HEIGHT, WORLD_HEIGHT, WORLD_WIDTH, type IslandKind, type IslandLayout } from '@/lib/archipelago-world/islands';
 import type { FocusBox } from '@/lib/archipelago-world/camera';
 
 import { DayNightDial } from './DayNightDial';
@@ -29,13 +29,28 @@ type IslandLabel = {
   readonly visible: boolean;
 };
 
-function toFocusBox(project: ArchipelagoView['projects'][number]): FocusBox {
+/**
+ * Derive the camera focus box from the live island layout rather than
+ * the presentation manifest, so focus targets always match the actual
+ * world geometry (including companion landmasses and cliff faces).
+ */
+function layoutToFocusBox(layout: IslandLayout, scaleCap: number): FocusBox {
+  const pad = 60;
+  const west = layout.cx - layout.rx;
+  const east = layout.companion
+    ? Math.max(layout.cx + layout.rx, layout.companion.cx + layout.companion.rx)
+    : layout.cx + layout.rx;
+  const north = layout.cy - layout.ry;
+  const south = Math.max(
+    layout.cy + layout.ry,
+    layout.companion ? layout.companion.cy + layout.companion.ry : 0,
+  );
   return {
-    x: project.presentation.focusBox.x,
-    y: project.presentation.focusBox.y,
-    width: project.presentation.focusBox.width,
-    height: project.presentation.focusBox.height,
-    scaleCap: project.presentation.focusScaleCap,
+    x: (west - pad) / WORLD_WIDTH,
+    y: (north - pad) / WORLD_HEIGHT,
+    width: (east - west + pad * 2) / WORLD_WIDTH,
+    height: (south - north + pad * 2 + CLIFF_HEIGHT) / WORLD_HEIGHT,
+    scaleCap,
   };
 }
 
@@ -186,6 +201,10 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         setViewport({ width: entry.contentRect.width, height: entry.contentRect.height });
+        // Invalidate the cached camera so labels recompute against the
+        // fresh viewport on the next tick (the tick callback skips work
+        // while the camera is stationary).
+        lastLabelCamera.current = null;
       }
     });
     observer.observe(el);
@@ -196,6 +215,9 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
   const lastLabelCamera = useRef<{ x: number; y: number; zoom: number } | null>(null);
   useEffect(() => {
     if (!handle) return;
+    // Viewport (or handle/projects) changed — force a label recompute on
+    // the next tick even though the camera has not moved.
+    lastLabelCamera.current = null;
     return handle.onTick((camera) => {
       // Skip when the camera is stationary — label positions only change
       // with camera movement, so idle frames need no recomputation.
@@ -210,7 +232,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
         const screen = worldToScreen(
           { x: layout.cx / WORLD_WIDTH, y: (layout.cy - layout.ry - 30) / WORLD_HEIGHT },
           camera,
-          { width: WORLD_WIDTH, height: WORLD_HEIGHT },
+          viewport,
         );
         const inView =
           screen.x > -100 && screen.x < viewport.width + 100 &&
@@ -244,10 +266,11 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
 
   const selectProject = useCallback((projectId: string) => {
     const project = view.projects.find((p) => p.id === projectId);
-    if (!project || !handle) return;
+    const layout = islandLayouts.find((l) => l.id === projectId);
+    if (!project || !layout || !handle) return;
     setSelectedId(projectId);
-    handle.focusIsland(project.id as IslandKind, toFocusBox(project));
-  }, [handle, view.projects]);
+    handle.focusIsland(project.id as IslandKind, layoutToFocusBox(layout, project.presentation.focusScaleCap));
+  }, [handle, view.projects, islandLayouts]);
 
   const returnToOverview = useCallback(() => {
     setSelectedId(null);

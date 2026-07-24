@@ -2,13 +2,14 @@
  * Island layout and procedural terrain generation for the world engine.
  * Pure functions — no PixiJS dependency, safe for Node tests.
  *
- * World space is 1600×1000 units. Island positions align with the
- * presentation-manifest focusBox regions so camera targets match art.
+ * World space is 2400×1000 units — a wide panorama matching the
+ * desktop stage aspect ratio so the whole archipelago reads at a
+ * glance with open water between islands.
  */
 
 import { createSeededRandom } from './math.ts';
 
-export const WORLD_WIDTH = 1600;
+export const WORLD_WIDTH = 2400;
 export const WORLD_HEIGHT = 1000;
 
 /** Vertical extrusion height of the main island cliff face. */
@@ -35,14 +36,30 @@ export type IslandLayout = {
   };
 };
 
-/** Hand-tuned anchor positions for the founding islands. */
-const FOUNDING_LAYOUTS: Record<string, Omit<IslandLayout, 'id'>> = {
-  displaylab: { cx: 800, cy: 300, rx: 340, ry: 190, seed: 42, rotation: -0.12 },
-  booksalon: { cx: 400, cy: 660, rx: 285, ry: 180, seed: 77, rotation: 0.08 },
+/**
+ * Hand-tuned anchor positions for the known fleet. Each island is
+ * curated so the full set spreads across the panorama with open
+ * water between neighbors (verified: no ellipse overlaps, minimum
+ * visual gap ≈ 50 world units). New project ids fall through to the
+ * deterministic spiral below.
+ */
+const CURATED_LAYOUTS: Record<string, Omit<IslandLayout, 'id'>> = {
+  displaylab: { cx: 1180, cy: 460, rx: 240, ry: 140, seed: 42, rotation: -0.12 },
+  booksalon: { cx: 460, cy: 640, rx: 185, ry: 110, seed: 77, rotation: 0.08 },
   nbbang: {
-    cx: 1190, cy: 680, rx: 250, ry: 162, seed: 123, rotation: 0.15,
-    companion: { cx: 1420, cy: 620, rx: 120, ry: 88, seed: 124 },
+    cx: 1900, cy: 580, rx: 170, ry: 100, seed: 123, rotation: 0.15,
+    companion: { cx: 2160, cy: 470, rx: 85, ry: 55, seed: 124 },
   },
+  pulseup: { cx: 810, cy: 280, rx: 130, ry: 80, seed: 301, rotation: -0.08 },
+  'spectrum-visualizer': { cx: 1560, cy: 250, rx: 125, ry: 78, seed: 302, rotation: 0.1 },
+  'pomodoro-timer': { cx: 250, cy: 340, rx: 115, ry: 72, seed: 303, rotation: -0.05 },
+  thisor: { cx: 700, cy: 850, rx: 110, ry: 70, seed: 304, rotation: 0.12 },
+  livenote: { cx: 2260, cy: 720, rx: 115, ry: 72, seed: 305, rotation: -0.1 },
+  'todo-app': { cx: 1010, cy: 790, rx: 106, ry: 67, seed: 306, rotation: 0.06 },
+  'sidequestlab-homepage': { cx: 2060, cy: 230, rx: 110, ry: 70, seed: 307, rotation: -0.14 },
+  'fdtd-lab-mcp': { cx: 145, cy: 770, rx: 100, ry: 64, seed: 308, rotation: 0.09 },
+  'n8n-automation': { cx: 1750, cy: 810, rx: 106, ry: 67, seed: 309, rotation: -0.07 },
+  'monitoring-system': { cx: 420, cy: 150, rx: 100, ry: 64, seed: 310, rotation: 0.11 },
 };
 
 /** Deterministic hash for seeding island generation from a project id. */
@@ -72,7 +89,7 @@ function overlapsIslands(
 /**
  * Build island layouts for an arbitrary set of project ids.
  *
- * Founding projects keep their hand-tuned positions; every additional
+ * Curated projects keep their hand-tuned positions; every additional
  * project gets a deterministic spiral placement with collision
  * avoidance, so the archipelago grows gracefully as the fleet expands.
  */
@@ -80,16 +97,16 @@ export function buildIslandLayouts(projectIds: readonly string[]): readonly Isla
   const layouts: IslandLayout[] = [];
 
   for (const id of projectIds) {
-    const founding = FOUNDING_LAYOUTS[id];
-    if (founding) {
-      layouts.push({ id, ...founding });
+    const curated = CURATED_LAYOUTS[id];
+    if (curated) {
+      layouts.push({ id, ...curated });
       continue;
     }
 
     const seed = hashId(id);
     const rand = createSeededRandom(seed);
-    const rx = 170 + rand() * 110;
-    const ry = 115 + rand() * 65;
+    const rx = 105 + rand() * 60;
+    const ry = 68 + rand() * 38;
     const rotation = (rand() - 0.5) * 0.3;
 
     // Golden-angle spiral outward from the world center, with
@@ -97,12 +114,12 @@ export function buildIslandLayouts(projectIds: readonly string[]): readonly Isla
     const index = layouts.length;
     let placed = false;
     for (let ring = 0; ring < 12 && !placed; ring++) {
-      const spiralR = 320 + ring * 155 + rand() * 60;
+      const spiralR = 420 + ring * 190 + rand() * 70;
       const baseAngle = index * GOLDEN_ANGLE + ring * 0.7;
       for (let attempt = 0; attempt < 8 && !placed; attempt++) {
         const angle = baseAngle + attempt * 0.55;
-        const cx = WORLD_WIDTH / 2 + Math.cos(angle) * spiralR * 1.15;
-        const cy = WORLD_HEIGHT / 2 + Math.sin(angle) * spiralR * 0.72;
+        const cx = WORLD_WIDTH / 2 + Math.cos(angle) * spiralR * 1.4;
+        const cy = WORLD_HEIGHT / 2 + Math.sin(angle) * spiralR * 0.55;
         // Keep the island fully inside the world bounds
         const clampedX = Math.max(rx + 20, Math.min(WORLD_WIDTH - rx - 20, cx));
         const clampedY = Math.max(ry + 20, Math.min(WORLD_HEIGHT - ry - 40, cy));
@@ -125,7 +142,7 @@ export function buildIslandLayouts(projectIds: readonly string[]): readonly Isla
 
 /** Default layouts for the founding fleet (backwards compatible). */
 export const ISLAND_LAYOUTS: readonly IslandLayout[] = buildIslandLayouts(
-  Object.keys(FOUNDING_LAYOUTS),
+  Object.keys(CURATED_LAYOUTS),
 );
 
 /**

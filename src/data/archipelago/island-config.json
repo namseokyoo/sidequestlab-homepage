@@ -4,7 +4,7 @@
   "islands": [
     {
       "id": "displaylab",
-      "position": { "cx": 800, "cy": 300, "rx": 340, "ry": 190 },
+      "position": { "cx": 1180, "cy": 460, "rx": 240, "ry": 140 },
       "landmark": {
         "type": "lighthouse",
         "spritePath": "/images/archipelago/sprites/landmark-lighthouse.png",
@@ -35,7 +35,7 @@
     },
     {
       "id": "booksalon",
-      "position": { "cx": 400, "cy": 660, "rx": 285, "ry": 180 },
+      "position": { "cx": 460, "cy": 640, "rx": 185, "ry": 110 },
       "landmark": {
         "type": "booksalon",
         "spritePath": "/images/archipelago/sprites/landmark-booksalon.png",
@@ -64,7 +64,7 @@
     },
     {
       "id": "nbbang",
-      "position": { "cx": 1190, "cy": 680, "rx": 250, "ry": 162 },
+      "position": { "cx": 1900, "cy": 580, "rx": 170, "ry": 100 },
       "landmark": {
         "type": "pavilion",
         "spritePath": "/images/archipelago/sprites/landmark-pavilion.png",
@@ -91,7 +91,7 @@
       ],
       "spriteOverrides": {},
       "walkCycleSheet": null,
-      "companion": { "cx": 1420, "cy": 620, "rx": 120, "ry": 88 }
+      "companion": { "cx": 2160, "cy": 470, "rx": 85, "ry": 55 }
     }
   ]
 }

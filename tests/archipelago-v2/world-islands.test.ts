@@ -11,15 +11,47 @@ import {
   scatterOnIsland,
 } from '../../src/lib/archipelago-world/islands.ts';
 
-test('Given the island layouts, When inspected, Then all three projects have islands within world bounds', () => {
-  assert.equal(ISLAND_LAYOUTS.length, 3);
+test('Given the island layouts, When inspected, Then the full curated fleet sits within world bounds', () => {
+  assert.equal(ISLAND_LAYOUTS.length, 13);
   const ids = ISLAND_LAYOUTS.map((l) => l.id).sort();
-  assert.deepEqual(ids, ['booksalon', 'displaylab', 'nbbang']);
+  assert.deepEqual(ids, [
+    'booksalon',
+    'displaylab',
+    'fdtd-lab-mcp',
+    'livenote',
+    'monitoring-system',
+    'n8n-automation',
+    'nbbang',
+    'pomodoro-timer',
+    'pulseup',
+    'sidequestlab-homepage',
+    'spectrum-visualizer',
+    'thisor',
+    'todo-app',
+  ]);
   for (const layout of ISLAND_LAYOUTS) {
     assert.ok(layout.cx - layout.rx >= -50, `${layout.id} left edge`);
     assert.ok(layout.cx + layout.rx <= WORLD_WIDTH + 50, `${layout.id} right edge`);
     assert.ok(layout.cy - layout.ry >= -50, `${layout.id} top edge`);
     assert.ok(layout.cy + layout.ry <= WORLD_HEIGHT + 50, `${layout.id} bottom edge`);
+  }
+});
+
+test('Given the curated fleet, When every pair is checked, Then no two islands overlap (with a 40-unit water margin)', () => {
+  const MARGIN = 40;
+  const shapes = ISLAND_LAYOUTS.flatMap((l) =>
+    l.companion
+      ? [l, { ...l.companion, id: `${l.id}-companion` }]
+      : [l],
+  );
+  for (let i = 0; i < shapes.length; i++) {
+    for (let j = i + 1; j < shapes.length; j++) {
+      const a = shapes[i];
+      const b = shapes[j];
+      const dx = (a.cx - b.cx) / (a.rx + b.rx + MARGIN);
+      const dy = (a.cy - b.cy) / (a.ry + b.ry + MARGIN);
+      assert.ok(dx * dx + dy * dy >= 1, `${a.id} must not overlap ${b.id}`);
+    }
   }
 });
 
@@ -109,8 +141,9 @@ test('Given islandFocusZoom, When computed for each island, Then the island fits
       layout.cy + layout.ry,
       layout.companion ? layout.companion.cy + layout.companion.ry : 0,
     ) + CLIFF_HEIGHT;
-    assert.ok((east - west) * 1.22 * zoom <= viewport.width, `${layout.id} fits horizontally`);
-    assert.ok((south - north) * 1.22 * zoom <= viewport.height, `${layout.id} fits vertically`);
+    // Allow a floating-point epsilon: zoom is derived from these same spans.
+    assert.ok((east - west) * 1.22 * zoom <= viewport.width + 1e-6, `${layout.id} fits horizontally`);
+    assert.ok((south - north) * 1.22 * zoom <= viewport.height + 1e-6, `${layout.id} fits vertically`);
   }
 });
 

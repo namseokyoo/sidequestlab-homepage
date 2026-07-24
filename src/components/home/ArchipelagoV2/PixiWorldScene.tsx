@@ -160,7 +160,7 @@ export function PixiWorldScene({ onReady, motionEnabled, islandIds, islandLifecy
       const world = screenToWorld(
         { x: e.clientX - rect.left, y: e.clientY - rect.top },
         engine.getCamera(),
-        { width: WORLD_WIDTH, height: WORLD_HEIGHT },
+        { width: rect.width, height: rect.height },
       );
       const px = world.x * WORLD_WIDTH;
       const py = world.y * WORLD_HEIGHT;
