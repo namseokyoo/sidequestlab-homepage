@@ -29,6 +29,7 @@ import { createParticleSystem } from './render/particles.ts';
 import { createSkySystem } from './render/sky.ts';
 import { createTerrainTextures, type TerrainTextures } from './render/terrain-textures.ts';
 import { createWaterSystem } from './render/water.ts';
+import { createBoatSystem } from './render/boats.ts';
 import { createWayfarer, type WayfarerRole, type WayfarerState, type WayfarerSystem } from './render/wayfarer.ts';
 import { loadArchipelagoSprites } from './render/sprite-assets.ts';
 
@@ -100,6 +101,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
   const sky = createSkySystem();
   const water = createWaterSystem();
   const particles = createParticleSystem();
+  const boats = createBoatSystem();
   const islands: Map<IslandKind, IslandSystem> = new Map();
   const wayfarers: Map<WayfarerRole, WayfarerSystem> = new Map();
   let islandLayouts: readonly IslandLayout[] = [];
@@ -125,10 +127,11 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
    terrainTextures = createTerrainTextures(app.renderer, buildWorldPalette(night));
 
     app.stage.addChild(world);
-    world.addChild(sky.container, water.container, sky.shadowLayer, islandLayer, wayfarerLayer, particles.container);
+    world.addChild(sky.container, water.container, sky.shadowLayer, boats.container, islandLayer, wayfarerLayer, particles.container);
 
     // Build islands
     islandLayouts = buildIslandLayouts(options.islandIds ?? ['displaylab', 'booksalon', 'nbbang']);
+    boats.setRoutes(islandLayouts);
     for (const layout of islandLayouts) {
       const lifecycle = options.islandLifecycles?.[layout.id] ?? null;
       const system = createIslandSystem(layout, lifecycle);
@@ -263,6 +266,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
         w.tick(timeMs, deltaMs, motionEnabled);
       }
       particles.tick(timeMs, deltaMs, motionEnabled, night);
+      boats.tick(timeMs, deltaMs, motionEnabled);
 
       for (const cb of tickCallbacks) {
         cb(camera, night);
@@ -275,6 +279,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     sky.repaint(palette, night);
     water.repaint(palette, night);
     particles.repaint(palette);
+    boats.repaint(palette);
     for (const system of islands.values()) {
       system.repaint(palette, night, terrainTextures ?? undefined);
     }
