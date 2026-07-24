@@ -1,6 +1,18 @@
 'use client';
 
+import type { ReactNode } from 'react';
+
 import styles from './V2.module.css';
+import {
+  IconAnchor,
+  IconClipboard,
+  IconHammer,
+  IconMap,
+  IconMapPin,
+  IconRocket,
+  IconSearch,
+  IconWrench,
+} from './icons';
 
 export type HarborLogEntry = {
   readonly projectId: string;
@@ -21,14 +33,14 @@ type HarborLogProps = {
   readonly selectedProjectId: string | null;
 };
 
-const LIFECYCLE_ICONS: Record<string, string> = {
-  BUILDING: '🔨',
-  MAINTENANCE: '🧹',
-  OPERATING: '⚓',
-  TESTING: '🔍',
-  PLANNING: '🗺️',
-  DEPLOYING: '🚀',
-  REVIEWING: '📋',
+const LIFECYCLE_ICONS: Record<string, ReactNode> = {
+  BUILDING: <IconHammer size={15} />,
+  MAINTENANCE: <IconWrench size={15} />,
+  OPERATING: <IconAnchor size={15} />,
+  TESTING: <IconSearch size={15} />,
+  PLANNING: <IconMap size={15} />,
+  DEPLOYING: <IconRocket size={15} />,
+  REVIEWING: <IconClipboard size={15} />,
 };
 
 export function HarborLog({ entries, title, subtitle, onSelectProject, selectedProjectId }: HarborLogProps) {
@@ -39,8 +51,8 @@ export function HarborLog({ entries, title, subtitle, onSelectProject, selectedP
         <p className={styles.harborLogSubtitle}>{subtitle}</p>
       </div>
       <ul className={styles.harborLogList}>
-        {entries.map((entry) => (
-          <li key={entry.projectId}>
+        {entries.map((entry, index) => (
+          <li key={entry.projectId} style={{ '--log-delay': `${550 + index * 60}ms` } as import('react').CSSProperties}>
             <button
               type="button"
               className={`${styles.harborLogEntry}${entry.fresh ? ` ${styles.harborLogEntryFresh}` : ''}`}
@@ -49,7 +61,7 @@ export function HarborLog({ entries, title, subtitle, onSelectProject, selectedP
               onClick={() => onSelectProject(entry.projectId)}
             >
               <span className={styles.harborLogIcon} aria-hidden="true">
-                {LIFECYCLE_ICONS[entry.lifecycle] ?? '📍'}
+                {LIFECYCLE_ICONS[entry.lifecycle] ?? <IconMapPin size={15} />}
               </span>
               <span className={styles.harborLogBody}>
                 <span className={styles.harborLogName}>

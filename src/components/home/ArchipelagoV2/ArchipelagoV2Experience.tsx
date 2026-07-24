@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 
 import type { ArchipelagoView } from '../Archipelago/types';
 import { worldToScreen } from '@/lib/archipelago-world/camera';
@@ -9,6 +9,7 @@ import type { FocusBox } from '@/lib/archipelago-world/camera';
 
 import { DayNightDial } from './DayNightDial';
 import { HarborLog, type HarborLogEntry } from './HarborLog';
+import { IconHome, IconMinus, IconPause, IconPlay, IconPlus } from './icons';
 import { PixiWorldScene, type PixiWorldSceneHandle } from './PixiWorldScene';
 import { ProjectOverlay } from './ProjectOverlay';
 import { getArchipelagoV2Copy } from './copy';
@@ -436,7 +437,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
             onClick={() => setMotionOverride(!motionEnabled)}
             aria-pressed={motionEnabled}
           >
-            {motionEnabled ? '⏸' : '▶'}
+            {motionEnabled ? <IconPause size={14} /> : <IconPlay size={14} />}
           </button>
         </div>
 
@@ -448,7 +449,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
             onClick={() => handle?.zoomBy(1.35)}
             aria-label={copy.zoomIn}
           >
-            +
+            <IconPlus size={16} />
           </button>
           <button
             type="button"
@@ -456,7 +457,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
             onClick={() => handle?.zoomBy(1 / 1.35)}
             aria-label={copy.zoomOut}
           >
-            −
+            <IconMinus size={16} />
           </button>
           <button
             type="button"
@@ -464,13 +465,13 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
             onClick={returnToOverview}
             aria-label={copy.resetView}
           >
-            ⌂
+            <IconHome size={16} />
           </button>
         </div>
 
         {/* Island name labels (DOM overlay, keyboard accessible) */}
         <div className={styles.islandLabels}>
-          {labels.map((label) =>
+          {labels.map((label, index) =>
             label.visible ? (
               <div
                 key={label.projectId}
@@ -478,7 +479,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
                 data-selected={label.projectId === selectedId}
                 data-lifecycle={label.lifecycle}
                 data-tier={label.tier}
-                style={{ left: label.x, top: label.y }}
+                style={{ left: label.x, top: label.y, '--card-delay': `${350 + index * 70}ms` } as CSSProperties}
                 onMouseEnter={() => handle?.setHighlightIsland(label.projectId)}
                 onMouseLeave={() => handle?.setHighlightIsland(null)}
               >

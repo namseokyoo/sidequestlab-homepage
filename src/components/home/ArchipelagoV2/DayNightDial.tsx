@@ -1,6 +1,7 @@
 'use client';
 
 import styles from './V2.module.css';
+import { IconMoon, IconRefresh, IconSun } from './icons';
 
 type DayNightDialProps = {
   readonly night: number;
@@ -27,9 +28,9 @@ export function DayNightDial({ night, onChange, dayLabel, nightLabel, autoCycle,
         data-night={isNight}
       >
         <span className={styles.dialTrack} aria-hidden="true">
-          <span className={styles.dialThumb} data-night={isNight}>
-            {isNight ? '🌙' : '☀️'}
-          </span>
+        <span className={styles.dialThumb} data-night={isNight}>
+          {isNight ? <IconMoon size={11} strokeWidth={2.5} /> : <IconSun size={11} strokeWidth={2.5} />}
+        </span>
         </span>
         <span className={styles.dialLabel}>{isNight ? nightLabel : dayLabel}</span>
       </button>
@@ -50,7 +51,7 @@ export function DayNightDial({ night, onChange, dayLabel, nightLabel, autoCycle,
         aria-label={autoCycle ? autoCycleOnLabel : autoCycleLabel}
         title={autoCycle ? autoCycleOnLabel : autoCycleLabel}
       >
-        <span className={styles.dialAutoIcon} aria-hidden="true">⟳</span>
+        <span className={styles.dialAutoIcon} aria-hidden="true"><IconRefresh size={11} /></span>
         <span className={styles.dialAutoText}>{autoCycleLabel}</span>
         {autoCycle ? <span className={styles.dialAutoDot} aria-hidden="true" /> : null}
       </button>
