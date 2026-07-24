@@ -129,6 +129,29 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
   );
   const [handle, setHandle] = useState<PixiWorldSceneHandle | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [pulsingId, setPulsingId] = useState<string | null>(null);
+  const pulseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Island click → pulse the matching card briefly (1.2s).
+  useEffect(() => {
+    if (!pulsingId) return;
+    pulseTimerRef.current = setTimeout(() => {
+      setPulsingId(null);
+      pulseTimerRef.current = null;
+    }, 1200);
+    return () => {
+      if (pulseTimerRef.current) {
+        clearTimeout(pulseTimerRef.current);
+        pulseTimerRef.current = null;
+      }
+    };
+  }, [pulsingId]);
+
+  const handleIslandClick = useCallback((islandId: string) => {
+    setSelectedId(islandId);
+    setPulsingId(islandId);
+  }, []);
+
   const [night, setNight] = useState(0);
   const prefersReducedMotion = useSyncExternalStore(
     (onStoreChange) => {
@@ -255,6 +278,8 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
           motionEnabled={motionEnabled}
           islandIds={islandIds}
           islandLifecycles={islandLifecycles}
+          islandLayouts={islandLayouts}
+          onIslandClick={handleIslandClick}
           className={styles.worldCanvas}
         />
 
@@ -317,10 +342,12 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
             label.visible ? (
               <div
                 key={label.projectId}
-                className={styles.islandCard}
+                className={`${styles.islandCard}${label.projectId === pulsingId || label.projectId === selectedId ? ` ${styles.islandCardActive}` : ''}`}
                 data-selected={label.projectId === selectedId}
                 data-lifecycle={label.lifecycle}
                 style={{ left: label.x, top: label.y }}
+                onMouseEnter={() => handle?.setHighlightIsland(label.projectId)}
+                onMouseLeave={() => handle?.setHighlightIsland(null)}
               >
                 <button
                   type="button"

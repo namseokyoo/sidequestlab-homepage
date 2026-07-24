@@ -19,6 +19,8 @@ export type IslandSystem = {
   readonly container: Container;
   readonly tick: (timeMs: number, deltaMs: number, motionOn: boolean, night: number) => void;
   readonly repaint: (palette: WorldPalette, night: number, textures?: TerrainTextures) => void;
+  /** Toggle the selection/highlight glow ring around the island edge. */
+  readonly setGlow: (active: boolean) => void;
   /** Smoke source positions registered with the particle system. */
   readonly smokeSources: readonly { readonly x: number; readonly y: number }[];
   readonly dispose?: () => void;
@@ -79,7 +81,15 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
   const detailLayer = new Container();
   /** AI terrain sprite — replaces procedural terrain blobs when loaded. */
   const terrainLayer = new Container();
-  container.addChild(terrainLayer, staticLayer, detailLayer, animLayer);
+  // Glow ring first: drawn behind the island mass, its outer stroke
+  // extends past the shoreline so it reads as a halo on the water.
+  const glowRing = new Graphics();
+  glowRing.label = `glow-ring-${layout.id}`;
+  glowRing.alpha = 0;
+  container.addChild(glowRing, terrainLayer, staticLayer, detailLayer, animLayer);
+
+  /** Target alpha the glow ring lerps toward each tick (0 = off). */
+  let glowTarget = 0;
 
   const trees: TreeAnim[] = [];
   const spriteAnims: SpriteAnim[] = [];
@@ -278,6 +288,7 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     lastRepaintArgs = { p, night, textures };
     updateLandmarkNight(night);
     updateTerrainNight();
+    redrawGlowRing(p);
     staticLayer.clear();
     animLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
     detailLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
@@ -1624,9 +1635,30 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     g.stroke({ color: mixNum(p.woodDark, p.muted, 0.5), alpha: 0.6, width: 1.5 });
   }
 
+  // ── Highlight glow ring ─────────────────────────────────────────
+  // Elliptical halo just outside the shoreline; redrawn on repaint so
+  // the stroke tracks the day/night palette gold.
+
+  function redrawGlowRing(p: WorldPalette): void {
+    glowRing.clear();
+    glowRing.ellipse(layout.cx, layout.cy, layout.rx * 1.12, layout.ry * 1.12);
+    glowRing.stroke({ color: p.gold, alpha: 1, width: 3 });
+  }
+
+  function setGlow(active: boolean): void {
+    glowTarget = active ? 0.75 : 0;
+  }
+
   // ── Animation tick ──────────────────────────────────────────────
 
   function tick(timeMs: number, _deltaMs: number, motionOn: boolean, night: number): void {
+    // Highlight glow ring: ease toward target, pulse while active
+    const glowBase = glowRing.alpha + (glowTarget - glowRing.alpha) * 0.12;
+    glowRing.alpha =
+      glowTarget > 0 && motionOn
+        ? glowBase + Math.sin(timeMs / 400) * 0.15
+        : glowBase;
+
     // Tree sway
     for (const tree of trees) {
       if (motionOn) {
@@ -1773,6 +1805,7 @@ export function createIslandSystem(layout: IslandLayout, lifecycle?: string | nu
     container,
     tick,
     repaint,
+    setGlow,
     smokeSources,
     dispose: () => {
       spriteUnsub?.();

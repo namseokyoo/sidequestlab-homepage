@@ -79,6 +79,26 @@ export function worldToScreen(
   };
 }
 
+/**
+ * Convert a screen pixel position back to normalized world coordinates.
+ * Exact inverse of `worldToScreen` — used for hit-testing island clicks.
+ */
+export function screenToWorld(
+  screen: { readonly x: number; readonly y: number },
+  camera: CameraState,
+  layout: WorldLayout,
+): { x: number; y: number } {
+  const scale = camera.zoom;
+  const viewW = layout.width / scale;
+  const viewH = layout.height / scale;
+  const left = camera.x * layout.width - viewW / 2;
+  const top = camera.y * layout.height - viewH / 2;
+  return {
+    x: (screen.x / scale + left) / layout.width,
+    y: (screen.y / scale + top) / layout.height,
+  };
+}
+
 /** Voyage path: ordered normalized waypoints through the archipelago. */
 export type VoyageWaypoint = {
   readonly x: number;

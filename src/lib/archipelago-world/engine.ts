@@ -60,6 +60,8 @@ export type WorldEngine = {
   readonly setVoyageWaypoints: (waypoints: readonly VoyageWaypoint[]) => void;
   readonly setWayfarerState: (role: WayfarerRole, state: WayfarerState) => void;
   readonly waveWayfarers: () => void;
+  /** Highlight one island with a glow ring; null clears all glows. */
+  readonly setHighlightIsland: (id: string | null) => void;
   readonly burstAt: (x: number, y: number) => void;
   readonly getCamera: () => CameraState;
   readonly getViewport: () => { width: number; height: number };
@@ -438,6 +440,12 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     waveWayfarers(): void {
       for (const w of wayfarers.values()) {
         w.setState('WAVING');
+      }
+    },
+
+    setHighlightIsland(id: string | null): void {
+      for (const [islandId, system] of islands) {
+        system.setGlow(id !== null && islandId === id);
       }
     },
 
