@@ -14,6 +14,7 @@ export type PixiWorldSceneHandle = {
   readonly setVoyageWaypoints: (waypoints: readonly { x: number; y: number; projectId: string | null }[]) => void;
   readonly waveWayfarers: () => void;
   readonly setHighlightIsland: (id: string | null) => void;
+  readonly burstAt: (x: number, y: number) => void;
   readonly zoomBy: (factor: number, centerScreen?: { x: number; y: number }) => void;
   readonly panBy: (dxScreen: number, dyScreen: number) => void;
   readonly onTick: (cb: (camera: { x: number; y: number; zoom: number }, night: number) => void) => () => void;
@@ -71,6 +72,7 @@ export function PixiWorldScene({ onReady, motionEnabled, islandIds, islandLifecy
         setVoyageWaypoints: (waypoints) => engine.setVoyageWaypoints(waypoints),
         waveWayfarers: () => engine.waveWayfarers(),
         setHighlightIsland: (id) => engine.setHighlightIsland(id),
+        burstAt: (x, y) => engine.burstAt(x, y),
         zoomBy: (factor, centerScreen) => engine.zoomBy(factor, centerScreen),
         panBy: (dx, dy) => engine.panBy(dx, dy),
         onTick: (cb) => engine.onTick(cb),

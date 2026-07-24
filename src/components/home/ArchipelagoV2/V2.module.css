@@ -505,6 +505,10 @@
   .dialAutoDot {
     animation: none;
   }
+
+  .harborLogEntryFresh {
+    animation: none;
+  }
 }
 
 /* ── Project overlay ─────────────────────────────────────────── */
@@ -762,6 +766,23 @@
   text-align: left;
   font-family: var(--font-body);
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+/* Live activity pulse: the entry that just fired flashes gold once. */
+.harborLogEntryFresh {
+  animation: logFlash 1.2s ease;
+}
+@keyframes logFlash {
+  0% {
+    background: rgba(229, 170, 69, 0.32);
+    border-color: var(--arch-gold);
+    box-shadow: 0 0 0 3px rgba(229, 170, 69, 0.35);
+  }
+  100% {
+    background: rgba(255, 249, 236, 0.7);
+    border-color: var(--panel-border);
+    box-shadow: none;
+  }
 }
 
 .harborLogEntry:hover {

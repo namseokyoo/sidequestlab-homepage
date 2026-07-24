@@ -9,6 +9,8 @@ export type HarborLogEntry = {
   readonly timestamp: string;
   readonly lifecycle: string;
   readonly version: string;
+  /** True right after a live activity pulse — triggers a brief flash. */
+  readonly fresh?: boolean;
 };
 
 type HarborLogProps = {
@@ -41,8 +43,9 @@ export function HarborLog({ entries, title, subtitle, onSelectProject, selectedP
           <li key={entry.projectId}>
             <button
               type="button"
-              className={styles.harborLogEntry}
+              className={`${styles.harborLogEntry}${entry.fresh ? ` ${styles.harborLogEntryFresh}` : ''}`}
               data-selected={entry.projectId === selectedProjectId}
+              data-fresh={entry.fresh === true}
               onClick={() => onSelectProject(entry.projectId)}
             >
               <span className={styles.harborLogIcon} aria-hidden="true">

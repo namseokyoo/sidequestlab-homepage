@@ -332,17 +332,58 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
     });
   }, []);
 
-  // Harbor log entries from view data
-  const logEntries: readonly HarborLogEntry[] = useMemo(() => {
-    return view.projects.map((project) => ({
+  // Harbor log entries from view data. Held in state (not a memo) so a
+  // live activity pulse can mark one entry fresh + "just now" in place.
+  const [logEntries, setLogEntries] = useState<readonly HarborLogEntry[]>(() =>
+    view.projects.map((project) => ({
       projectId: project.id,
       projectName: project.name,
       action: copy.logActions[project.lifecycle] ?? project.lifecycle,
       timestamp: project.updatedAtLabel,
       lifecycle: project.lifecycle,
       version: project.version,
-    }));
+    })),
+  );
+
+  // Keep the log in sync when the underlying view data changes.
+  useEffect(() => {
+    setLogEntries(
+      view.projects.map((project) => ({
+        projectId: project.id,
+        projectName: project.name,
+        action: copy.logActions[project.lifecycle] ?? project.lifecycle,
+        timestamp: project.updatedAtLabel,
+        lifecycle: project.lifecycle,
+        version: project.version,
+      })),
+    );
   }, [view.projects, copy.logActions]);
+
+  // ── Live activity pulse ─────────────────────────────────────────
+  // Every 18s one project (rotating deterministically) fires a card
+  // pulse, an in-world particle burst over its island, and a "just now"
+  // flash on its harbor-log entry — so the dashboard visibly breathes.
+  useEffect(() => {
+    if (!motionEnabled || !handle) return;
+    let tick = 0;
+    const id = setInterval(() => {
+      const projects = view.projects;
+      if (projects.length === 0) return;
+      const project = projects[tick % projects.length];
+      tick += 1;
+      setPulsingId(project.id);
+      setLogEntries((prev) =>
+        prev.map((entry) =>
+          entry.projectId === project.id
+            ? { ...entry, fresh: true, timestamp: copy.justNow }
+            : { ...entry, fresh: false },
+        ),
+      );
+      const layout = islandLayouts.find((l) => l.id === project.id);
+      if (layout) handle.burstAt(layout.cx, layout.cy - layout.ry);
+    }, 18000);
+    return () => clearInterval(id);
+  }, [motionEnabled, handle, view.projects, islandLayouts, copy.justNow]);
 
   const selectedProject = selectedId
     ? view.projects.find((p) => p.id === selectedId) ?? null

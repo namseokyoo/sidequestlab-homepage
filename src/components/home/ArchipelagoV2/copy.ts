@@ -11,6 +11,7 @@ const COPY = {
     nightLabel: '밤',
     autoCycle: '자동 순환',
     autoCycleOn: '자동 순환 켜짐',
+    justNow: '방금',
     zoomIn: '확대',
     zoomOut: '축소',
     resetView: '전체 보기로 돌아가기',
@@ -55,6 +56,7 @@ const COPY = {
     nightLabel: 'Night',
     autoCycle: 'Auto cycle',
     autoCycleOn: 'Auto cycle on',
+    justNow: 'just now',
     zoomIn: 'Zoom in',
     zoomOut: 'Zoom out',
     resetView: 'Reset to overview',
@@ -101,6 +103,7 @@ export type ArchipelagoV2Copy = {
   readonly nightLabel: string;
   readonly autoCycle: string;
   readonly autoCycleOn: string;
+  readonly justNow: string;
   readonly zoomIn: string;
   readonly zoomOut: string;
   readonly resetView: string;
