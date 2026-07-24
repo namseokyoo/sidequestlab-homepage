@@ -114,7 +114,7 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
   const wayfarerLayer = new Container();
   wayfarerLayer.label = 'wayfarers';
 
-  const ready = app.init({
+  const initPromise = app.init({
     canvas: options.canvas,
     width: options.width,
     height: options.height,
@@ -122,7 +122,8 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
     backgroundColor: 0x257e83,
     antialias: true,
     autoDensity: true,
- }).then(() => {
+  });
+  const ready = initPromise.then(() => {
    if (destroyed) return;
     initialized = true;
 
@@ -341,7 +342,16 @@ export function createWorldEngine(options: EngineOptions): WorldEngine {
       }
       terrainTextures?.destroy();
       terrainTextures = null;
-      app.destroy(true, { children: true, texture: true });
+      // Defer the app teardown until init has settled — destroying while
+      // PixiJS is still initialising races its internal resize queue
+      // (throws "this._cancelResize is not a function").
+      void initPromise
+        .then(() => {
+          app.destroy(true, { children: true, texture: true });
+        })
+        .catch(() => {
+          /* init never completed — nothing to tear down */
+        });
     },
 
    resize(width: number, height: number): void {

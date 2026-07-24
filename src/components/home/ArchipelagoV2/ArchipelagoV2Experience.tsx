@@ -11,6 +11,7 @@ import { DayNightDial } from './DayNightDial';
 import { FleetStats } from './FleetStats';
 import { HarborLog, type HarborLogEntry } from './HarborLog';
 import { IconHome, IconMinus, IconPause, IconPlay, IconPlus } from './icons';
+import { MobileJourney } from './MobileJourney';
 import { PixiWorldScene, type PixiWorldSceneHandle } from './PixiWorldScene';
 import { ProjectOverlay } from './ProjectOverlay';
 import { getArchipelagoV2Copy } from './copy';
@@ -294,6 +295,18 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
     () => Boolean((navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData),
     () => false,
   );
+  // Below 768px the experience switches from the map stage to the
+  // vertical journey (DESIGN.md §4) — tracked via matchMedia so it is
+  // independent of the world container's own size.
+  const isMobile = useSyncExternalStore(
+    (onStoreChange) => {
+      const mq = window.matchMedia('(max-width: 767px)');
+      mq.addEventListener('change', onStoreChange);
+      return () => mq.removeEventListener('change', onStoreChange);
+    },
+    () => window.matchMedia('(max-width: 767px)').matches,
+    () => false,
+  );
   const [motionOverride, setMotionOverride] = useState<boolean | null>(null);
   const motionEnabled = saveData ? false : (motionOverride ?? !prefersReducedMotion);
   const [labels, setLabels] = useState<readonly IslandLabel[]>([]);
@@ -496,6 +509,7 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
   return (
     <div className={styles.v2Root} data-night={night > 0.5}>
       {/* ── World stage ─────────────────────────────────────────── */}
+      {!isMobile ? (
       <div className={styles.worldStage} ref={containerRef}>
         <PixiWorldScene
           onReady={setHandle}
@@ -662,6 +676,42 @@ export function ArchipelagoV2Experience({ view }: ArchipelagoV2ExperienceProps) 
           selectedProjectId={selectedId}
         />
       </div>
+      ) : null}
+
+      {/* ── Mobile vertical journey (below 768px) ───────────────── */}
+      {isMobile ? (
+        <div className={styles.mobileRoot}>
+          <header className={styles.mobileHeader}>
+            <p className={styles.eyebrow}>{copy.eyebrow}</p>
+            <h1 className={styles.worldTitle}>{copy.title}</h1>
+            <p className={styles.worldIntro}>{copy.intro}</p>
+            <FleetStats
+              total={view.projects.length}
+              totalLabel={copy.fleetTotal}
+              groups={fleetStats.groups}
+              latestLabel={copy.fleetLatest}
+              latestDate={latestDateLabel}
+              activeGroup={activeGroup}
+              onGroupToggle={toggleGroup}
+            />
+          </header>
+          <MobileJourney
+            projects={view.projects}
+            labels={{
+              lifecycle: copy.lifecycle,
+              progress: copy.progress,
+              version: copy.version,
+              updated: copy.updated,
+              details: copy.details,
+              visit: copy.visit,
+              evidence: copy.evidence,
+              unavailableLive: copy.unavailableLive,
+              unavailableEvidence: copy.unavailableEvidence,
+              projectStates: copy.projectStates,
+            }}
+          />
+        </div>
+      ) : null}
 
       {/* ── Semantic project list (accessibility, no-JS fallback) ── */}
       <nav className={styles.semanticList} aria-label={copy.choose}>

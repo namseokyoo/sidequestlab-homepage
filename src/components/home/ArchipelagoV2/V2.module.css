@@ -1084,6 +1084,205 @@
   white-space: nowrap;
 }
 
+/* ── Mobile vertical journey (below 768px) ───────────────────── */
+
+.mobileRoot {
+  min-height: 100vh;
+  padding: 0 0 48px;
+  background: linear-gradient(180deg, var(--arch-sky) 0%, var(--arch-horizon) 40%, var(--arch-water-light) 100%);
+}
+
+.mobileHeader {
+  padding: 28px 20px 20px;
+  background: linear-gradient(160deg, rgba(15, 58, 66, 0.6) 0%, rgba(15, 58, 66, 0.25) 70%, transparent 100%);
+}
+.mobileHeader .worldTitle {
+  font-size: clamp(1.7rem, 7vw, 2.4rem);
+}
+.mobileHeader .worldIntro {
+  display: block;
+  font-size: 0.85rem;
+}
+.mobileHeader .fleetStats {
+  margin-top: 14px;
+}
+
+.mobileJourney {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 16px 0;
+}
+
+.dioramaCard {
+  background: var(--arch-paper);
+  border: 2px solid var(--arch-ink);
+  border-radius: 16px 16px 16px 6px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 4px 0 rgba(23, 52, 58, 0.25), 0 10px 24px rgba(23, 52, 58, 0.12);
+  animation: revealRise 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--diorama-delay, 120ms);
+}
+.dioramaCard[data-tier='flagship'] {
+  border-width: 2.5px;
+  background: linear-gradient(180deg, var(--arch-paper) 0%, var(--arch-paper) 70%, rgba(229, 170, 69, 0.14) 100%);
+  box-shadow: 0 4px 0 rgba(23, 52, 58, 0.25), 0 10px 24px rgba(23, 52, 58, 0.14), 0 0 0 1px rgba(229, 170, 69, 0.35);
+}
+
+.dioramaHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.dioramaName {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 850;
+  letter-spacing: -0.01em;
+  color: var(--arch-ink);
+}
+
+.dioramaBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: var(--arch-muted);
+  color: #fff;
+  white-space: nowrap;
+}
+.dioramaBadge[data-lifecycle='BUILDING'],
+.dioramaBadge[data-lifecycle='DEPLOYING'] { background: var(--arch-coral); }
+.dioramaBadge[data-lifecycle='OPERATING'],
+.dioramaBadge[data-lifecycle='MAINTENANCE'] { background: #397457; }
+.dioramaBadge[data-lifecycle='TESTING'],
+.dioramaBadge[data-lifecycle='REVIEWING'] { background: var(--arch-gold); color: var(--arch-ink); }
+.dioramaBadge[data-lifecycle='PLANNING'],
+.dioramaBadge[data-lifecycle='DESIGNING'],
+.dioramaBadge[data-lifecycle='IDEA'] { background: #4dabf7; }
+.dioramaBadgeIcon { display: inline-flex; }
+
+.dioramaSummary {
+  margin: 0 0 14px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--arch-muted);
+  word-break: keep-all;
+}
+
+.dioramaStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 0 10px;
+}
+.dioramaStats div {
+  background: color-mix(in srgb, var(--arch-sky) 55%, transparent);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.dioramaStats dt {
+  font-size: 0.6rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--arch-muted);
+}
+.dioramaStats dd {
+  margin: 2px 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--arch-ink);
+}
+
+.dioramaProgress {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(23, 52, 58, 0.12);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.dioramaProgress span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--arch-coral);
+}
+
+.dioramaTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+}
+.dioramaTech li {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--arch-forest) 12%, transparent);
+  color: var(--arch-forest);
+}
+
+.dioramaLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dioramaLinkPrimary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--arch-coral);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 3px 0 rgba(23, 52, 58, 0.3);
+}
+.dioramaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--arch-ink);
+  color: var(--arch-ink);
+  font-size: 0.8rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+.dioramaLinkUnavailable {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 0.72rem;
+  color: var(--arch-muted);
+}
+.dioramaLinkPrimary:focus-visible,
+.dioramaLink:focus-visible {
+  outline: 3px solid var(--arch-ink);
+  outline-offset: 2px;
+}
+
 /* ── Responsive ──────────────────────────────────────────────── */
 
 @media (max-width: 1023px) {
