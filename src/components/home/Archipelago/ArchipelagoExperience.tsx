@@ -206,6 +206,7 @@ export function ArchipelagoExperience({ view, experienceMode }: ArchipelagoExper
               copy={copy}
               projects={view.projects}
               selected={selected}
+              prefersReducedMotion={environment.prefersReducedMotion}
               onSelect={select}
             />
             {experienceMode === 'preview' ? (

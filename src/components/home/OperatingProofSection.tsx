@@ -72,14 +72,14 @@ export default function OperatingProofSection({ locale }: OperatingProofSectionP
   return (
     <section className="bg-[var(--sql-ivory)] py-16 text-[var(--sql-ink)] sm:py-20">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.25fr] lg:px-8">
-        <div className="rounded-[1.75rem] border border-[rgba(17,16,14,0.14)] bg-white/45 p-6 shadow-sm shadow-black/5 sm:p-8">
+        <div className="rounded-[1.75rem] border border-[rgba(17,16,14,0.14)] dark:border-[rgba(243,238,229,0.14)] bg-white/45 p-6 shadow-sm shadow-black/5 sm:p-8">
           <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--sql-red)]">
             {text.eyebrow}
           </p>
           <h2 className="mt-4 max-w-xl break-keep text-3xl font-black leading-tight tracking-[-0.055em] sm:text-4xl">
             {text.title}
           </h2>
-          <p className="mt-5 break-keep text-base leading-8 text-[rgba(17,16,14,0.72)]">
+          <p className="mt-5 break-keep text-base leading-8 text-[rgba(17,16,14,0.72)] dark:text-[rgba(243,238,229,0.72)]">
             {text.body}
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
@@ -91,7 +91,7 @@ export default function OperatingProofSection({ locale }: OperatingProofSectionP
             </Link>
             <Link
               href="/workflow"
-              className="inline-flex rounded-full border border-[rgba(17,16,14,0.2)] px-5 py-2.5 text-sm font-bold text-[var(--sql-ink)] transition-colors hover:border-[var(--sql-red)] hover:text-[var(--sql-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sql-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sql-ivory)]"
+              className="inline-flex rounded-full border border-[rgba(17,16,14,0.2)] dark:border-[rgba(243,238,229,0.2)] px-5 py-2.5 text-sm font-bold text-[var(--sql-ink)] transition-colors hover:border-[var(--sql-red)] hover:text-[var(--sql-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sql-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sql-ivory)]"
             >
               {text.ctaSecondary}
             </Link>
@@ -105,20 +105,20 @@ export default function OperatingProofSection({ locale }: OperatingProofSectionP
                 key={pillar.label}
                 className="rounded-[1.35rem] border border-[rgba(17,16,14,0.12)] bg-[rgba(255,255,255,0.62)] p-5 shadow-sm shadow-black/5"
               >
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[rgba(201,32,25,0.86)]">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[rgba(201,32,25,0.86)] dark:text-[rgba(239,111,81,0.9)]">
                   {pillar.label}
                 </p>
                 <h3 className="mt-3 break-keep text-xl font-black leading-snug tracking-[-0.04em]">
                   {pillar.title}
                 </h3>
-                <p className="mt-3 break-keep text-sm leading-7 text-[rgba(17,16,14,0.72)]">
+                <p className="mt-3 break-keep text-sm leading-7 text-[rgba(17,16,14,0.72)] dark:text-[rgba(243,238,229,0.72)]">
                   {pillar.body}
                 </p>
               </article>
             ))}
           </div>
 
-          <div className="rounded-[1.35rem] border border-[rgba(17,16,14,0.14)] bg-[var(--sql-ink)] p-5 text-[var(--sql-ivory)] shadow-xl shadow-black/10 sm:p-6">
+          <div className="rounded-[1.35rem] border border-[rgba(17,16,14,0.14)] dark:border-[rgba(243,238,229,0.14)] bg-[var(--sql-ink)] p-5 text-[var(--sql-ivory)] shadow-xl shadow-black/10 sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-[rgba(243,238,229,0.86)]">
                 {text.loopTitle}
@@ -140,10 +140,10 @@ export default function OperatingProofSection({ locale }: OperatingProofSectionP
           <div className="rounded-[1.35rem] border border-[rgba(201,32,25,0.22)] bg-[rgba(255,255,255,0.62)] p-5 shadow-sm shadow-black/5 sm:p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[rgba(201,32,25,0.86)]">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[rgba(201,32,25,0.86)] dark:text-[rgba(239,111,81,0.9)]">
                   {text.auditBridgeTitle}
                 </p>
-                <p className="mt-3 max-w-2xl break-keep text-sm leading-7 text-[rgba(17,16,14,0.72)]">
+                <p className="mt-3 max-w-2xl break-keep text-sm leading-7 text-[rgba(17,16,14,0.72)] dark:text-[rgba(243,238,229,0.72)]">
                   {text.auditBridgeBody}
                 </p>
               </div>

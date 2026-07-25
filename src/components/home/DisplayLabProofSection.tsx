@@ -113,14 +113,14 @@ export default function DisplayLabProofSection({ locale }: DisplayLabProofSectio
     <section className="bg-[var(--sql-ivory)] py-20 text-[var(--sql-ink)] sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="border-y border-[rgba(17,16,14,0.16)] py-8">
+          <div className="border-y border-[rgba(17,16,14,0.16)] dark:border-[rgba(243,238,229,0.16)] py-8">
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--sql-red)]">
               {text.eyebrow}
             </p>
             <h2 className="mt-4 max-w-3xl break-keep text-3xl font-black leading-tight tracking-[-0.055em] sm:text-5xl">
               {text.title}
             </h2>
-            <p className="mt-6 max-w-2xl break-keep text-base leading-8 text-[rgba(17,16,14,0.72)]">
+            <p className="mt-6 max-w-2xl break-keep text-base leading-8 text-[rgba(17,16,14,0.72)] dark:text-[rgba(243,238,229,0.72)]">
               {text.body}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -134,7 +134,7 @@ export default function DisplayLabProofSection({ locale }: DisplayLabProofSectio
               </a>
               <Link
                 href="/blog/portfolio-content-proof-loop"
-                className="inline-flex rounded-full border border-[rgba(17,16,14,0.22)] px-5 py-2.5 text-sm font-bold text-[var(--sql-ink)] transition-colors hover:border-[var(--sql-red-muted)] hover:text-[var(--sql-red-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sql-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sql-ivory)]"
+                className="inline-flex rounded-full border border-[rgba(17,16,14,0.22)] dark:border-[rgba(243,238,229,0.22)] px-5 py-2.5 text-sm font-bold text-[var(--sql-ink)] transition-colors hover:border-[var(--sql-red-muted)] hover:text-[var(--sql-red-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sql-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sql-ivory)]"
               >
                 {text.secondaryCta}
               </Link>
@@ -142,15 +142,15 @@ export default function DisplayLabProofSection({ locale }: DisplayLabProofSectio
           </div>
 
           <div className="grid gap-4">
-            <article className="rounded-[1.35rem] border border-[rgba(17,16,14,0.14)] bg-white/50 p-5 shadow-sm shadow-black/5 sm:p-6">
-              <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[rgba(201,32,25,0.86)]">
+            <article className="rounded-[1.35rem] border border-[rgba(17,16,14,0.14)] dark:border-[rgba(243,238,229,0.14)] bg-white/50 dark:bg-[rgba(243,238,229,0.06)] p-5 shadow-sm shadow-black/5 sm:p-6">
+              <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[rgba(201,32,25,0.86)] dark:text-[rgba(239,111,81,0.9)]">
                 {text.toolTitle}
               </h3>
               <div className="mt-5 grid gap-2 sm:grid-cols-2">
                 {text.tools.map((tool) => (
                   <span
                     key={tool}
-                    className="rounded-lg border border-[rgba(17,16,14,0.11)] bg-[rgba(243,238,229,0.72)] px-3 py-2 text-sm font-semibold text-[rgba(17,16,14,0.78)]"
+                    className="rounded-lg border border-[rgba(17,16,14,0.11)] dark:border-[rgba(243,238,229,0.14)] bg-[rgba(243,238,229,0.72)] dark:bg-[rgba(243,238,229,0.1)] px-3 py-2 text-sm font-semibold text-[rgba(17,16,14,0.78)] dark:text-[rgba(243,238,229,0.78)]"
                   >
                     {tool}
                   </span>
@@ -158,13 +158,13 @@ export default function DisplayLabProofSection({ locale }: DisplayLabProofSectio
               </div>
             </article>
 
-            <article className="rounded-[1.35rem] border border-[rgba(17,16,14,0.14)] bg-[var(--sql-ink)] p-5 text-[var(--sql-ivory)] shadow-xl shadow-black/10 sm:p-6">
+            <article className="rounded-[1.35rem] border border-[rgba(17,16,14,0.14)] dark:border-[rgba(243,238,229,0.14)] bg-[var(--sql-ink)] p-5 text-[var(--sql-ivory)] shadow-xl shadow-black/10 sm:p-6">
               <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[rgba(243,238,229,0.78)]">
                 {text.evidenceTitle}
               </h3>
               <div className="mt-5 grid gap-4">
                 {text.evidence.map((item) => (
-                  <div key={item.label} className="border-l border-[rgba(209,44,36,0.58)] pl-4">
+                  <div key={item.label} className="border-l border-[rgba(209,44,36,0.58)] dark:border-[rgba(239,111,81,0.58)] pl-4">
                     <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--sql-red)]">
                       {item.label}
                     </p>
@@ -178,13 +178,13 @@ export default function DisplayLabProofSection({ locale }: DisplayLabProofSectio
           </div>
         </div>
 
-        <div className="mt-8 rounded-[1.35rem] border border-[rgba(17,16,14,0.14)] bg-[rgba(255,255,255,0.48)] p-5 shadow-sm shadow-black/5 sm:p-6">
+        <div className="mt-8 rounded-[1.35rem] border border-[rgba(17,16,14,0.14)] dark:border-[rgba(243,238,229,0.14)] bg-[rgba(255,255,255,0.48)] dark:bg-[rgba(243,238,229,0.05)] p-5 shadow-sm shadow-black/5 sm:p-6">
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--sql-red)]">
                 {text.queueTitle}
               </p>
-              <p className="mt-3 max-w-3xl break-keep text-sm leading-7 text-[rgba(17,16,14,0.72)]">
+              <p className="mt-3 max-w-3xl break-keep text-sm leading-7 text-[rgba(17,16,14,0.72)] dark:text-[rgba(243,238,229,0.72)]">
                 {text.queueBody}
               </p>
             </div>
@@ -193,15 +193,15 @@ export default function DisplayLabProofSection({ locale }: DisplayLabProofSectio
             {text.queue.map((item) => (
               <article
                 key={item.label}
-                className="rounded-xl border border-dashed border-[rgba(17,16,14,0.2)] bg-[rgba(243,238,229,0.55)] p-4"
+                className="rounded-xl border border-dashed border-[rgba(17,16,14,0.2)] dark:border-[rgba(243,238,229,0.2)] bg-[rgba(243,238,229,0.55)] dark:bg-[rgba(243,238,229,0.07)] p-4"
               >
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-[rgba(17,16,14,0.58)]">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-[rgba(17,16,14,0.58)] dark:text-[rgba(243,238,229,0.58)]">
                   Under review, not homepage proof
                 </p>
                 <h3 className="mt-3 break-keep text-base font-black leading-snug tracking-[-0.025em]">
                   {item.label}
                 </h3>
-                <p className="mt-2 break-keep text-sm leading-7 text-[rgba(17,16,14,0.7)]">
+                <p className="mt-2 break-keep text-sm leading-7 text-[rgba(17,16,14,0.7)] dark:text-[rgba(243,238,229,0.7)]">
                   {item.body}
                 </p>
               </article>

@@ -7,7 +7,7 @@
 .context { display: grid; gap: 0; margin: 20px 0; }
 .context div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; padding: 11px 0; border-top: 1px solid rgb(37 126 131 / 15%); }
 .context dt { color: var(--arch-muted); font-size: .75rem; }
-.context dd { margin: 0; font-size: .78rem; font-weight: 750; line-height: 1.45; text-transform: capitalize; }
+.context dd { margin: 0; font-size: .78rem; font-weight: 700; line-height: 1.45; text-transform: capitalize; }
 .done { min-height: 46px; padding: 0 20px; border: 0; border-radius: 12px; color: var(--arch-ink); background: var(--arch-coral); font: inherit; font-weight: 800; cursor: pointer; }
 .dialog button:focus-visible { outline: 3px solid var(--arch-gold); outline-offset: 3px; }
 @media (max-width: 520px) { .dialog { padding: 25px 18px 20px; } .context div { grid-template-columns: 92px minmax(0, 1fr); } }

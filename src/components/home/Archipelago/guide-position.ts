@@ -28,9 +28,13 @@ export function getGuidePosition(
     const mobileAnchor = role === 'CODE_ENGINEER'
       ? mobileAnchors.codeEngineer
       : mobileAnchors.qaNavigator;
+    // The mobile art container is aspect-ratio locked to the artwork, so
+    // container percentages equal art percentages; mobileCrewAnchors are
+    // authored per island in full mobile art space. The old [56, 68] y clamp
+    // forced every crew member into one band regardless of island.
     return {
-      x: clamp(mobileAnchor.x * 100, 12, 88),
-      y: clamp(mobileAnchor.y * 100, 56, 68),
+      x: clamp(mobileAnchor.x * 100, 4, 96),
+      y: clamp(mobileAnchor.y * 100, 4, 96),
     };
   }
   return {

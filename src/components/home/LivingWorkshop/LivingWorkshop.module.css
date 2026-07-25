@@ -384,7 +384,7 @@
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.58rem;
   letter-spacing: 0.16em;
-  color: rgba(244, 239, 229, 0.42);
+  color: rgba(244, 239, 229, 0.56);
 }
 
 .bayStage {
@@ -510,14 +510,6 @@
 .leg circle { fill: #e7d5b9; }
 .hipsShape { fill: #b84942; stroke: #191816; stroke-width: 3; }
 .torso > path { fill: #d95a4f; stroke: #191816; stroke-width: 3; }
-.torso .apron { fill: #73c8bc; }
-.apronDot { fill: #f3eee5; }
-.head > circle:first-child { fill: #e7d5b9; stroke: #191816; stroke-width: 3; }
-.head .hair { fill: #2a2824; }
-.head .eye { fill: #191816; }
-.head .mouth,
-.head .antenna { fill: none; stroke: #191816; stroke-linecap: round; stroke-width: 3; }
-.head .signal { fill: #f1b84b; stroke: #191816; stroke-width: 2; }
 .tool path,
 .lens path,
 .lens circle { fill: none; stroke: #f1b84b; stroke-linecap: round; stroke-width: 5; }
@@ -784,7 +776,7 @@
   display: grid;
   justify-items: center;
   gap: 0.45rem;
-  color: rgba(244, 239, 229, 0.42);
+  color: rgba(244, 239, 229, 0.56);
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.58rem;
   text-align: center;
@@ -908,15 +900,6 @@
   color: #171512;
 }
 
-.disclosure {
-  padding: 0.75rem 1.2rem;
-  border-top: 1px solid rgba(244, 239, 229, 0.1);
-  color: rgba(244, 239, 229, 0.48);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 0.62rem;
-  line-height: 1.6;
-}
-
 .fallback {
   display: grid;
   min-height: 24rem;
@@ -1010,7 +993,6 @@
     grid-template-columns: 1fr;
     padding: 1.2rem 1.25rem 3rem;
   }
-  .projectCard:nth-child(3) { display: none; }
   .viewAll { grid-column: 1; }
 }
 
@@ -1052,7 +1034,7 @@
 .landing {
   --workshop-paper: #f4f0e8;
   --workshop-red: #ef6f51;
-  --workshop-teal: #ef6f51;
+  --workshop-teal: #73c8bc;
   --workshop-gold: #f1b56b;
   background: var(--workshop-paper);
 }
@@ -1085,7 +1067,7 @@
   letter-spacing: -0.07em;
 }
 .intro { max-width: 21rem; margin-top: 1.25rem; font-size: 0.92rem; }
-.eyebrow { color: var(--workshop-red); }
+.eyebrow { color: #b23c22; }
 
 .cards { gap: 0.8rem; padding: 1rem 2.2rem 2.2rem; }
 .projectCard {
@@ -1151,7 +1133,7 @@
   border: 1px solid rgba(239, 111, 81, 0.22);
   border-radius: 0.3rem;
   background: rgba(239, 111, 81, 0.1);
-  color: #b94d35;
+  color: #9c3b24;
 }
 .cardUpdate { -webkit-line-clamp: 1; display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; }
 .detailsLink { grid-column: 2; justify-self: start; padding-block: 0.35rem; }
@@ -1192,7 +1174,6 @@
 .scene { order: 3; min-height: 27rem; padding: 1rem 1.2rem 0.8rem; }
 .activityPanel { order: 4; }
 .labNotes { order: 5; }
-.disclosure { order: 6; }
 .stageIntro { margin-bottom: 0.55rem; }
 .stageMap { gap: 0; }
 .stageMap::before { display: none; }
@@ -1336,7 +1317,7 @@
   margin: 0 1.2rem 0.8rem;
   padding: 0.9rem 1rem;
 }
-.activityHeading { color: #f2ece2; font-size: 1rem; font-weight: 780; letter-spacing: -0.02em; }
+.activityHeading { color: #f2ece2; font-size: 1rem; font-weight: 800; letter-spacing: -0.02em; }
 .activityText { margin-top: 0.35rem; }
 .serviceLink { border-color: var(--workshop-red); color: #ff9a82; }
 .serviceLink:hover { background: var(--workshop-red); color: #151616; }
@@ -1409,7 +1390,6 @@
   .labNotes { margin: 0 0.7rem 0.65rem; padding: 0.75rem; }
   .labNotes ul { gap: 0; }
   .labNotes li { padding: 0.45rem 0; border-top: 1px solid rgba(242, 236, 226, 0.08); font-size: 0.63rem; }
-  .disclosure { padding: 0.6rem 0.75rem; }
 }
 
 @media (max-width: 430px) {
@@ -1423,3 +1403,40 @@
   .projectCard { grid-template-columns: 6.7rem minmax(0, 1fr); }
   .selector { width: 6.7rem; height: 5.7rem; }
 }
+
+/* Dark mode: the landing hero/cards stay warm-paper surfaces (brand),
+   while the page body, header, and proof sections shift to dark. */
+.dark .landing { color: #f2ece2; }
+.dark .landing::before {
+  background-image:
+    radial-gradient(circle at 22% 8%, rgba(239, 111, 81, 0.05), transparent 22rem),
+    repeating-linear-gradient(0deg, rgba(243, 238, 229, 0.012) 0 1px, transparent 1px 5px);
+}
+.dark .title { color: #f2ece2; }
+.dark .intro { color: rgba(242, 236, 226, 0.72); }
+.dark .hero { border-color: rgba(243, 238, 229, 0.12); }
+.dark .cards { border-color: rgba(243, 238, 229, 0.12); }
+.dark .projectCard {
+  border-color: rgba(243, 238, 229, 0.16);
+  background: rgba(243, 238, 229, 0.05);
+  box-shadow: 0 0.3rem 0.8rem rgba(0, 0, 0, 0.3);
+}
+.dark .projectCard[data-selected='true'] {
+  border-color: rgba(239, 111, 81, 0.55);
+  background: rgba(243, 238, 229, 0.08);
+  box-shadow: 0 0.55rem 1.25rem rgba(0, 0, 0, 0.4);
+}
+.dark .cardName { color: #f2ece2; }
+.dark .cardDescription { color: rgba(242, 236, 226, 0.66); }
+.dark .cardUpdate { color: rgba(242, 236, 226, 0.62); }
+.dark .cardActivity { color: #ff9a82; }
+.dark .detailsLink {
+  border-color: rgba(243, 238, 229, 0.3);
+  color: #f2ece2;
+}
+.dark .detailsLink:hover { border-color: var(--workshop-red); color: #ff9a82; }
+.dark .viewAll {
+  border-color: rgba(243, 238, 229, 0.26);
+  color: #f2ece2;
+}
+.dark .viewAll:hover { border-color: var(--workshop-red); color: #ff9a82; }

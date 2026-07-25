@@ -1,6 +1,6 @@
 'use client';
 
-import { useId } from 'react';
+import { useEffect, useId, useRef } from 'react';
 
 import { ProjectDetail } from './ProjectDetail';
 import type { ArchipelagoCopy } from './copy';
@@ -12,6 +12,7 @@ type MobileFleetFeedProps = {
   readonly copy: ArchipelagoCopy;
   readonly projects: readonly ArchipelagoProject[];
   readonly selected: ArchipelagoProject;
+  readonly prefersReducedMotion: boolean;
   readonly onSelect: (id: string) => void;
 };
 
@@ -19,10 +20,26 @@ export function MobileFleetFeed({
   copy,
   projects,
   selected,
+  prefersReducedMotion,
   onSelect,
 }: MobileFleetFeedProps) {
   const headingId = useId();
+  const selectedArticleRef = useRef<HTMLElement | null>(null);
+  const mountedRef = useRef(false);
   const [fleetLead, fleetTail = ''] = copy.fleetSummary.split(copy.fleetSummaryPhrase);
+
+  useEffect(() => {
+    // Skip the mount render: only user-initiated selection changes should
+    // pull the expanded detail card into view.
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+    selectedArticleRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'nearest',
+    });
+  }, [selected.id, prefersReducedMotion]);
 
   // ProjectDetail owns evidenceHref in the selected supplemental action group;
   // compact cards retain the minimum complete public story.
@@ -39,7 +56,7 @@ export function MobileFleetFeed({
         {projects.map((project) => {
           const isSelected = project.id === selected.id;
           return (
-            <article data-selected={isSelected} key={project.id}>
+            <article data-selected={isSelected} key={project.id} ref={isSelected ? selectedArticleRef : undefined}>
               <button
                 className={styles.selectProject}
                 data-project-selector={project.id}

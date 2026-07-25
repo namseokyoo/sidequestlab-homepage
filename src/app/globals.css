@@ -14,6 +14,16 @@
   --foreground: #ededed;
 }
 
+/* Dark-mode overrides for the editorial proof palette.
+   --sql-charcoal stays unchanged (already dark). */
+.dark {
+  --sql-ivory: #1c1b19;
+  --sql-paper: #151412;
+  --sql-ink: #f2ece2;
+  --sql-red: #ef6f51;
+  --sql-red-muted: #b23c22;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -156,42 +166,6 @@ a, button {
   --sql-charcoal-soft: #1d1b18;
   --sql-red: #c92019;
   --sql-red-muted: #8f221e;
-}
-
-.portfolio-landing {
-  background: var(--sql-paper);
-  color: var(--sql-ink);
-}
-
-.portfolio-reference-stage {
-  background: linear-gradient(90deg, var(--sql-ivory) 0, var(--sql-ivory) 31.5rem, var(--sql-charcoal) 31.5rem, var(--sql-charcoal) 100%);
-}
-
-.portfolio-editorial-panel {
-  background:
-    radial-gradient(circle at 100% 72%, rgba(201, 32, 25, 0.05), transparent 19rem),
-    var(--sql-ivory);
-  border-color: rgba(24, 20, 17, 0.14);
-  color: var(--sql-ink);
-}
-
-.portfolio-cta-primary {
-  background: var(--sql-ink);
-  color: var(--sql-ivory);
-}
-
-.portfolio-cta-primary:hover {
-  background: var(--sql-red-muted);
-}
-
-.portfolio-cta-secondary {
-  border-color: rgba(17, 16, 14, 0.22);
-  color: var(--sql-ink);
-}
-
-.portfolio-cta-secondary:hover {
-  border-color: var(--sql-red-muted);
-  color: var(--sql-red-muted);
 }
 
 .system-canvas-shell {

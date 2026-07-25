@@ -28,10 +28,10 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#d8d0c4] bg-[#f7f3ed]/95 text-[#171716] backdrop-blur-lg">
+    <header className="sticky top-0 z-50 w-full border-b border-[#d8d0c4] bg-[#f7f3ed]/95 text-[#171716] backdrop-blur-lg dark:border-[rgba(243,238,229,0.14)] dark:bg-[#161513]/95 dark:text-[#f2ece2]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold tracking-[-0.04em] text-[#171716]">
+          <span className="text-xl font-bold tracking-[-0.04em] text-[#171716] dark:text-[#f2ece2]">
             SidequestLab
           </span>
         </Link>
@@ -42,10 +42,10 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative text-sm font-medium transition-colors hover:text-[#171716] ${
+              className={`relative text-sm font-medium transition-colors hover:text-[#171716] dark:hover:text-[#f2ece2] ${
                 isActive(item.href)
-                  ? 'text-[#171716]'
-                  : 'text-[#777168]'
+                  ? 'text-[#171716] dark:text-[#f2ece2]'
+                  : 'text-[#665f56] dark:text-[rgba(242,236,226,0.66)]'
               }`}
             >
               {item.label}
@@ -62,7 +62,7 @@ export default function Header() {
         <div className="flex items-center lg:hidden">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="grid h-11 w-11 place-items-center text-[#292724] hover:text-[#ef6f51]"
+            className="grid h-11 w-11 place-items-center text-[#292724] hover:text-[#ef6f51] dark:text-[rgba(242,236,226,0.85)] dark:hover:text-[#ef6f51]"
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
           >
@@ -101,8 +101,8 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <nav className="border-t border-[#d8d0c4] bg-[#f7f3ed]/98 p-4 backdrop-blur-lg lg:hidden">
-          <div className="mb-3 flex items-center justify-end gap-3 border-b border-[#ded7cd] pb-3">
+        <nav className="border-t border-[#d8d0c4] bg-[#f7f3ed]/98 p-4 backdrop-blur-lg lg:hidden dark:border-[rgba(243,238,229,0.14)] dark:bg-[#161513]/98">
+          <div className="mb-3 flex items-center justify-end gap-3 border-b border-[#ded7cd] pb-3 dark:border-[rgba(243,238,229,0.12)]">
             <ThemeToggle />
             <LanguageSwitcher />
           </div>
@@ -114,8 +114,8 @@ export default function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive(item.href)
-                  ? 'bg-[#ebe4da] text-[#171716]'
-                    : 'text-[#6f6a62] hover:bg-[#eee8df] hover:text-[#171716]'
+                  ? 'bg-[#ebe4da] text-[#171716] dark:bg-[rgba(243,238,229,0.1)] dark:text-[#f2ece2]'
+                    : 'text-[#5f5950] hover:bg-[#eee8df] hover:text-[#171716] dark:text-[rgba(242,236,226,0.62)] dark:hover:bg-[rgba(243,238,229,0.07)] dark:hover:text-[#f2ece2]'
                 }`}
               >
                 {item.label}

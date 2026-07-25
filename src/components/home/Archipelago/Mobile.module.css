@@ -5,14 +5,16 @@
 .list article { overflow: hidden; border: 1px solid rgb(37 126 131 / 17%); border-radius: 15px; background: var(--arch-foam); }
 .list article[data-selected='true'] { border-color: var(--arch-coral); box-shadow: inset 4px 0 var(--arch-coral); }
 .selectProject { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; min-height: 72px; gap: 10px; align-items: center; padding: 11px 12px 8px; border: 0; color: var(--arch-ink); background: transparent; font: inherit; text-align: left; cursor: pointer; }
+.selectProject:hover { background: rgb(37 126 131 / 6%); }
 .selectProject > span, .selectProject strong, .selectProject small { display: block; }
 .selectProject strong { margin-bottom: 3px; font-size: 1rem; }
 .selectProject small { color: #46676c; font-size: 1rem; line-height: 1.42; }
-.selectProject em { padding: 5px 7px; border-radius: 999px; color: #245b60; background: #dff1ed; font-size: .75rem; font-style: normal; font-weight: 850; white-space: nowrap; }
+.selectProject em { padding: 5px 7px; border-radius: 999px; color: #245b60; background: #dff1ed; font-size: .75rem; font-style: normal; font-weight: 900; white-space: nowrap; }
 .cardSnapshot { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 10px; align-items: center; padding: 0 12px 9px; color: #355b61; font-size: 1rem; }
 .cardSnapshot p { grid-column: 1 / -1; margin: 0; line-height: 1.4; }
 .cardSnapshot time { color: var(--arch-muted); font-size: .75rem; white-space: nowrap; }
 .cardSnapshot a { display: inline-flex; min-height: 44px; align-items: center; color: #245b60; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+.cardSnapshot a:hover { color: var(--arch-coral); text-decoration-thickness: 2px; }
 .selectProject:focus-visible, .cardSnapshot a:focus-visible { outline: 3px solid var(--arch-gold); outline-offset: 2px; }
 .expansion { padding: 0 8px 8px; }
 .expansion > div { border-radius: 14px; background: #fffaf0; }

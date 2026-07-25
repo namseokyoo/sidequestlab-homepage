@@ -59,7 +59,6 @@ export function MobileOverview(props: MobileOverviewProps) {
         fill
         priority
         sizes="(max-width: 1023px) 100vw, 1px"
-        style={{ objectPosition: `50% ${20 + props.project.presentation.order * 30}%` }}
         onError={() => setSource('/images/archipelago/archipelago-mobile-v2-clean.png')}
       />
       <div className={styles.mobileSelectionLabel}>

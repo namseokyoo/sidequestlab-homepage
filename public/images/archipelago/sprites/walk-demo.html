@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wayfarer Walk Cycle — Sprite Test</title>
+<style>
+  
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #163A42;
+    color: #F7FFF8;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1 {
+    font-family: system-ui, sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 800;
+    text-align: center;
+    padding: 28px 16px 4px;
+    color: #E5AA45;
+    text-shadow: 0 2px 0 rgba(0,0,0,0.3);
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #8EC5C0;
+    margin-bottom: 20px;
+  }
+
+  /* ── Island scene ─────────────────────────── */
+  .scene {
+    position: relative;
+    width: min(920px, 94vw);
+    height: 340px;
+    margin: 0 auto 28px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #DDF3F3 0%, #B9E5E2 38%, #69CDC4 52%, #4DBAB2 68%, #257E83 100%);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  }
+
+  /* sun */
+  .sun {
+    position: absolute; top: 26px; left: 44px;
+    width: 64px; height: 64px; border-radius: 50%;
+    background: radial-gradient(circle, #FFF4D6 30%, #FFE9A8 60%, rgba(255,233,168,0) 72%);
+    animation: sunPulse 4s ease-in-out infinite;
+  }
+  @keyframes sunPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+
+  /* clouds */
+  .cloud {
+    position: absolute;
+    background: rgba(247,255,248,0.85);
+    border-radius: 40px;
+    animation: drift linear infinite;
+  }
+  .cloud::before, .cloud::after {
+    content: ''; position: absolute; background: inherit; border-radius: 50%;
+  }
+  .cloud::before { width: 55%; height: 150%; top: -55%; left: 18%; }
+  .cloud::after  { width: 40%; height: 110%; top: -35%; right: 14%; }
+  .c1 { width: 110px; height: 34px; top: 40px;  animation-duration: 34s; }
+  .c2 { width: 80px;  height: 26px; top: 84px;  animation-duration: 46s; animation-delay: -18s; }
+  .c3 { width: 64px;  height: 22px; top: 22px;  animation-duration: 55s; animation-delay: -30s; }
+  @keyframes drift { from { left: -140px; } to { left: 110%; } }
+
+  /* island ground */
+  .island {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 82%; height: 120px;
+    background: radial-gradient(ellipse 58% 100% at 50% 100%, #7BBE67 0%, #7BBE67 55%, #E8C983 56%, #E8C983 72%, #D4B06A 73%, #D4B06A 100%);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
+  .island::before {
+    content: ''; position: absolute;
+    top: -14px; left: 8%; right: 8%; height: 30px;
+    background: #7BBE67; border-radius: 50%;
+    filter: blur(2px);
+  }
+
+  /* grass tufts on island */
+  .tuft {
+    position: absolute; bottom: 96px;
+    width: 18px; height: 22px;
+    animation: sway 2.4s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  .tuft::before, .tuft::after, .tuft i {
+    content: ''; position: absolute; bottom: 0;
+    width: 5px; border-radius: 3px 3px 0 0;
+    background: #5FA354;
+  }
+  .tuft::before { left: 0;  height: 16px; transform: rotate(-14deg); }
+  .tuft::after  { right: 0; height: 18px; transform: rotate(12deg); }
+  .tuft i       { left: 6px; height: 22px; background: #7BBE67; }
+  .t1 { left: 12%; } .t2 { left: 30%; animation-delay: -0.8s; }
+  .t3 { right: 28%; animation-delay: -1.5s; } .t4 { right: 10%; animation-delay: -0.4s; }
+  @keyframes sway { 0%,100%{transform:rotate(-4deg)} 50%{transform:rotate(4deg)} }
+
+  /* flowers */
+  .flower {
+    position: absolute; bottom: 100px;
+    width: 14px; height: 14px; border-radius: 50%;
+    animation: sway 3s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  .flower::after {
+    content: ''; position: absolute; left: 50%; top: 100%;
+    width: 2px; height: 14px; background: #397457; transform: translateX(-50%);
+  }
+  .f1 { left: 20%; background: #EE7459; }
+  .f2 { left: 44%; background: #E5AA45; animation-delay: -1.2s; }
+  .f3 { right: 18%; background: #F2A0B5; animation-delay: -2s; }
+
+  /* ── THE WALKING CHARACTER ────────────────── */
+  .walker {
+    position: absolute;
+    bottom: 78px;
+    height: 130px;
+    image-rendering: auto;
+    animation: walkAcross 12s linear infinite;
+    z-index: 10;
+  }
+  .walker img {
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0 4px 3px rgba(23,52,58,0.25));
+  }
+  @keyframes walkAcross {
+    0%   { left: -12%; transform: scaleX(1); }
+    48%  { left: 96%;  transform: scaleX(1); }
+    50%  { left: 96%;  transform: scaleX(-1); }
+    98%  { left: -12%; transform: scaleX(-1); }
+    100% { left: -12%; transform: scaleX(1); }
+  }
+
+  /* foam waves at shore */
+  .foam {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 26px;
+    background: repeating-linear-gradient(90deg,
+      rgba(247,255,248,0.5) 0 30px, rgba(247,255,248,0.15) 30px 60px);
+    animation: foamShift 3s linear infinite;
+    border-radius: 50% 50% 0 0;
+  }
+  @keyframes foamShift { from { background-position: 0 0; } to { background-position: 60px 0; } }
+
+  /* ── Frame strip + controls ───────────────── */
+  .panel {
+    width: min(920px, 94vw);
+    margin: 0 auto 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 640px) { .panel { grid-template-columns: 1fr; } }
+
+  .card {
+    background: rgba(30,94,99,0.55);
+    border: 1px solid rgba(142,197,192,0.25);
+    border-radius: 14px;
+    padding: 18px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .card h2 {
+    font-family: system-ui, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #E5AA45;
+    margin-bottom: 10px;
+  }
+
+  .strip-img {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid rgba(142,197,192,0.2);
+  }
+
+  .gif-img {
+    width: 140px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    border: 1px solid rgba(142,197,192,0.2);
+  }
+
+  .controls {
+    display: flex; gap: 10px; justify-content: center;
+    margin-top: 14px; flex-wrap: wrap;
+  }
+  .btn {
+    font-family: system-ui, sans-serif;
+    font-weight: 700; font-size: 0.85rem;
+    padding: 7px 18px;
+    border: none; border-radius: 24px;
+    cursor: pointer;
+    background: #E5AA45; color: #17343A;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn:hover { background: #F0BE60; transform: scale(1.05); }
+  .btn:active { transform: scale(0.97); }
+  .btn.active { background: #EE7459; color: #FFF9EC; }
+
+  .speed-label {
+    text-align: center; font-size: 0.75rem; color: #8EC5C0; margin-top: 8px;
+  }
+
+  .specs {
+    width: min(920px, 94vw);
+    margin: 0 auto 40px;
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  }
+  .chip {
+    font-size: 0.72rem;
+    padding: 5px 14px;
+    border-radius: 20px;
+    background: rgba(105,205,196,0.15);
+    border: 1px solid rgba(142,197,192,0.3);
+    color: #B9E5E2;
+    transition: background 0.15s;
+  }
+  .chip:hover { background: rgba(105,205,196,0.3); }
+  .chip b { color: #E5AA45; }
+</style>
+</head>
+<body>
+
+<h1>🚶 Wayfarer Engineer — Walk Cycle Test</h1>
+<p class="subtitle">gpt-image-2 · 4프레임 시트 · 크로마키 제거 · 125ms/frame (8fps)</p>
+
+<div class="scene">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+  <div class="island"></div>
+  <div class="tuft t1"><i></i></div>
+  <div class="tuft t2"><i></i></div>
+  <div class="tuft t3"><i></i></div>
+  <div class="tuft t4"><i></i></div>
+  <div class="flower f1"></div>
+  <div class="flower f2"></div>
+  <div class="flower f3"></div>
+  <div class="foam"></div>
+  <div class="walker" id="walker">
+    <img id="walkFrame" src="wayfarer-engineer-walk-test-0.png" alt="walking engineer">
+  </div>
+</div>
+
+<div class="panel">
+  <div class="card">
+    <h2>🎞️ 프레임 시트 (4 frames)</h2>
+    <img class="strip-img" src="wayfarer-engineer-walk-test-preview.png" alt="4-frame walk cycle strip">
+    <p class="speed-label">Contact → Down → Passing → Up · 좌측 향하기</p>
+  </div>
+  <div class="card">
+    <h2>▶️ GIF 미리보기 (8fps)</h2>
+    <img class="gif-img" src="wayfarer-engineer-walk-test.gif" alt="walking animation gif">
+    <div class="controls">
+      <button class="btn" onclick="setSpeed(250)">슬로우</button>
+      <button class="btn active" onclick="setSpeed(125)">기본 8fps</button>
+      <button class="btn" onclick="setSpeed(80)">빠르게</button>
+    </div>
+    <p class="speed-label" id="speedLabel">125ms / frame</p>
+  </div>
+</div>
+
+<div class="specs">
+  <span class="chip"><b>모델</b> gpt-image-2</span>
+  <span class="chip"><b>프레임</b> 4 (contact/down/passing/up)</span>
+  <span class="chip"><b>타이밍</b> 125ms = 8fps</span>
+  <span class="chip"><b>배경 제거</b> remove_chroma_key.py --soft-matte --despill</span>
+  <span class="chip"><b>부분투명</b> 5% (프린지 0)</span>
+  <span class="chip"><b>방향 전환</b> scaleX(-1)</span>
+  <span class="chip"><b>팔레트</b> 엔진 hex 락 (#3A9490 후디, #17343A 아웃라인)</span>
+</div>
+
+<script>
+  // Frame animation — same logic as the engine will use
+  const frames = [0,1,2,3].map(i => {
+    const img = new Image();
+    img.src = `wayfarer-engineer-walk-test-${i}.png`;
+    return img;
+  });
+
+  const walkFrame = document.getElementById('walkFrame');
+  let frameTime = 125;
+  let idx = 0;
+  let last = performance.now();
+
+  function tick(now) {
+    if (now - last >= frameTime) {
+      last = now;
+      idx = (idx + 1) % 4;
+      walkFrame.src = frames[idx].src;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  function setSpeed(ms) {
+    frameTime = ms;
+    document.getElementById('speedLabel').textContent = `${ms}ms / frame`;
+    document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

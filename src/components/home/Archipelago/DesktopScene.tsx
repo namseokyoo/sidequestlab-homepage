@@ -37,9 +37,14 @@ export function DesktopScene(props: DesktopSceneProps) {
     '/images/archipelago/archipelago-scene-v3-projects.png',
   );
   const [failedFocusId, setFailedFocusId] = useState<string | null>(null);
+  const [loadedFocusId, setLoadedFocusId] = useState<string | null>(null);
   const isOverview = props.interaction.camera.phase === 'OVERVIEW';
   const focusSource = `/images/archipelago/dioramas/${props.selected.id}-focus-v1.png`;
   const focusFailed = failedFocusId === props.selected.id;
+  const focusLoaded = loadedFocusId === props.selected.id;
+  // Keep the overview artwork on screen until the focus diorama has decoded
+  // (or failed), so selecting an island never flashes the bare background.
+  const showOverview = isOverview || (!focusLoaded && !focusFailed);
   const cameraRevision = props.interaction.camera.revision;
   const { onVisibilityChange } = props;
   const { sceneRef, sceneVisible } = useSceneVisibility<HTMLElement>();
@@ -68,7 +73,7 @@ export function DesktopScene(props: DesktopSceneProps) {
     >
       <Image
         className={styles.overviewArtwork}
-        data-active={isOverview}
+        data-active={showOverview}
         src={overviewSource}
         alt=""
         fill
@@ -85,6 +90,7 @@ export function DesktopScene(props: DesktopSceneProps) {
           fill
           priority
           sizes="(min-width: 1024px) 72vw, 1px"
+          onLoad={() => setLoadedFocusId(props.selected.id)}
           onError={() => setFailedFocusId(props.selected.id)}
         />
       )}
